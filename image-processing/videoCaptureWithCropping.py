@@ -1,11 +1,11 @@
 # shows video, takes snapshots, crops them and saves
+#valerie run: python3 /Users/valeriefan/github/test-materov-2021/image-processing/videoCaptureWithCropping.py
 import numpy as np
 import argparse
 import imutils
 import cv2
 import keyboard
 import time
-
 
 def crop(image_name):
     # Load image and display (convert to grayscale and threshold it)

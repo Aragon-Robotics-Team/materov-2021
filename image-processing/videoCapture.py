@@ -1,11 +1,11 @@
 #shows video feed and takes snapshots (+ saves them to prenamed files)
+
 import numpy as np
 import argparse
 import imutils
 import cv2
 import keyboard
 import time
-
 
 videoCaptureObject = cv2.VideoCapture(0)
 result = True
