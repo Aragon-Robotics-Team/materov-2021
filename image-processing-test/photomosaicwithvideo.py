@@ -7,6 +7,7 @@ import cv2
 import keyboard
 import time
 
+i = 0
 
 center = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/center.png")
 top = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/top.png")
@@ -49,25 +50,16 @@ resizeimage = [
 def resize_image(img, scale_w, scale_h):
     return cv2.resize(img, (int(img.shape[1]*scale_w), int(img.shape[0]*scale_h)))
 
-def resize_blank(image):
-    heightratio = 250/image.shape[0]
-    widthratio = 249/image.shape[1]
-    blankResize = resize_image(image, widthratio, heightratio)
-    cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/blankResize.png", blankResize)
-
-def resize_tile(image):
-    ratio = 750/image.shape[1]
-    resizeimage[i] = resize_image(image, ratio, ratio)
-
+#---------crop and resize the image to a height of 250 pixels-----------
 def cropping(image):
     image = cv2.imread(image)
-    cv2.imshow("Image", image)
-    cv2.waitKey(0)
+    #cv2.imshow("Image", image)
+    #cv2.waitKey(0)
 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     thresh = cv2.threshold(gray, 100, 300, cv2.THRESH_BINARY_INV)[1]
-    cv2.imshow("Thresh", thresh)
-    cv2.waitKey(0)
+    #cv2.imshow("Thresh", thresh)
+    #cv2.waitKey(0)
 
     cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
@@ -81,17 +73,16 @@ def cropping(image):
 
     #Crop the image based on the points of the bounding box, show the cropped image
     cropped = image[y:y+h, x:x+w]
-    #image = cropped
     file = snapshots[i]
     cv2.imwrite(file, cropped)
-    cv2.imshow("Cropped Image", cropped)
-    cv2.waitKey(0)
+    #cv2.imshow("Cropped Image", cropped)
+    #cv2.waitKey(0)
 
     ratio = 250/cropped.shape[0]
     resizeimage[i] = resize_image(cropped, ratio, ratio)
     cv2.imwrite(resizedimages[i], resizeimage[i])
-    cv2.imshow("Resized Cropped", resizeimage[i])
-    cv2.waitKey(0)
+    #cv2.imshow("Resized Cropped", resizeimage[i])
+    #cv2.waitKey(0)
 
     cv2.destroyAllWindows
 
@@ -104,6 +95,7 @@ snapshots = ["/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/center.png",
     "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/left.png",
     "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/right.png"]
 
+#---------capture images and save them to the files-----------
 i = 0
 while result:
     ret, frame = videoCaptureObject.read()
@@ -126,72 +118,93 @@ while result:
         else:
             result = False
 
-#crop the center
-#cropping(center)
-centerResize = cv2.imread(resizedimages[i])
-cv2.imshow("centerResize", centerResize)
-cv2.waitKey(0)
+#---------rereading the original images from the snapshots-----------
+center = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/center.png")
+top = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/top.png")
+bottom = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/bottom.png")
+left = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/left.png")
+right = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/right.png")
+blank = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/blank.png")
 
-i = 1
-#cropping(left)
-leftResize = cv2.imread(resizedimages[i])
+
+#---------saving the resized versions of the images to variables-----------
+centerResize = cv2.imread(resizedimages[0])
+#cv2.imshow("centerResize", centerResize)
+#cv2.waitKey(0)
+
+topResize = cv2.imread(resizedimages[1])
 #cv2.imshow("leftResize", leftResize)
 #cv2.waitKey(0)
 
-i = 2
-#cropping(right)
-rightResize = cv2.imread(resizedimages[i])
+bottomResize = cv2.imread(resizedimages[2])
 #cv2.imshow("rightResize", rightResize)
 #cv2.waitKey(0)
 
-i = 3
-#cropping(top)
-topResize = cv2.imread(resizedimages[i])
-
+leftResize = cv2.imread(resizedimages[3])
 #cv2.imshow("topResize", topResize)
 #cv2.waitKey(0)
 
-i = 4
-#cropping(bottom)
-bottomResize = cv2.imread(resizedimages[i])
-
+rightResize = cv2.imread(resizedimages[4])
 #cv2.imshow("bottomResize", bottomResize)
 #cv2.waitKey(0)
 
+#----------------------concat middle tile------------------------
 middleTileLeft = cv2.hconcat([leftResize, centerResize])
 cv2.imshow("Middle Tile Left", middleTileLeft)
 cv2.waitKey(0)
 middleTile = cv2.hconcat([middleTileLeft, rightResize])
+cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/middleTile.png", middleTile)
 cv2.imshow("MiddleTile", middleTile)
 cv2.waitKey(0)
-#resize_tile(middleTile)
 print(middleTile.shape[1])
 
+#--------calculate the size of the blank images to make up for the size difference in the tiles------------
 heightratio = 250/blank.shape[0]
 topwidth = (middleTile.shape[1] - topResize.shape[1])/2
-print("Top Width: " + topwidth)
+print(topResize.shape[1])
+print(topwidth)
 topwidthratio = topwidth/blank.shape[1]
 bottomwidth = (middleTile.shape[1] - bottomResize.shape[1])/2
-print("Bottom Width: " + bottomwidth)
+print(bottomResize.shape[1])
+print(bottomwidth)
 bottomwidthratio = bottomwidth/blank.shape[1]
 blankTopResize = resize_image(blank, topwidthratio, heightratio)
-blankTopResize = resize_image(blank, bottomwidthratio, heightratio)
+print(blankTopResize.shape[1])
+blankBottomResize = resize_image(blank, bottomwidthratio, heightratio)
+print(blankBottomResize.shape[1])
 
+#----------concat top tile-----------------
 topTileLeft = cv2.hconcat([blankTopResize, topResize])
 topTile = cv2.hconcat([topTileLeft, blankTopResize])
+cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/topTile.png", topTile)
 cv2.imshow("Top Tile", topTile)
 cv2.waitKey(0)
-#resize_tile(topTile)
 print(topTile.shape[1])
 
+#-------------concat bottom tile--------------
 bottomTileLeft = cv2.hconcat([blankBottomResize, bottomResize])
 bottomTile = cv2.hconcat([bottomTileLeft, blankBottomResize])
+cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/bottomTile.png", bottomTile)
 cv2.imshow("Bottom Tile", bottomTile)
 cv2.waitKey(0)
-#resize_tile(bottomTile)
 print(bottomTile.shape[1])
 
+
+#------------resize again if it doesn't work for some reason -.- -------------
+if bottomTile.shape[1] != middleTile.shape[1]:
+    bottomTile = resize_image(bottomTile, middleTile.shape[1]/bottomTile.shape[1], 1)
+    print("resizing bottomTile")
+    print(bottomTile.shape[1])
+
+if topTile.shape[1] != middleTile.shape[1]:
+    topTile = resize_image(topTile, middleTile.shape[1]/topTile.shape[1], 1)
+    print("resizing top tile")
+    print(topTile.shape[1])
+
+
+#---------stitch together all the tiles-----------
 topSection = cv2.vconcat([topTile, middleTile])
 photomosaic = cv2.vconcat([topSection, bottomTile])
+cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/photomosaic.png", photomosaic)
 cv2.imshow("PHOTOMOSAIC", photomosaic)
 cv2.waitKey(0)
