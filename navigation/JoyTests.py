@@ -4,6 +4,7 @@ from pygame.locals import *
 def example1(): # https://www.programcreek.com/python/example/56152/pygame.JOYAXISMOTION (example 8)
     pygame.init()
     pygame.joystick.init()
+    pygame.joystick.Joystick(0).init()
 
     joystick_count = pygame.joystick.get_count()
 
@@ -282,20 +283,14 @@ def example4(): # https://stackoverflow.com/questions/46506850/how-can-i-get-inp
     keepPlaying = True
     print("example4")
 
+    myjoystick = pygame.joystick.Joystick(0) #since we only have one joystick, we know the instance ID is 0
+    myjoystick.init()
 
-    # for al the connected joysticks
-    for i in range(0, pygame.joystick.get_count()):
-        # create an Joystick object in our list
-        joysticks.append(pygame.joystick.Joystick(i))
-        # initialize them all (-1 means loop forever)
-        joysticks[-1].init()
-        # print a statement telling what the name of the controller is
-        print("Detected joystick "), joysticks[-1].get_name(), "'"
     while keepPlaying:
-        clock.tick(20)
+        sleep(0.1)
         for event in pygame.event.get():
             # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
-            if event.type == pygame.JOYBUTTONUP:
+            if event.type == pygame.JOYBUTTONDOWN:
                     if event.button == 0: # event.type == pygame.JOYBUTTONUP:
                         print("Select Has Been Pressed")
                     if event.button == 1:
@@ -330,21 +325,77 @@ def example4(): # https://stackoverflow.com/questions/46506850/how-can-i-get-inp
                         print("Square has been pressed")
                     if event.button == 16:
                         print("Center PS has been pressed")
-            if event.type == pygame.JOYAXISMOTION:
-                if event.axis == 0:
-                    one = event.get_axis(0)
+            elif event.type == pygame.JOYAXISMOTION:
+                if event.axis == 0 and abs(myjoystick.get_axis(0))>0.1:
+                    one = myjoystick.get_axis(0)
                     print('1 has been moved ' + str(one))
-                if event.axis == 1:
-                    two = event.get_axis(1)
+                if event.axis == 1 and abs(myjoystick.get_axis(1))>0.1:
+                    two = myjoystick.get_axis(1)
                     print('2 has been moved ' + str(two))
-                if event.axis == 2:
-                    three = pygame.joystick.get_axis(2)
+                if event.axis == 2 and abs(myjoystick.get_axis(2))>0.1:
+                    three = myjoystick.get_axis(2)
                     print('3 has been moved ' + str(three))
-                if event.axis == 3:
-                    four = pygame.joystick.get_axis(3)
+                if event.axis == 3 and abs(myjoystick.get_axis(3))>0.1:
+                    four = myjoystick.get_axis(3)
                     print('4 has been moved ' + str(four))
 
+def example5():
+    pygame.display.init()
+    pygame.joystick.init()
+    pygame.joystick.Joystick(0).init()
 
+    # Prints the joystick's name
+    JoyName = pygame.joystick.Joystick(0).get_name()
+    print("Name of the joystick:")
+    print(JoyName)
+    # Gets the number of axes
+    JoyAx = pygame.joystick.Joystick(0).get_numaxes()
+    print("Number of axis:")
+    print(JoyAx)
+
+    # Prints the values for axis0
+    while True:
+        pygame.event.pump()
+        print(pygame.joystick.Joystick(0).get_axis(0))
+
+def example6():
+    #http://programarcadegames.com/python_examples/show_file.php?file=joystick_calls.py
+    import pygame
+    from time import sleep
+    pygame.init()
+    pygame.joystick.init()
+    done = False
+    while not done:
+        sleep(0.1)
+        for event in pygame.event.get():
+            joystick_count = pygame.joystick.get_count() # = 1
+        for i in range(joystick_count):
+            joystick = pygame.joystick.Joystick(i)
+            joystick.init()
+            axes = joystick.get_numaxes()
+            for i in range(axes):
+                axis = joystick.get_axis(i)
+                print(str(axis))
+
+def example7(): #http://programarcadegames.com/python_examples/show_file.php?file=joystick_calls.py
+    import pygame
+    from time import sleep
+    pygame.init()
+    pygame.joystick.init()
+    done = False
+    while not done:
+        sleep(0.1)
+        for event in pygame.event.get():
+            joystick_count = pygame.joystick.get_count()
+        for i in range(joystick_count):
+            joystick = pygame.joystick.Joystick(i)
+            joystick.init()
+        LH = joystick.get_axis(0)
+        LV = joystick.get_axis(1)
+        RH = joystick.get_axis(2)
+        RV = joystick.get_axis(3)
+        print("LH: " + str(LH) + "; LV: " + str(LV) + "; RH: " + str(RH) + "; RV: " + str(RV))
 
 if __name__ == "__main__":
+    #only example 4 & 7 work + are applicable
     example4()
