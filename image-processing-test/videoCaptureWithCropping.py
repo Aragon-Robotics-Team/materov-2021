@@ -1,5 +1,5 @@
 # shows video, takes snapshots, crops them and saves
-#valerie run: python3 /Users/valeriefan/github/test-materov-2021/image-processing/videoCaptureWithCropping.py
+#valerie run: python3 /Users/valeriefan/github/test-materov-2021/image-processing-test/videoCaptureWithCropping.py
 import numpy as np
 import argparse
 import imutils

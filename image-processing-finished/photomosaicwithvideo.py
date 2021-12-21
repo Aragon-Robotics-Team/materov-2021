@@ -1,4 +1,4 @@
-#sudo python3 /Users/valeriefan/github/test-materov-2021/image-processing-test/photomosaicwithvideo.py
+#sudo python3 /Users/valeriefan/github/test-materov-2021/image-processing-finished/photomosaicwithvideo.py
 
 import numpy as np
 import argparse
@@ -53,13 +53,13 @@ def resize_image(img, scale_w, scale_h):
 #---------crop and resize the image to a height of 250 pixels-----------
 def cropping(image):
     image = cv2.imread(image)
-    #cv2.imshow("Image", image)
-    #cv2.waitKey(0)
+    cv2.imshow("Image", image)
+    cv2.waitKey(0)
 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     thresh = cv2.threshold(gray, 100, 300, cv2.THRESH_BINARY_INV)[1]
-    #cv2.imshow("Thresh", thresh)
-    #cv2.waitKey(0)
+    cv2.imshow("Thresh", thresh)
+    cv2.waitKey(0)
 
     cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
@@ -156,21 +156,26 @@ middleTile = cv2.hconcat([middleTileLeft, rightResize])
 cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/middleTile.png", middleTile)
 cv2.imshow("MiddleTile", middleTile)
 cv2.waitKey(0)
+print("Middle Tile Length:")
 print(middleTile.shape[1])
 
 #--------calculate the size of the blank images to make up for the size difference in the tiles------------
 heightratio = 250/blank.shape[0]
 topwidth = (middleTile.shape[1] - topResize.shape[1])/2
-print(topResize.shape[1])
+#print(topResize.shape[1])
+print("Top Image Length:")
 print(topwidth)
 topwidthratio = topwidth/blank.shape[1]
 bottomwidth = (middleTile.shape[1] - bottomResize.shape[1])/2
-print(bottomResize.shape[1])
+#print(bottomResize.shape[1])
+print("Bottom Image Length:")
 print(bottomwidth)
 bottomwidthratio = bottomwidth/blank.shape[1]
 blankTopResize = resize_image(blank, topwidthratio, heightratio)
+print("Blank Top Tile Length")
 print(blankTopResize.shape[1])
 blankBottomResize = resize_image(blank, bottomwidthratio, heightratio)
+print("Blank Bottom Tile Length:")
 print(blankBottomResize.shape[1])
 
 #----------concat top tile-----------------
@@ -179,6 +184,7 @@ topTile = cv2.hconcat([topTileLeft, blankTopResize])
 cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/topTile.png", topTile)
 cv2.imshow("Top Tile", topTile)
 cv2.waitKey(0)
+print("Top Tile Length:")
 print(topTile.shape[1])
 
 #-------------concat bottom tile--------------
@@ -187,6 +193,7 @@ bottomTile = cv2.hconcat([bottomTileLeft, blankBottomResize])
 cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/bottomTile.png", bottomTile)
 cv2.imshow("Bottom Tile", bottomTile)
 cv2.waitKey(0)
+print("Bottom Tile Length")
 print(bottomTile.shape[1])
 
 
