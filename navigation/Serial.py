@@ -30,6 +30,7 @@ def init():
     # print(joystick.get_axis(3))
 
 def rep():
+
     while True:  # loops repeatedly
         # joystickValue = joystick.get_axis(3)
             # 3 is the supposed axis name of the right stick up/down axis

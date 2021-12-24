@@ -280,6 +280,7 @@ def example4(): # https://stackoverflow.com/questions/46506850/how-can-i-get-inp
     pygame.init()
     joysticks = []
     clock = pygame.time.Clock()
+    deadband = 0.1
     keepPlaying = True
     print("example4")
 
@@ -326,16 +327,16 @@ def example4(): # https://stackoverflow.com/questions/46506850/how-can-i-get-inp
                     if event.button == 16:
                         print("Center PS has been pressed")
             elif event.type == pygame.JOYAXISMOTION:
-                if event.axis == 0 and abs(myjoystick.get_axis(0))>0.1:
+                if event.axis == 0 and abs(myjoystick.get_axis(0))> deadband:
                     one = myjoystick.get_axis(0)
                     print('1 has been moved ' + str(one))
-                if event.axis == 1 and abs(myjoystick.get_axis(1))>0.1:
+                if event.axis == 1 and abs(myjoystick.get_axis(1))> deadband:
                     two = myjoystick.get_axis(1)
                     print('2 has been moved ' + str(two))
-                if event.axis == 2 and abs(myjoystick.get_axis(2))>0.1:
+                if event.axis == 2 and abs(myjoystick.get_axis(2))> deadband:
                     three = myjoystick.get_axis(2)
                     print('3 has been moved ' + str(three))
-                if event.axis == 3 and abs(myjoystick.get_axis(3))>0.1:
+                if event.axis == 3 and abs(myjoystick.get_axis(3))> deadband:
                     four = myjoystick.get_axis(3)
                     print('4 has been moved ' + str(four))
 
@@ -395,6 +396,28 @@ def example7(): #http://programarcadegames.com/python_examples/show_file.php?fil
         RH = joystick.get_axis(2)
         RV = joystick.get_axis(3)
         print("LH: " + str(LH) + "; LV: " + str(LV) + "; RH: " + str(RH) + "; RV: " + str(RV))
+def customevent():
+    # put at the top your code
+
+    import pygame
+    pygame.init()
+
+    GUIBUTTON = pygame.USEREVENT + 1
+    NEWGUIBUTTON = pygame.event.Event(GUIBUTTON)
+    pygame.event.post(NEWGUIBUTTON)
+
+    # put in a new method
+    import pygame
+    pygame.init()
+
+    while True:
+
+        for event in pygame.event.get():
+            if event.type == pygame.GUIBUTTON:
+                print('GUI button pressed')
+
+
+
 
 if __name__ == "__main__":
     #only example 4 & 7 work + are applicable
