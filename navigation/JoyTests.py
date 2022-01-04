@@ -340,6 +340,22 @@ def example4(): # https://stackoverflow.com/questions/46506850/how-can-i-get-inp
                     four = myjoystick.get_axis(3)
                     print('4 has been moved ' + str(four))
 
+def example10():
+    import pygame
+
+    pygame.display.init()
+    pygame.joystick.init()
+    j = pygame.joystick.Joystick(0)  # Define a joystick object to read from
+    j.init()
+
+    # Prints the values for axis0
+    while True:
+        pygame.event.pump()
+        print("x axis: ", j.get_axis(0))
+        print("y axis: ", j.get_axis(1))
+        print("y axis: ", j.get_axis(2))
+        print("y axis: ", j.get_axis(3))
+
 def example5():
     pygame.display.init()
     pygame.joystick.init()
@@ -421,4 +437,4 @@ def customevent():
 
 if __name__ == "__main__":
     #only example 4 & 7 work + are applicable
-    example4()
+    example10()

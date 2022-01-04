@@ -4,36 +4,37 @@ import serial
 import time
 from time import sleep
 
+#global in a function will be visible to the whole program
+deadband = 0.2  # axis value must be greater than this number
+arduino = serial.Serial(port='/dev/cu.usbmodem141101', baudrate=115200, timeout=.1)
+LH = 0 #Left horizontal axis
+LV = 1 #Left vertical axis
+
+turn = 500
+thrustermiddle = 1500
+
 
 def init():
-    # Global variables
-    global j
-    global deadband
-    global arduino
-    global LH # Left horizontal axis
-    LH = 0
-    global LV #Left vertical axis
-    LV = 1
-
     ######################## 1. Initializing Serial
-    arduino = serial.Serial(port='/dev/cu.usbmodem142101', baudrate=115200, timeout=.1)
 
     ######################## 2. Initializing PyGame
-    pygame.init()  # Initiate the pygame functions
+    # pygame.init()  # Initiate the pygame functions
+    pygame.joystick.init()
+    pygame.display.init() # for some reason we have to do this or else it will be an error video system not initialized or something
+    global j # making this global might not be the best idea, we have to work on object-oriented programming with python
     j = pygame.joystick.Joystick(0)  # Define a joystick object to read from
     j.init()  # Initiate the joystick or controller
     print('Detected controller : %s' % j.get_name())  # Print the name of any detected controllers
-    pygame.event.set_allowed(pygame.JOYAXISMOTION) # only allow JOYSTICKAXISMOTION events to appear on queue
-    deadband = 0.2 # axis value must be greater than this number
+    # pygame.event.set_allowed(pygame.JOYAXISMOTION) # only allow JOYSTICKAXISMOTION events to appear on queue
 
 
 def loop():
     while True:
-        event = pygame.event.poll() # return a single event from the queue - we limited events to purely JOYAXISMOTION so there is no need to check what type of event it is
-        if abs(j.get_axis(LH))  > deadband*2:
-            print(pygame.event.event_name(event.type))
-            HAxis = j.get_axis(LH)
-            thrustervalue = int(HAxis * 500 + 1500)  # cast to integer
+        pygame.event.pump()
+        HAxis = j.get_axis(LH)
+        if abs(HAxis) > deadband:
+            print(HAxis)
+            thrustervalue = int(HAxis * turn + thrustermiddle)  # cast to integer
             print('Thruster value: ' + str(thrustervalue))
             value = write_read(str(thrustervalue))
             print('Arduino reads: ' + value)  # printing the value
