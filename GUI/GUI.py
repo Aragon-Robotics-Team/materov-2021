@@ -1,4 +1,5 @@
 #!/usr/bin/python
+#python3 /Users/valeriefan/github/test-materov-2021/GUI/GUI.py
 import tkinter as tk
 import time
 import sys

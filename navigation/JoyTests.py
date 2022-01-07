@@ -437,4 +437,4 @@ def customevent():
 
 if __name__ == "__main__":
     #only example 4 & 7 work + are applicable
-    example10()
+    example4()
