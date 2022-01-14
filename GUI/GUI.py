@@ -130,7 +130,16 @@ def button6():
 
 Bu = tk.Button(root, text ="Hello6", command = button2, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,
           width = 10).place(x=1150, y=350)
+
 videoplay = cv2.VideoCapture(0)
+try:
+    while(True):
+        ret,frame = video_object.read()
+        cv2.imshow('Frames', frame)
+        if cv2.waitKey() & 0xFF == ord('q'):
+            break
+except:
+    print("Video has ended")
 ##############
 root.mainloop()
 ##############
