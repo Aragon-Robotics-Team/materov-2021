@@ -6,6 +6,7 @@ import tkinter.font as font
 from tkinter import messagebox, RIGHT, LEFT, StringVar
 from threading import *
 from time import sleep
+import pygame
 
 ########################
 root = tk.Tk()
@@ -106,6 +107,7 @@ def threading():
 
 def joystick():
     import pygame
+    from time import sleep
     pygame.init()
     joysticks = []
     clock = pygame.time.Clock()
@@ -170,8 +172,6 @@ def joystick():
                     print('4 has been moved ' + str(four))
 
 Bu = tk.Button(root, text="Start Controller input", command = threading).place(x=150, y=10)
-
-
 ##############
 root.mainloop()
 ##############
