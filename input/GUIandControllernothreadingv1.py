@@ -12,7 +12,6 @@ from tkinter import messagebox, RIGHT, LEFT, StringVar
 import pygame
 from time import sleep
 
-
 root = tk.Tk()
 root.config(bg ='gray')
 
@@ -21,13 +20,12 @@ joysticks = []
 clock = pygame.time.Clock()
 deadband = 0.1
 keepPlaying = True
-print("example4")
+print("Controller Input Begun")
 
 myjoystick = pygame.joystick.Joystick(0) #since we only have one joystick, we know the instance ID is 0
 myjoystick.init()
 
 def controller():
-
     for event in pygame.event.get():
         # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
         if event.type == pygame.JOYBUTTONDOWN:
@@ -87,6 +85,7 @@ def helloWorld():
 
 Bu = tk.Button(root, text="Hello World", command = helloWorld).pack()
 
+#alternate between updating the controller events and the gui events every 0.1 seconds
 Result = True
 while Result:
     controller()
