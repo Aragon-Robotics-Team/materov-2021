@@ -6,7 +6,18 @@ import sys
 import os
 import pygame
 import tkinter.font as font
+import cv2
 from tkinter import messagebox, RIGHT, LEFT, StringVar
+
+########################
+videoCaptureObject = cv2.VideoCapture(0)
+while True:
+    ret, frame = videoCaptureObject.read()
+    cv2.imshow("Capturing Video", frame)
+    # deletes every frame as the next one comes on, closes all windows when q is pressed
+    if cv2.waitKey(1) == ord('q'):
+        videoCaptureObject.release()
+        cv2.destroyAllWindows()
 
 ########################
 root = tk.Tk()
