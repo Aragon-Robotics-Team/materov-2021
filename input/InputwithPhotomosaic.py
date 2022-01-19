@@ -305,17 +305,35 @@ def photomosaic():
 
 Bu = tk.Button(root, text = "Photomosaic", command = photomosaic).pack()
 
+def loopThreading():
+    t1 = Thread(target = loop)
+    t1.start()
+
+def loop():
+    Result = True
+    while Result:
+        if keyboard.is_pressed('s'):
+            print("s")
+            sleep(0.1)
+
+Bu = tk.Button(root, text = "Threading loop", command = loopThreading).pack()
 
 Bu = tk.Button(root, text="Hello World", command = helloWorld).pack()
 ###############
 def quitVideo():
     print("quit video")
     global quit
+    videoCaptureObject.release()
     quit = True
+
+def quitAll():
+    quitVideo()
+    root.destroy()
+    sys.exit()
 
 Bu = tk.Button(root, text="Quit Video", command = quitVideo).pack()
 
-Bu = tk.Button(root, text="Quit GUI", command = root.destroy).pack()
+Bu = tk.Button(root, text="Quit GUI", command = quitAll).pack()
 
 #Bu = tk.Button(root, text="Photomosaic Snapshot", command = photomosaic).pack()
 
