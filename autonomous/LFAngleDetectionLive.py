@@ -19,13 +19,15 @@ def angleBetweenLines(x1, y1, x2, y2, x3, y3): #given 3 points, where x1,y1 is t
     print("x1: " + str(x1))
     print("x2:" + str(x2))
     print("x3: " + str(x3))
-    if x2 > x1:
-        print("Positive")
-        return angle
     if x2 <= x1:
-        print("Negative")
-        angle = angle + 1000
+        print("Positive")
+        angle = math.pi-angle
+        if y2 == y1:
+            angle = abs(angle)
         return angle
+    if x2 > x1:
+        print("Negative")
+        return (math.pi - angle) * -1
 
 
 def LineFollowerAngleDetection(videoImg):
@@ -85,13 +87,23 @@ def LineFollowerAngleDetection(videoImg):
 
     #calculate angle between lines
     for x1, y1, x2, y2 in lines[0]:
+        #error: top coordinate is always 1, bottom coordinate is always 2
+        print("original 1: " + str(x1) + ", " + str(y1) + " 2: " + str(x2) + ", " + str(y2))
+        if y2 <= y1:
+            filler = y1
+            y1 = y2
+            y2 = filler
+            filler = x1
+            x1 = x2
+            x2 = filler
         angle = angleBetweenLines((int(center_width)), (int(height)), x2+(int(center_width))-x1, y2+(int(height))-y1, (int(center_width)), 0)
-
+        #angle = angleBetweenLines(x1+(int(center_width))-x2, y1+(int(height))-y2, (int(center_width)), (int(height)), (int(center_width)), 0)
         #print(math.degrees(angle))
-        cv2.line(result, (0,0), (0,int(height)), (0, 0, 0), 10)
+        #cv2.line(result, (0,0), (0,int(height)), (0, 0, 0), 10)
+
         cv2.putText(result, str(math.degrees(angle)), (10,500), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 2, cv2.LINE_AA)
-        cv2.putText(result, str(center_width) + ", " str(height), (center_width, height), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 2, cv2.LINE_AA)
-        cv2.putText(result, str(center_width) + ", " str(height), (center_width, height), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 2, cv2.LINE_AA)
+        #cv2.putText(result, str(center_width) + ", " str(height), (center_width, height), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 2, cv2.LINE_AA)
+        #cv2.putText(result, str(center_width) + ", " str(height), (center_width, height), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 2, cv2.LINE_AA)
         cv2.imshow("LF", result)
         return angle
 
