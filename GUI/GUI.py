@@ -4,14 +4,16 @@ import tkinter as tk
 import time
 import sys
 import os
-import pygame
 import tkinter.font as font
 import cv2
 from tkinter import messagebox, RIGHT, LEFT, StringVar
+import msvcrt
+
+#######################
 
 ########################
 videoCaptureObject = cv2.VideoCapture(0)
-while True:
+def video():
     ret, frame = videoCaptureObject.read()
     cv2.imshow("Capturing Video", frame)
     # deletes every frame as the next one comes on, closes all windows when q is pressed
@@ -141,16 +143,15 @@ def button6():
 
 Bu = tk.Button(root, text ="Hello6", command = button2, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,
           width = 10).place(x=1150, y=350)
+##############
 
-videoplay = cv2.VideoCapture(0)
-try:
-    while(True):
-        ret,frame = video_object.read()
-        cv2.imshow('Frames', frame)
-        if cv2.waitKey() & 0xFF == ord('q'):
-            break
-except:
-    print("Video has ended")
+while True:
+    keypress = msvcrt.getch()
+    if keypress == "space":
+        x=x+1
+        print(x)
+
 ##############
-root.mainloop()
-##############
+while True:
+    root.update()
+    video()
