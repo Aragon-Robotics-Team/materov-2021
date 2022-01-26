@@ -20,13 +20,13 @@ def angleBetweenLines(x1, y1, x2, y2, x3, y3): #given 3 points, where x1,y1 is t
     print("x2:" + str(x2))
     print("x3: " + str(x3))
     if x2 <= x1:
-        print("Positive")
+        #print("Positive")
         angle = math.pi-angle
         if y2 == y1:
             angle = abs(angle)
         return angle
     if x2 > x1:
-        print("Negative")
+        #print("Negative")
         return (math.pi - angle) * -1
 
 
@@ -88,7 +88,7 @@ def LineFollowerAngleDetection(videoImg):
     #calculate angle between lines
     for x1, y1, x2, y2 in lines[0]:
         #error: top coordinate is always 1, bottom coordinate is always 2
-        print("original 1: " + str(x1) + ", " + str(y1) + " 2: " + str(x2) + ", " + str(y2))
+        #print("original 1: " + str(x1) + ", " + str(y1) + " 2: " + str(x2) + ", " + str(y2))
         if y2 <= y1:
             filler = y1
             y1 = y2
@@ -107,25 +107,41 @@ def LineFollowerAngleDetection(videoImg):
         cv2.imshow("LF", result)
         return angle
 
-def ThrusterValue(videoImg):
+def JoystickValue(videoImg): #calculates joystick coordinates according to the angle the red line is at
     angle = LineFollowerAngleDetection(videoImg)
     speed = 1
+    if (angle < 0):
+        joyX = speed * (math.cos(angle)) * -1
+    if angle >= 0:
+        joyX = speed * (math.cos(angle))
+    joyY = speed * (math.sin(angle))
+    print("Joystick Coords:")
+    print("X: " + str(joyX))
+    print("Y: " + str(joyY))
+
 
 videoCaptureObject = cv2.VideoCapture(0)
 result = True
 LF = False
+
 while result:
     ret, frame = videoCaptureObject.read()
+    #if the line follower program isn't initiated
     if LF == False:
         cv2.imshow("Capturing Video", frame)
+    #if the liine follower program is initiated
     if LF == True:
         videoImage = "/Users/valeriefan/Desktop/MATE-ROV-IP/Autonomous/videoImg.jpg"
         cv2.imwrite(videoImage, frame)
-        LineFollowerAngleDetection(videoImage)
+        #LineFollowerAngleDetection(videoImage)
+        JoystickValue(videoImage)
+    #initiate the line follower program
     if cv2.waitKey(1) == ord("l"):
         LF = True
+    #end the line follower program
     if cv2.waitKey(1) == ord("s"):
         LF = False
+    #end the program all together
     if cv2.waitKey(1) == ord('q'):
         videoCaptureObject.release()
         cv2.destroyAllWindows()
