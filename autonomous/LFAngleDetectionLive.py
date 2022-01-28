@@ -43,7 +43,7 @@ def LineFollowerAngleDetection(videoImg):
     mask2 = cv2.inRange(image, (175, 50, 20), (180, 255, 255))
     #cv2.waitKey()
     mask = cv2.bitwise_or(mask1, mask2)
-    #cv2.imshow("mask", mask)
+    cv2.imshow("mask", mask)
     #cv2.waitKey()
 
     #find edges
@@ -104,7 +104,17 @@ def LineFollowerAngleDetection(videoImg):
         cv2.putText(result, str(math.degrees(angle)), (10,500), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 2, cv2.LINE_AA)
         #cv2.putText(result, str(center_width) + ", " str(height), (center_width, height), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 2, cv2.LINE_AA)
         #cv2.putText(result, str(center_width) + ", " str(height), (center_width, height), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 2, cv2.LINE_AA)
-        cv2.imshow("LF", result)
+        #cv2.imshow("LF", result)
+        speed = 1
+        if (angle < 0):
+            joyX = speed * (math.cos(angle)) * -1
+        if angle >= 0:
+            joyX = speed * (math.cos(angle))
+        joyY = speed * (math.sin(angle))
+        print("Joystick Coords:")
+        print("X: " + str(joyX))
+        print("Y: " + str(joyY))
+        #to do: if angle is null, set it to a value such that the bot turns in place
         return angle
 
 def JoystickValue(videoImg): #calculates joystick coordinates according to the angle the red line is at
@@ -119,7 +129,6 @@ def JoystickValue(videoImg): #calculates joystick coordinates according to the a
     print("X: " + str(joyX))
     print("Y: " + str(joyY))
 
-
 videoCaptureObject = cv2.VideoCapture(0)
 result = True
 LF = False
@@ -133,8 +142,8 @@ while result:
     if LF == True:
         videoImage = "/Users/valeriefan/Desktop/MATE-ROV-IP/Autonomous/videoImg.jpg"
         cv2.imwrite(videoImage, frame)
-        #LineFollowerAngleDetection(videoImage)
-        JoystickValue(videoImage)
+        LineFollowerAngleDetection(videoImage)
+        #JoystickValue(videoImage)
     #initiate the line follower program
     if cv2.waitKey(1) == ord("l"):
         LF = True

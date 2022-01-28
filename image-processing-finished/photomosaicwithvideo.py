@@ -96,6 +96,8 @@ snapshots = ["/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/center.png",
     "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/right.png"]
 
 #---------capture images and save them to the files-----------
+videoCaptureObject = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+result = True
 i = 0
 while result:
     ret, frame = videoCaptureObject.read()
