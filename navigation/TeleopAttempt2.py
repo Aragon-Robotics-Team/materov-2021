@@ -40,47 +40,54 @@ def init():
     j.init()  # Initiate the joystick or controller
 
     print('Detected controller : %s' % j.get_name())  # Print the name of any detected controllers
-    pygame.event.set_allowed(pygame.JOYBUTTONUP) # only allow JOYSTICKAXISMOTION events to appear on queue
-    pygame.event.set_allowed(pygame.JOYBUTTONDOWN)
-    pygame.event.set_allowed(pygame.JOYAXISMOTION)
+    # pygame.event.set_allowed(pygame.JOYBUTTONUP) # only allow JOYSTICKAXISMOTION events to appear on queue
+    # pygame.event.set_allowed(pygame.JOYBUTTONDOWN)
+    # pygame.event.set_allowed(pygame.JOYAXISMOTION)
 
     ######################## 2. Initializing  global variables
-    global finallist
-    finallist = [thrustermiddle, thrustermiddle, 0, 0]
+    # global finallist
+    # finallist = [thrustermiddle, thrustermiddle, 0, 0]
 
 def loop():
     while True:
-                pygame.event.pump()
+        pygame.event.pump()
 
-                buttonclose, buttonopen = j.get_button(trianglebutton), j.get_button(squarebutton)
+        buttonclose, buttonopen = j.get_button(trianglebutton), j.get_button(squarebutton)
 
-                #assign button statuses to list
-                finallist[servoopenindex] = buttonopen
-                finallist[servocloseindex] = buttonclose
+        #assign button statuses to list
+        # finallist[servoopenindex] = buttonopen
+        # finallist[servocloseindex] = buttonclose
 
-                HAxis, VAxis = j.get_axis(LH), j.get_axis(LV) #get joystick values
-                if abs(HAxis) > deadband or abs(VAxis) > deadband: #calculate thruster values
-                    # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
-                    turn1, turn2, forward1, forward2 = HAxis * turnconstant, HAxis * turnconstant, VAxis * forwardconstant, VAxis * turnconstant
+        HAxis, VAxis = j.get_axis(LH), j.get_axis(LV) #get joystick values
+        if abs(HAxis) > deadband or abs(VAxis) > deadband: #calculate thruster values
+            # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
+            turn1, turn2, forward1, forward2 = HAxis * turnconstant, HAxis * turnconstant, VAxis * forwardconstant, VAxis * turnconstant
 
-                    #calculating thruster speeds
-                    thrustervalue1 = int(thrustermiddle - forward1 + turn1)  # cast to integer
-                    thrustervalue2 = int(thrustermiddle - forward2 - turn2)
+            #calculating thruster speeds
+            thrustervalue1 = int(thrustermiddle - forward1 + turn1)  # cast to integer
+            # thrustervalue2 = int(thrustermiddle - forward2 - turn2)
 
-                    #assign thruster statuses to list
-                    finallist[thruster1index] = thrustervalue1
-                    finallist[thruster2index] = thrustervalue2
+            #assign thruster statuses to list
+            # finallist[thruster1index] = thrustervalue1
+            # finallist[thruster2index] = thrustervalue2
+        else:
+            thrustervalue1 = 1500
 
-                print('values: ' + str(finallist[0]) + ',' + str(finallist[1]) + ',' + str(finallist[2]) + ',' + str(finallist[3]))
-                pygame.event.clear()  # clears the queue so it doesn't get overloaded...?
-                returnVal = write_read()
-                print(returnVal)
-                print(type(returnVal))
-                # if len(returnVal) > 1 : print(returnVal)
-                # sleep(0.03)
+        # print('values: ' + str(finallist[0]) + ',' + str(finallist[1]) + ',' + str(finallist[2]) + ',' + str(finallist[3]))
+        # print(str(thrustervalue1) + ',' + str(thrustervalue2))
 
-def write_read():
-    write = str(finallist[0])
+#try writting a char to arduino using serial.read(), then try writing a 200 using serial.read()
+        print(str(thrustervalue1))
+        written = str(thrustervalue1) + ','
+        arduino.write('2000'.encode('utf-8'))
+        while arduino.in_waiting < 1:
+            pass
+        data = arduino.readline().decode('utf-8')
+        print('ard: ' + data)
+        pygame.event.clear()
+
+def write_read(): # not using
+    # write = str(finallist[0])
     arduino.write(bytes('ewewe', 'utf-8'))
     #str(finallist[0]) + ' ' + str(finallist[1])+ ' ' + str(finallist[2])+ ' ' + str(finallist[3])
     # arduino.write(struct.pack('iiBB', finallist[0], finallist[1], finallist[2], finallist[3]))
