@@ -45,7 +45,7 @@ def init():
     # pygame.event.set_allowed(pygame.JOYBUTTONUP) # only allow JOYSTICKAXISMOTION events to appear on queue
     # pygame.event.set_allowed(pygame.JOYBUTTONDOWN)
     # pygame.event.set_allowed(pygame.JOYAXISMOTION)
-    sleep(3)
+    sleep(2)
 
     ######################## 2. Initializing  global variables
     global finallist
@@ -97,8 +97,8 @@ def loop():
 
         data = arduino.readline().decode("ascii")
         print('ard: ' + data)
-        sleep(1/9)
         pygame.event.clear()
+        sleep(1/3)
 
 def write_read(): # not using
     # write = str(finallist[0])
