@@ -13,9 +13,11 @@ from pySerialTransfer import pySerialTransfer as txfer
 deadband = 0.2  # axis value must be greater than this number
 LH = 0 #Left horizontal axis
 LV = 1 #Left vertical axis
+RH = 2 #Right horizontal axis
+RV = 3 #RIght vertical axis
 
-turnconstant = 300
-forwardconstant = 300
+turnconstant = 400
+forwardconstant = 400
 thrustermiddle = 1500
 trianglebutton = 12
 squarebutton = 15
@@ -29,20 +31,21 @@ thruster2index = 1
 def init():
     ######################## 1. Initializing Serial
     global arduino
-    arduino = serial.Serial(port='/dev/cu.usbmodem143101', baudrate=115200, timeout=.1) # ? here or above?
+    arduino = serial.Serial(port='/dev/cu.usbmodem144101', baudrate=115200, timeout=1)
 
     ######################## 2. Initializing PyGame
     # pygame.init()  # Initiate the pygame functions
     pygame.joystick.init()
-    pygame.display.init() # for some reason we have to do this or else it will be an error video system not initialized or something
-    global j # making this global might not be the best idea, we have to work on object-oriented programming with python
+    pygame.display.init()
+    global j
     j = pygame.joystick.Joystick(0)  # Define a joystick object to read from
     j.init()  # Initiate the joystick or controller
 
     print('Detected controller : %s' % j.get_name())  # Print the name of any detected controllers
-    pygame.event.set_allowed(pygame.JOYBUTTONUP) # only allow JOYSTICKAXISMOTION events to appear on queue
-    pygame.event.set_allowed(pygame.JOYBUTTONDOWN)
-    pygame.event.set_allowed(pygame.JOYAXISMOTION)
+    # pygame.event.set_allowed(pygame.JOYBUTTONUP) # only allow JOYSTICKAXISMOTION events to appear on queue
+    # pygame.event.set_allowed(pygame.JOYBUTTONDOWN)
+    # pygame.event.set_allowed(pygame.JOYAXISMOTION)
+    sleep(3)
 
     ######################## 2. Initializing  global variables
     global finallist
@@ -50,37 +53,55 @@ def init():
 
 def loop():
     while True:
-                pygame.event.pump()
+        pygame.event.pump()
+        #get buttons
+        #get thrusters
+        #write and read
 
-                buttonclose, buttonopen = j.get_button(trianglebutton), j.get_button(squarebutton)
+        buttonclose = j.get_button(trianglebutton)
+        buttonopen = j.get_button(squarebutton)
+        JS_turnvalue = j.get_axis(LH)
+        JS_forwardvalue = j.get_axis(LV)
 
-                #assign button statuses to list
-                finallist[servoopenindex] = buttonopen
-                finallist[servocloseindex] = buttonclose
+        if abs(JS_turnvalue) > deadband or abs(JS_forwardvalue) > deadband: #calculate thruster values
+            # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
+            turn1, turn2, forward1, forward2 = JS_turnvalue * turnconstant, JS_turnvalue * turnconstant, JS_forwardvalue * forwardconstant, JS_forwardvalue * turnconstant
+            #calculating thruster speeds
+            thrustervalue1 = int(thrustermiddle - forward1 + turn1)  # cast to integer
+            thrustervalue2 = int(thrustermiddle - forward2 - turn2)
+        else:
+            thrustervalue1 = 1500
+            thrustervalue2 = 1500
 
-                HAxis, VAxis = j.get_axis(LH), j.get_axis(LV) #get joystick values
-                if abs(HAxis) > deadband or abs(VAxis) > deadband: #calculate thruster values
-                    # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
-                    turn1, turn2, forward1, forward2 = HAxis * turnconstant, HAxis * turnconstant, VAxis * forwardconstant, VAxis * turnconstant
+        # assign statuses to list
+        finallist[servoopenindex] = buttonopen
+        finallist[servocloseindex] = buttonclose
+        finallist[thruster1index] = thrustervalue1
+        finallist[thruster2index] = thrustervalue2
 
-                    #calculating thruster speeds
-                    thrustervalue1 = int(thrustermiddle - forward1 + turn1)  # cast to integer
-                    thrustervalue2 = int(thrustermiddle - forward2 - turn2)
+        for i in range(2): # making sure thruster values don't go above 1900 and below 1100
+            if finallist[i] > 1900:
+                finallist[i] = 1900
+            if finallist[i] < 1100:
+                finallist[i] = 1100
 
-                    #assign thruster statuses to list
-                    finallist[thruster1index] = thrustervalue1
-                    finallist[thruster2index] = thrustervalue2
+        # print('values: ' + str(finallist[0]) + ',' + str(finallist[1]) + ',' + str(finallist[2]) + ',' + str(finallist[3]))
+        # print(str(thrustervalue1) + ',' + str(thrustervalue2))
 
-                print('values: ' + str(finallist[0]) + ',' + str(finallist[1]) + ',' + str(finallist[2]) + ',' + str(finallist[3]))
-                pygame.event.clear()  # clears the queue so it doesn't get overloaded...?
-                returnVal = write_read()
-                print(returnVal)
-                print(type(returnVal))
-                # if len(returnVal) > 1 : print(returnVal)
-                # sleep(0.03)
+        stringToSend = str(finallist[0]) + ',' + str(finallist[1]) + ',' + str(finallist[2]) + ',' + str(finallist[3]) + '\n'
+        print('py: ' + str(stringToSend.encode()))
+        arduino.write(stringToSend.encode("ascii"))
 
-def write_read():
-    write = str(finallist[0])
+        while arduino.in_waiting < 10:
+            pass
+
+        data = arduino.readline().decode("ascii")
+        print('ard: ' + data)
+        sleep(1/9)
+        pygame.event.clear()
+
+def write_read(): # not using
+    # write = str(finallist[0])
     arduino.write(bytes('ewewe', 'utf-8'))
     #str(finallist[0]) + ' ' + str(finallist[1])+ ' ' + str(finallist[2])+ ' ' + str(finallist[3])
     # arduino.write(struct.pack('iiBB', finallist[0], finallist[1], finallist[2], finallist[3]))
@@ -92,7 +113,3 @@ def write_read():
 if __name__ == "__main__":
     init()
     loop()
-
-    # you can write any string as long as you change the respective settings on the arduino side as well. for example, thrustervalue1 + ',' + thrustervalue2 and on the arduino side, read string until ',' or something
-
-    # have arduino read your values and say it back to make sure its getting them

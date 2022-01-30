@@ -1,122 +1,6 @@
 import pygame, sys, time  # Imports Modules
 from pygame.locals import *
 
-def example1(): # https://www.programcreek.com/python/example/56152/pygame.JOYAXISMOTION (example 8)
-    pygame.init()
-    pygame.joystick.init()
-    pygame.joystick.Joystick(0).init()
-
-    joystick_count = pygame.joystick.get_count()
-
-    joysticks = []
-
-    for i in range(joystick_count):
-        joystick = pygame.joystick.Joystick(i)
-        joystick.init()
-    #     offset = 0
-    #     for i in range(joystick.get_numaxes() / 2):
-    #         joysticks.append(JoystickMonitor(offset))
-    #         offset += 200
-
-    # clock = pygame.time.Clock()
-    status = True
-    while status:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return
-            if event.type == pygame.JOYAXISMOTION:
-                joystick = pygame.joystick.Joystick(event.joy)
-                print(joystick.get_axis(0))
-                print(joystick.get_axis(1))
-                print(joystick.get_axis(2))
-                print(joystick.get_axis(3))
-                if event.axis == 0 or event.axis == 1:
-                    xaxis = 0
-                    yaxis = 1
-                    stick = 0
-                    x, y = (joystick.get_axis(xaxis) * 100, joystick.get_axis(yaxis) * 100)
-                    print(str(joystick.get_axis(yaxis)))
-                    print(str(joystick.get_axis(xaxis)))
-                    # joysticks[stick].relocateJoystick(x, y)
-                elif event.axis == 3 or event.axis == 4:
-                    xaxis = 4
-                    yaxis = 3
-                    stick = 1
-                    x, y = (joystick.get_axis(xaxis) * 100, joystick.get_axis(yaxis) * 100)
-                    print(str(joystick.get_axis(yaxis)))
-                    print(str(joystick.get_axis(xaxis)))
-                    # joysticks[stick].relocateJoystick(x, y)
-
-def example2(): # https://stackoverflow.com/questions/62568024/pygame-raspberrypi-3b-with-a-ps3-controller
-    pygame.init()  # Initializes Pygame
-
-    pygame.joystick.init()
-    joystick = pygame.joystick.Joystick(0)
-    joystick.init()  # Initializes Joystick
-
-    # get count of joysticks=1, axes=27, buttons=19 for DualShock 3
-
-    joystick_count = pygame.joystick.get_count()
-    print("joystick_count")
-    print(joystick_count)
-    print("--------------")
-
-    numaxes = joystick.get_numaxes()
-    print("numaxes")
-    print(numaxes)
-    print("--------------")
-
-    numbuttons = joystick.get_numbuttons()
-    print("numbuttons")
-    print(numbuttons)
-    print("--------------")
-
-    name = joystick.get_name()
-    print('name')
-    print(name)
-    print('--------------')
-
-
-    loopQuit = False
-    while loopQuit == False:
-
-        # test joystick axes and prints values
-
-        for i in range(0, 4):
-            outstr = ""
-            axis = joystick.get_axis(i)
-            outstr = "axis " + outstr + str(i) + ":" + str(axis) + "|"
-            print(outstr)
-
-        # test controller buttons
-        outstr = ""
-        # for i in range(0, numbuttons):
-        #     button = joystick.get_button(i)
-        #     outstr = outstr + str(i) + ":" + str(button) + "|"
-        # print(outstr)
-
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                loopQuit = True
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    loopQuit = True
-
-            # Returns Joystick Button Motion
-            if event.type == pygame.JOYBUTTONDOWN:
-                print("joy button down")
-            if event.type == pygame.JOYBUTTONUP:
-                print("joy button up")
-            if event.type == pygame.JOYBALLMOTION:
-                print("joy ball motion")
-            # axis motion is movement of controller
-            # dominates events when used
-            if event.type == pygame.JOYAXISMOTION:
-                print("joy axis motion")
-
-        time.sleep(0.3)
-    pygame.quit()
-    sys.exit()
 
 def example3(): # http://programarcadegames.com/python_examples/show_file.php?file=joystick_calls.py
 
@@ -278,8 +162,6 @@ def example4(): # https://stackoverflow.com/questions/46506850/how-can-i-get-inp
     import pygame
     from time import sleep
     pygame.init()
-    joysticks = []
-    clock = pygame.time.Clock()
     deadband = 0.1
     keepPlaying = True
     print("example4")
@@ -342,9 +224,8 @@ def example4(): # https://stackoverflow.com/questions/46506850/how-can-i-get-inp
 
 def example10():
     import pygame
-
-    pygame.display.init()
     pygame.joystick.init()
+    pygame.display.init()
     j = pygame.joystick.Joystick(0)  # Define a joystick object to read from
     j.init()
 
@@ -355,6 +236,8 @@ def example10():
         print("y axis: ", j.get_axis(1))
         print("y axis: ", j.get_axis(2))
         print("y axis: ", j.get_axis(3))
+        pygame.event.clear()
+
 
 def example5():
     pygame.display.init()
@@ -436,5 +319,4 @@ def customevent():
 
 
 if __name__ == "__main__":
-    #only example 4 & 7 work + are applicable
     example4()
