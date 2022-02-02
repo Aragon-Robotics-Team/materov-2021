@@ -23,8 +23,9 @@ def helloWorld():
     q.put(item)
 
 def queue(): #Needs forever loop, therefore can't use root.mainloop()
-    if q.empty() == False:
+    if SimpleQueue.empty() == False:
         item = q.get()
+        print("From Queue: " + item)
         print("From Queue: " + item)
         q.task_done()
 

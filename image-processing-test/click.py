@@ -9,9 +9,11 @@ xcoords = [0 for i in range(2)]
 ycoords = []
 ycoords = [0 for i in range(2)]
 
+
 def click_event(event, x, y, flags, params):
+    global count
     # checking for left mouse clicks
-    while count < len(xcoords):
+    if count < len(xcoords):
         if event == cv2.EVENT_LBUTTONDOWN:
 
             # displaying the coordinates
@@ -27,31 +29,11 @@ def click_event(event, x, y, flags, params):
                         str(y), (x,y), font,
                         1, (255, 0, 0), 2)
             cv2.imshow('image', img)
-
-        # checking for right mouse clicks
-        if event==cv2.EVENT_RBUTTONDOWN:
-
-            # displaying the coordinates
-            # on the Shell
-            xcoords[count-1] = x
-            ycoords[count-1] = y
-            print(x, ' ', y)
-
-            # displaying the coordinates
-            # on the image window
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            b = img[y, x, 0]
-            g = img[y, x, 1]
-            r = img[y, x, 2]
-            cv2.putText(img, str(b) + ',' +
-                        str(g) + ',' + str(r),
-                        (x,y), font, 1,
-                        (255, 255, 0), 2)
-            cv2.imshow('image', img)
+            count = count + 1
 
 # driver function
 # reading the image
-img = cv2.imread('/Users/valeriefan/Desktop/fda.png', 1)
+img = cv2.imread('/Users/valeriefan/Desktop/thin-red-line-flag-united-states-america-country-police-thin-red-line-flag-137248115.jpg')
 
 # displaying the image
 cv2.imshow('image', img)

@@ -3,8 +3,11 @@
 #BM: GUI set up
 #BM: Controller input Setup
 #BM: Image Processing
-#BM: Photomosaic
+    #BM: Photomosaic
 #BM: General Setup
+    #BM: Video Feed
+    #BM: Queue for threading
+    #BM: Testing Buttons with Hello World
 #BM: Main Loop
 
 #GUI Imports
@@ -20,11 +23,13 @@ import queue
 import pygame
 from time import sleep
 
-#Image Processing importsimport numpy as np
+#Image Processing imports
+import numpy as np
 import threading
 import cv2
 import imutils
 import keyboard
+
 
 photomosaicVideo = False
 photomosaicStart = False
@@ -97,11 +102,6 @@ def controller():
                 print('4 has been moved ' + str(four))
 
 
-def helloWorld():
-    print("helloWorld")
-
-Bu = tk.Button(root, text="Hello World", command = helloWorld).pack()
-
 #BM: Image Processing --------------------------------------------------------------------------------------------------------
 #BM: Photomosaic --------------------------------------------------------------------------------------------------------
 
@@ -163,6 +163,7 @@ def photomosaic():
     while photomosaicStart == False:
         sleep(0.1)
     if photomosaicStart == True:
+        print("Starting Photomosaic Process")
         #---------rereading the original images from the snapshots-----------
         center = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/center.png")
         top = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/top.png")
@@ -172,6 +173,7 @@ def photomosaic():
         blank = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/blank.png")
 
         # #--------calculate the size of the blank images to make up for the size difference in the tiles------------
+        print("Resizing Images")
         topLeftHeightRatio = cv2.imread(snapshots[1]).shape[1]/blank.shape[1]
         topLeftWidthRatio = cv2.imread(snapshots[3]).shape[0]/blank.shape[0]
         topLeftBlank = resize_image(blank, topLeftWidthRatio, topLeftHeightRatio)
@@ -186,39 +188,44 @@ def photomosaic():
         bottomRightBlank = resize_image(blank, bottomRightWidthRatio, bottomRightHeightRatio)
 
         #----------------------concat middle tile------------------------
+        print("Concat Middle Tile")
         middleTileLeft = cv2.hconcat([cv2.imread(snapshots[3]), cv2.imread(snapshots[0])])
         middleTile = cv2.hconcat([middleTileLeft, cv2.imread(snapshots[4])])
         cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/middleTile.png", middleTile)
 
         #----------concat top tile-----------------
+        print("Concat Top Tile")
         topTileLeft = cv2.hconcat([topLeftBlank, cv2.imread(snapshots[1])])
         topTile = cv2.hconcat([topTileLeft, topRightBlank])
         cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/topTile.png", topTile)
 
         #-------------concat bottom tile--------------
+        print("Concat Bottom Tile")
         bottomTileLeft = cv2.hconcat([bottomLeftBlank, cv2.imread(snapshots[4])])
         bottomTile = cv2.hconcat([bottomTileLeft, bottomRightBlank])
         cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/bottomTile.png", bottomTile)
 
         #---------stitch together all the tiles-----------
+        print("Stitch together all the tiles")
         topSection = cv2.vconcat([topTile, middleTile])
         photomosaic = cv2.vconcat([topSection, bottomTile])
         cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/photomosaic.png", photomosaic)
+        print("Sending Photomosaic Image to main thread")
         q.put(photomosaic)
         #cv2.imshow("PHOTOMOSAIC", photomosaic)
         cv2.waitKey(0)
 
         #definitely have to add this back in later
         #global photomosaicStart
-        #photomosaicStart = False
+        photomosaicStart = False
 
 
 Bu  = tk.Button(root, text = "Photomosaic", command = photomosaicThreading).pack()
 
 #BM: General Setup --------------------------------------------------------------------------------------------------------
-photomosaicVideo = False
 videoCaptureObject = cv2.VideoCapture(0)
 photomosaicCount = 0
+#BM: Video Feed
 def videoCapture():
     global photomosaicVideo
     global photomosaicStart
@@ -255,14 +262,24 @@ def videoCapture():
                 photomosaicVideo = False
                 photomosaicStart = True
         # when s is pressed
+
+#BM: Queue for threading
 def queue(): #Needs forever loop, therefore can't use root.mainloop()
     if q.empty() == False:
         item = q.get()
-        cv2.imshow("Threading Image", item)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        print(type(item))
+        if (type(item) == np.ndarray):
+            print("Input Type : Image Path")
+            cv2.imshow("Threading Image", item)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
         q.task_done()
 
+#BM: Testing Buttons with Hello World
+def helloWorld():
+    print("helloWorld")
+
+Bu = tk.Button(root, text="Hello World", command = helloWorld).pack()
 #BM: Main Loop --------------------------------------------------------------------------------------------------------
 Result = True
 while Result:

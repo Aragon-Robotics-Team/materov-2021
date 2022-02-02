@@ -154,3 +154,12 @@ while result:
     if cv2.waitKey(1) == ord('q'):
         videoCaptureObject.release()
         cv2.destroyAllWindows()
+
+
+##Next Step:
+#Incorporate front camera
+# - Detect the next turn + which direction the turn will go
+# - Calculate how far away it is
+# - Calculate the speed to end up at that position using PID
+# - Turn based on the direction of the corner
+# - Repeat
