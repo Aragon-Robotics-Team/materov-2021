@@ -27,11 +27,14 @@ servoopenindex = 3 # using square
 thruster1index = 0
 thruster2index = 1
 
+initsleep = 4
+loopsleep = 1/8
+
 
 def init():
     ######################## 1. Initializing Serial
     global arduino
-    arduino = serial.Serial(port='/dev/cu.usbmodem144101', baudrate=115200, timeout=1)
+    arduino = serial.Serial(port='/dev/cu.usbmodem141101', baudrate=115200, timeout=1)
 
     ######################## 2. Initializing PyGame
     # pygame.init()  # Initiate the pygame functions
@@ -45,7 +48,7 @@ def init():
     # pygame.event.set_allowed(pygame.JOYBUTTONUP) # only allow JOYSTICKAXISMOTION events to appear on queue
     # pygame.event.set_allowed(pygame.JOYBUTTONDOWN)
     # pygame.event.set_allowed(pygame.JOYAXISMOTION)
-    sleep(2)
+    sleep(initsleep)
 
     ######################## 2. Initializing  global variables
     global finallist
@@ -73,7 +76,7 @@ def loop():
             thrustervalue1 = 1500
             thrustervalue2 = 1500
 
-        # assign statuses to list
+        # assign statuses to listf
         finallist[servoopenindex] = buttonopen
         finallist[servocloseindex] = buttonclose
         finallist[thruster1index] = thrustervalue1
@@ -98,7 +101,7 @@ def loop():
         data = arduino.readline().decode("ascii")
         print('ard: ' + data)
         pygame.event.clear()
-        sleep(1/3)
+        sleep(loopsleep)
 
 def write_read(): # not using
     # write = str(finallist[0])
