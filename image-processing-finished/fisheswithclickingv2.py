@@ -1,29 +1,30 @@
 import cv2
 import threading
-import tkinter as tk
-import time
-import sys
-import os
-import tkinter.font as font
-from tkinter import messagebox, RIGHT, LEFT, StringVar
-import queue
-from time import sleep
 import math
-import tkinter as tk
+import queue
 import time
 import sys
 import os
+import tkinter as tk
+import numpy as np
 import tkinter.font as font
 from tkinter import messagebox, RIGHT, LEFT, StringVar
-import queue
-import numpy as np
+from time import sleep
+import argparse
+
 
 root = tk.Tk()
 root.config(bg ='gray')
 #q = queue.Queue()
 
+#SETUP ARGPARSE
+## Import the library
+import argparse
+# Create the parser
+ap = argparse.ArgumentParser()
+
 fishCoords = [[0,0],[0,0],[0,0],[0,0]]
-fishLengths = [0,0,0]
+#fishLengths = [0,0,0]
 #[laserX1, laserY1],
 #[laserX2, laserY2],
 #[fishX1, fishY1],
@@ -34,7 +35,6 @@ measureFishieCalc = False
 countFishCoords = 0
 fishImg = ""
 
-print("asfasdf")
 
 fishPictureCount = 0
 allFishLengths = [0,0,0]
@@ -108,6 +108,34 @@ def measureFishie():
         cv2.setMouseCallback("Fish", click_event)
     else:
         print("Fish Lengths: " + str(allFishLengths))
+        averageFishLength = (allFishLengths[0]+allFishLengths[1]+allFishLengths[2])/3
+        print("Average Fish Length: " + str(averageFishLength))
+
+        askForValues = True
+        while askForValues:
+            numFish = int(input("Enter the number of fish (N): "))
+            print("Number of Fish: " + str(numFish))
+
+            numA = int(input("Enter the value of A: "))
+            print("Value of A: " + str(numA))
+
+            numB = int(input("Enter the value of B: "))
+            print("Value of B: " + str(numB))
+
+            askForValuesInput = input("Are these values correct? Type Y or N: ")
+            if askForValuesInput == "Y":
+                askForValues = False
+                print("Calculating biomass of the cohort using the equation M = N * a * L^b")
+                fishMass = numFish * numA * ((averageFishLength)**numB)
+                print("Biomass of the Cohort: " + str(fishMass))
+            elif askForValuesInput == "N":
+                askForValues = True
+            else:
+                print("You're kind of stupid for not even typing Y or N, enter all the values in again")
+                askForValues = True
+
+
+
 
 Bu = tk.Button(root, text="Measure Fish", command = measureFishie).pack()
 
@@ -121,6 +149,7 @@ def resetMeasureFish():
     fishPictureCount = 0
 
 Bu = tk.Button(root, text="Reset Fish Measuring", command = resetMeasureFish).pack()
+
 
 #DON"T NEED TO CHANGE WHEN ADDED INTO THE MAIN PROGRAM
 videoCaptureObject = cv2.VideoCapture(0)
@@ -141,6 +170,6 @@ def videoCapture():
 #Integrate into main program
 
 while True:
-    queue()
+    #queue()
     videoCapture()
     root.update()
