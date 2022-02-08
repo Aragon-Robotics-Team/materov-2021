@@ -5,3 +5,5 @@ opencv-python~=4.5.4.60
 
 keyboard~=0.13.5
 pySerialTransfer~=1.0.2
+scikit-image~=0.19.1
+scipy~=1.7.3

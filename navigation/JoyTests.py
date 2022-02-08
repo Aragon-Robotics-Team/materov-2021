@@ -210,16 +210,19 @@ def example4(): # https://stackoverflow.com/questions/46506850/how-can-i-get-inp
                         print("Center PS has been pressed")
             elif event.type == pygame.JOYAXISMOTION:
                 if event.axis == 0 and abs(myjoystick.get_axis(0))> deadband:
-                    one = myjoystick.get_axis(0)
-                    print('1 has been moved ' + str(one))
+                    zero = myjoystick.get_axis(0)
+                    print('1 has been moved ' + str(zero))
                 if event.axis == 1 and abs(myjoystick.get_axis(1))> deadband:
-                    two = myjoystick.get_axis(1)
-                    print('2 has been moved ' + str(two))
+                    one = myjoystick.get_axis(1)
+                    print('2 has been moved ' + str(one))
                 if event.axis == 2 and abs(myjoystick.get_axis(2))> deadband:
-                    three = myjoystick.get_axis(2)
-                    print('3 has been moved ' + str(three))
+                    two = myjoystick.get_axis(2)
+                    print('3 has been moved ' + str(two))
                 if event.axis == 3 and abs(myjoystick.get_axis(3))> deadband:
-                    four = myjoystick.get_axis(3)
+                    three = myjoystick.get_axis(3)
+                    print('4 has been moved ' + str(three))
+                if event.axis == 4 and abs(myjoystick.get_axis(4)) > deadband:
+                    four = myjoystick.get_axis(4)
                     print('4 has been moved ' + str(four))
 
 def example10():
@@ -237,8 +240,6 @@ def example10():
         print("y axis: ", j.get_axis(2))
         print("y axis: ", j.get_axis(3))
         pygame.event.clear()
-
-
 def example5():
     pygame.display.init()
     pygame.joystick.init()
@@ -257,7 +258,6 @@ def example5():
     while True:
         pygame.event.pump()
         print(pygame.joystick.Joystick(0).get_axis(0))
-
 def example6():
     #http://programarcadegames.com/python_examples/show_file.php?file=joystick_calls.py
     import pygame
@@ -276,7 +276,6 @@ def example6():
             for i in range(axes):
                 axis = joystick.get_axis(i)
                 print(str(axis))
-
 def example7(): #http://programarcadegames.com/python_examples/show_file.php?file=joystick_calls.py
     import pygame
     from time import sleep
@@ -314,9 +313,20 @@ def customevent():
         for event in pygame.event.get():
             if event.type == pygame.GUIBUTTON:
                 print('GUI button pressed')
+def example11():
+    import pygame
+    from time import sleep
+    pygame.init()
+    deadband = 0.1
+    keepPlaying = True
+    print("example4")
 
+    myjoystick = pygame.joystick.Joystick(0)  # since we only have one joystick, we know the instance ID is 0
+    myjoystick.init()
 
-
+    while keepPlaying:
+        sleep(0.1)
+        print(myjoystick.get_axis(4))
 
 if __name__ == "__main__":
     example4()

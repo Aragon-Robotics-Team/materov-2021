@@ -27,14 +27,14 @@ servoopenindex = 3 # using square
 thruster1index = 0
 thruster2index = 1
 
-initsleep = 4
-loopsleep = 1/8
+initsleep = 3
+loopsleep = 1/12
 
 
 def init():
     ######################## 1. Initializing Serial
     global arduino
-    arduino = serial.Serial(port='/dev/cu.usbmodem141101', baudrate=115200, timeout=1)
+    arduino = serial.Serial(port='/dev/cu.usbmodem142101', baudrate=115200, timeout=1)
 
     ######################## 2. Initializing PyGame
     # pygame.init()  # Initiate the pygame functions
@@ -102,8 +102,8 @@ def loop():
         print('ard: ' + data)
         pygame.event.clear()
         sleep(loopsleep)
-
 def write_read(): # not using
+
     # write = str(finallist[0])
     arduino.write(bytes('ewewe', 'utf-8'))
     #str(finallist[0]) + ' ' + str(finallist[1])+ ' ' + str(finallist[2])+ ' ' + str(finallist[3])
