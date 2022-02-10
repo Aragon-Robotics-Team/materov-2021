@@ -8,6 +8,9 @@
     #BM: Video Feed
     #BM: Queue for threading
     #BM: Testing Buttons with Hello World
+#GUI Features:
+    #BM: Timer
+    #BM: Task Display
 #BM: Main Loop
 
 #GUI Imports
@@ -408,6 +411,10 @@ def queue(): #Needs forever loop, therefore can't use root.mainloop()
 #BM: Testing Buttons with Hello World
 def helloWorld():
     print("helloWorld")
+
+#GUI FEATURES --------------------------------------------------------------------------------------------------------
+#BM: Timer
+#BM: Task Display
 
 Bu = tk.Button(root, text="Hello World", command = helloWorld).pack()
 #BM: Main Loop --------------------------------------------------------------------------------------------------------
