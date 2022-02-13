@@ -8,7 +8,7 @@
     #BM: Video Feed
     #BM: Queue for threading
     #BM: Testing Buttons with Hello World
-#GUI Features:
+#BM: GUI Features:
     #BM: Timer
     #BM: Task Display
 #BM: Main Loop
@@ -412,7 +412,7 @@ def queue(): #Needs forever loop, therefore can't use root.mainloop()
 def helloWorld():
     print("helloWorld")
 
-#GUI FEATURES --------------------------------------------------------------------------------------------------------
+#BM: GUI FEATURES --------------------------------------------------------------------------------------------------------
 #BM: Timer
 #BM: Task Display
 
