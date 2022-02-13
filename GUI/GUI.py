@@ -7,9 +7,23 @@ import os
 import tkinter.font as font
 import cv2
 from tkinter import messagebox, RIGHT, LEFT, StringVar
-import msvcrt
 
-#######################
+root = tk.Tk()
+root.geometry("1000x1200")
+root.resizable(0,0)
+root.config(bg ='gray')
+root.title("Countdown Timer Verision 0.0.1")
+# #  # #
+
+text = tk.StringVar()
+text.set("Test")
+label = tk.Label(root, textvariable=text).place(x=500, y=450)
+
+def changeText():
+    text.set("dwliouhwihdwhiwdhiodwhidwohiwdhiodhowohidwdhowhodhodwwahiihdwphpdpodwdpwdpodpowdopupuopoudwupowdopudopdpojwdjpowdjpowdjopwdjodwpjdwjowpdjwdpwdjopjodpodjpdjopwdjopwdjopwdjopdowjwdjowdojwdjwdojpwdjopdwjop")
+
+button = tk.Button(root, text="Click to change text below",command=changeText).place(x=500, y=500)
+
 
 ########################
 videoCaptureObject = cv2.VideoCapture(0)
@@ -22,12 +36,6 @@ def video():
         cv2.destroyAllWindows()
 
 ########################
-root = tk.Tk()
-root.geometry("1920x1080")
-root.resizable(0,0)
-root.config(bg ='gray')
-root.title("Countdown Timer Verision 0.0.1")
-# #  # #
 
 minute=StringVar()
 second=StringVar()
@@ -105,52 +113,37 @@ tk.Button(root, text='STOP', bd ='5', command = stop, bg = 'white', font = 'aria
 def button1():
    tk.messagebox.showinfo( "Hello Python", "Hello World")
 
-B = tk.Button(root, text ="Hello", command = button1, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,
-          width = 20).place(x=1050, y=100)
+B = tk.Button(root, text ="Hello", command = button1, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,width = 20).place(x=700, y=100)
 
 def button2():
    tk.messagebox.showinfo( "Hello Python2", "Hello World2")
 
-Bu = tk.Button(root, text ="Hello2", command = button2, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,
-          width = 20).place(x=1050, y=150)
+Bu = tk.Button(root, text ="Hello2", command = button2, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,width = 20).place(x=700, y=150)
 
 def button3():
    tk.messagebox.showinfo( "Hello Python3", "Hello World3")
 
-Bu = tk.Button(root, text ="Hello3", command = button3, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,
-          width = 20).place(x=1050, y=200)
+Bu = tk.Button(root, text ="Hello3", command = button3, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,width = 20).place(x=700, y=200)
 
 def button4():
    tk.messagebox.showinfo( "Hello Python4", "Hello World4")
 
-Bu = tk.Button(root, text ="Hello4", command = button2, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,
-          width = 20).place(x=1050, y=250)
+Bu = tk.Button(root, text ="Hello4", command = button2, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,width = 20).place(x=700, y=250)
 
 def button5():
    tk.messagebox.showinfo( "Hello Python5", "Hello World5")
 
-Bu = tk.Button(root, text ="Hello5", command = button2, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,
-          width = 20).place(x=1050, y=300)
+Bu = tk.Button(root, text ="Hello5", command = button2, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,width = 20).place(x=700, y=300)
 
 def button6():
    tk.messagebox.showinfo( "Hello Python6", "Hello World6")
 
-Bu = tk.Button(root, text ="Hello6", command = button2, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,
-          width = 10).place(x=1050, y=350)
+Bu = tk.Button(root, text ="Hello6", command = button2, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,width = 10).place(x=700, y=350)
 
-def button6():
-   tk.messagebox.showinfo( "Hello Python6", "Hello World6")
+def task1():
+    print("hi")
 
-Bu = tk.Button(root, text ="Hello6", command = button2, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,
-          width = 10).place(x=1150, y=350)
-##############
-
-while True:
-    keypress = msvcrt.getch()
-    if keypress == "space":
-        x=x+1
-        print(x)
-
+Bu = tk.Button(root, text ="Hello6", command = task1, font = 'Roboto', borderwidth = 0, bg = 'dark gray', height = 1,width = 10).place(x=700, y=350)
 ##############
 while True:
     root.update()

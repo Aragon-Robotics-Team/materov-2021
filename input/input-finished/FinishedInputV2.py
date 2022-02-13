@@ -41,6 +41,9 @@ photomosaicStart = False
 #BM: GUI set up --------------------------------------------------------------------------------------------------------------------
 root = tk.Tk()
 root.config(bg ='gray')
+root.geometry("1000x1200")
+root.title("MATE ROV GUI Version 1.0")
+root.resizable(True, True)
 q = queue.Queue()
 #BM: Controller input Setup --------------------------------------------------------------------------------------------------------------------
 # pygame.init()
@@ -225,7 +228,7 @@ def photomosaic():
         photomosaicStart = False
 
 
-Bu  = tk.Button(root, text = "Photomosaic", command = photomosaicThreading).pack()
+Bu  = tk.Button(root, text = "Photomosaic", command = photomosaicThreading).place(x=10, y=15)
 #BM: Measure Fish --------------------------------------------------------------------------------------------------------
 fishCoords = [[0,0],[0,0],[0,0],[0,0]]
 #[laserX1, laserY1],
@@ -341,8 +344,7 @@ def measureFishie():
                 print("You're kind of stupid for not even typing Y or N, enter all the values in again")
                 askForValues = True
 
-Bu = tk.Button(root, text="Measure Fish (Click to 3 times to take photos and calculate)", command = measureFishie).pack()
-
+Bu = tk.Button(root, text="Measure Fish (Click to 3 times to take photos and calculate)", command = measureFishie).place(x=10, y=50)
 #if measure fishies doesn't work out, reset and restart
 def resetMeasureFish():
     print("Measuring Fish Task Reset")
@@ -353,7 +355,7 @@ def resetMeasureFish():
     countFishCoords = 0
     fishPictureCount = 0
 
-Bu = tk.Button(root, text="Reset Fish Measuring", command = resetMeasureFish).pack()
+Bu = tk.Button(root, text="Reset Fish Measuring", command = resetMeasureFish).place(x=10, y=85)
 
 #BM: General Setup --------------------------------------------------------------------------------------------------------
 videoCaptureObject = cv2.VideoCapture(0)
@@ -408,15 +410,109 @@ def queue(): #Needs forever loop, therefore can't use root.mainloop()
             cv2.destroyAllWindows()
         q.task_done()
 
-#BM: Testing Buttons with Hello World
-def helloWorld():
-    print("helloWorld")
-
-#BM: GUI FEATURES --------------------------------------------------------------------------------------------------------
+#GUI FEATURES --------------------------------------------------------------------------------------------------------
 #BM: Timer
+
+minute=StringVar()
+second=StringVar()
+hours=StringVar()
+
+sec = StringVar()
+mins= StringVar()
+hrs= StringVar()
+
+tk.Entry(root, textvariable = sec, width = 2, font = 'arial 12').place(x=875, y=10) # Seconds
+tk.Entry(root, textvariable = mins, width =2, font = 'arial 12').place(x=910, y=10) # Mins
+tk.Entry(root, textvariable = hrs, width =2, font = 'arial 12').place(x=945, y=10) # Hours
+
+minute.set('00')
+second.set('00')
+hours.set('00')
+sec.set('00')
+mins.set('00')
+hrs.set('00')
+times = 0
+
+def countdown():
+    global times
+    print("hello") #testing, working but code not working
+    times = int(hrs.get())*3600+ int(mins.get())*60 + int(sec.get())
+    while times > 0:
+        minute,second = (times // 60 , times % 60)
+
+        hour = 0
+        if minute > 60:
+            hour , minute = (minute // 60 , minute % 60)
+
+        sec.set(second)
+        mins.set(minute)
+        hrs.set(hour)
+
+        root.update()
+        time.sleep(1)
+        times -= 1
+        if(times == 0):
+            sec.set('00')
+            mins.set('00')
+            hrs.set('00')
+            return
+
+def stop():
+    global times
+    minute.set('00')
+    second.set('00')
+    hours.set('00')
+    sec.set('00')
+    mins.set('00')
+    hrs.set('00')
+    times = 0
+
+tk.Button(root, text='START', bd ='1', command = countdown, height= 1, width= 5, bg = 'white', font = 'arial 10 bold').place(x=874, y=35)
+tk.Button(root, text='STOP', bd ='1', command = stop, height= 1, width= 5, bg = 'white', font = 'arial 10 bold').place(x=922, y=35)
+
 #BM: Task Display
 
-Bu = tk.Button(root, text="Hello World", command = helloWorld).pack()
+def button1():
+   tk.messagebox.showinfo( "Hello Python", "Hello World")
+
+B = tk.Button(root, text ="Hello", command = button1, font = 'Roboto', borderwidth = 1, bg = 'dark gray', height = 1,width = 20).place(x=700, y=100)
+
+def button2():
+   tk.messagebox.showinfo( "Hello Python2", "Hello World2")
+
+Bu = tk.Button(root, text ="Hello2", command = button2, font = 'Roboto', borderwidth = 1, bg = 'dark gray', height = 1,width = 20).place(x=700, y=150)
+
+def button3():
+   tk.messagebox.showinfo( "Hello Python3", "Hello World3")
+
+Bu = tk.Button(root, text ="Hello3", command = button3, font = 'Roboto', borderwidth = 1, bg = 'dark gray', height = 1,width = 20).place(x=700, y=200)
+
+def button4():
+   tk.messagebox.showinfo( "Hello Python4", "Hello World4")
+
+Bu = tk.Button(root, text ="Hello4", command = button2, font = 'Roboto', borderwidth = 1, bg = 'dark gray', height = 1,width = 20).place(x=700, y=250)
+
+def button5():
+   tk.messagebox.showinfo( "Hello Python5", "Hello World5")
+
+Bu = tk.Button(root, text ="Hello5", command = button2, font = 'Roboto', borderwidth = 1, bg = 'dark gray', height = 1,width = 20).place(x=700, y=300)
+
+def button6():
+   tk.messagebox.showinfo( "Hello Python6", "Hello World6")
+
+Bu = tk.Button(root, text ="Hello6", command = button2, font = 'Roboto', borderwidth = 1, bg = 'dark gray', height = 1,width = 10).place(x=700, y=350)
+
+def task1():
+    print("hi")
+
+Bu = tk.Button(root, text ="Hello6", command = task1, font = 'Roboto', borderwidth = 1, bg = 'dark gray', height = 1,width = 10).place(x=700, y=350)
+
+labelframe = LabelFrame(root, text="This is a LabelFrame")
+labelframe.pack(fill="both", expand="yes")
+
+left = Label(labelframe, text="Inside the LabelFrame")
+left.pack()
+
 #BM: Main Loop --------------------------------------------------------------------------------------------------------
 Result = True
 while Result:
