@@ -69,18 +69,20 @@ def loop():
         JS_Y = j.get_axis(LV)
 
         # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
-        turn1, turn2, forward1, forward2 = JS_X * turnconstant, JS_X * turnconstant, JS_Y * forwardconstant, JS_Y * turnconstant
+        # turn1, turn2, forward1, forward2 = JS_X * turnconstant, JS_X * turnconstant, JS_Y * forwardconstant, JS_Y * turnconstant
         # calculating thruster speeds
+        NL_X = turnconstant*(JS_X**3)
+        NL_Y = turnconstant*(JS_Y**3)
 
         if abs(JS_X) > deadband and abs(JS_Y) > deadband: #calculate thruster values
-            thrustervalue1 = int(thrustermiddle - forward1 + turn1)  # y-direction joystick values are flipped
-            thrustervalue2 = int(thrustermiddle - forward2 - turn2)
+            thrustervalue1 = int(thrustermiddle + NL_X + NL_Y)
+            thrustervalue2 = int(thrustermiddle + (NL_X - NL_Y))
         elif abs(JS_X) > deadband and abs(JS_Y) <= deadband: #only turn
-            thrustervalue1 = int(thrustermiddle + turn1)  # cast to integer
-            thrustervalue2 = int(thrustermiddle - turn2)
-        elif abs(JS_X) <= deadband and abs(JS_Y) > deadband:
-            thrustervalue1 = int(thrustermiddle - forward1)  # cast to integer
-            thrustervalue2 = int(thrustermiddle - forward2)
+            thrustervalue1 = int(thrustermiddle + NL_X)  # cast to integer
+            thrustervalue2 = int(thrustermiddle - NL_X)
+        elif abs(JS_X) <= deadband and abs(JS_Y) > deadband: #only forward/back
+            thrustervalue1 = int(thrustermiddle - NL_Y)  # cast to integer
+            thrustervalue2 = int(thrustermiddle - NL_Y)
         else:
             thrustervalue1 = 1500
             thrustervalue2 = 1500
