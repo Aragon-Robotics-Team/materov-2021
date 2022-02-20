@@ -516,7 +516,7 @@ left.pack()
 #BM: Main Loop --------------------------------------------------------------------------------------------------------
 Result = True
 while Result:
-    #controller()
+    #controller() <-- If autonomous, replace controller thruster input with autonomous thruster input
     videoCapture()
     queue()
     root.update()

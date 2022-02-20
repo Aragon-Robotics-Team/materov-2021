@@ -43,7 +43,7 @@ def LineFollowerAngleDetection(videoImg):
     mask2 = cv2.inRange(image, (175, 50, 20), (180, 255, 255))
     #cv2.waitKey()
     mask = cv2.bitwise_or(mask1, mask2)
-    cv2.imshow("mask", mask)
+    #cv2.imshow("mask", mask)
     #cv2.waitKey()
 
     #find edges
@@ -104,7 +104,7 @@ def LineFollowerAngleDetection(videoImg):
         cv2.putText(result, str(math.degrees(angle)), (10,500), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 2, cv2.LINE_AA)
         #cv2.putText(result, str(center_width) + ", " str(height), (center_width, height), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 2, cv2.LINE_AA)
         #cv2.putText(result, str(center_width) + ", " str(height), (center_width, height), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 2, cv2.LINE_AA)
-        #cv2.imshow("LF", result)
+        cv2.imshow("LF", result)
         speed = 1
         if (angle < 0):
             joyX = speed * (math.cos(angle)) * -1
