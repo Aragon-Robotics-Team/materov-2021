@@ -15,7 +15,10 @@ LV = 1 #Left vertical axis
 RH = 2 #Right horizontal axis
 RV = 3 #RIght vertical axis
 
+serialPort = '/dev/cu.usbmodem14101'
+
 serialOn = False
+joyTestsOn = True
 
 turnconstant = 400
 forwardconstant = 400
@@ -36,7 +39,7 @@ def init():
     ######################## 1. Initializing Serial
     if serialOn:
         global arduino
-        arduino = serial.Serial(port='/dev/cu.usbmodem14301', baudrate=115200, timeout=1)
+        arduino = serial.Serial(port=serialPort, baudrate=115200, timeout=1)
 
     ######################## 2. Initializing PyGame
     pygame.init()  # Initiate the pygame functions
@@ -55,6 +58,64 @@ def init():
     ######################## 2. Initializing  global variables
     global finallist
     finallist = [thrustermiddle, thrustermiddle, 0, 0]
+
+def joytests():
+    while joyTestsOn:
+        sleep(0.1)
+        for event in pygame.event.get():
+            # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
+            if event.type == pygame.JOYBUTTONDOWN:
+                    if event.button == 0: # event.type == pygame.JOYBUTTONUP:
+                        print("Select Has Been Pressed")
+                    if event.button == 1:
+                        print("Left Joystick button has been pressed")
+                    if event.button == 2:
+                        print("Right Joystick button has been pressed")
+                    if event.button == 3:
+                        print("Start has been pressed. Will exit joytests.")
+                        loop()
+                    if event.button == 4:
+                        print("Surface top button has been pressed")
+                    if event.button == 5:
+                        print("Surface right button has been pressed")
+                    if event.button == 6:
+                        print("Surface Bottom Has Been Pressed")
+                    if event.button == 7:
+                        print("Surface left button has been pressed")
+                    if event.button == 8:
+                        print("Left 2 has been pressed")
+                    if event.button == 9:
+                        print("Right 2 has been pressed")
+                    if event.button == 10:
+                        print("Left 1 has been pressed")
+                    if event.button == 11:
+                        print("Right 1 has been pressed")
+                    if event.button == 12: # event.type == pygame.JOYBUTTONUP:
+                        print("Triangle Has Been Pressed")
+                    if event.button == 13:
+                        print("Circle has been pressed")
+                    if event.button == 14:
+                        print("X has been pressed")
+                    if event.button == 15:
+                        print("Square has been pressed")
+                    if event.button == 16:
+                        print("Center PS has been pressed")
+            elif event.type == pygame.JOYAXISMOTION:
+                if event.axis == 0 and abs(j.get_axis(0))> deadband:
+                    zero = j.get_axis(0)
+                    print('1 has been moved ' + str(zero))
+                if event.axis == 1 and abs(j.get_axis(1))> deadband:
+                    one = j.get_axis(1)
+                    print('2 has been moved ' + str(one))
+                if event.axis == 2 and abs(j.get_axis(2))> deadband:
+                    two = j.get_axis(2)
+                    print('3 has been moved ' + str(two))
+                if event.axis == 3 and abs(j.get_axis(3))> deadband:
+                    three = j.get_axis(3)
+                    print('4 has been moved ' + str(three))
+                if event.axis == 4 and abs(j.get_axis(4)) > deadband:
+                    four = j.get_axis(4)
+                    print('4 has been moved ' + str(four))
 
 def loop():
     while True:
@@ -122,4 +183,4 @@ def write_read(): # not using
 
 if __name__ == "__main__":
     init()
-    loop()
+    joytests()
