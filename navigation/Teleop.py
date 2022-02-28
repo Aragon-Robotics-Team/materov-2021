@@ -72,7 +72,7 @@ def joytests():
                     if event.button == 2:
                         print("Right Joystick button has been pressed")
                     if event.button == 3:
-                        print("Start has been pressed. Will exit joytests.")
+                        print("Start has been pressed. Will exit joytests.") #hisanniewannie
                         loop()
                     if event.button == 4:
                         print("Surface top button has been pressed")
