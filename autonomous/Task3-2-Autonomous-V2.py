@@ -21,6 +21,8 @@ def midpoint(videoImg): #Find the center of the two lines
     mask2 = cv2.inRange(image, (175, 50, 20), (180, 255, 255))
     #cv2.waitKey()
     mask = cv2.bitwise_or(mask1, mask2)
+    cv2.imshow("mask", mask)
+    cv2.waitKey(0)
 
     edges = cv2.Canny(mask, 50, 150)
 
@@ -99,10 +101,10 @@ def StraightLFPWMOutput(videoImg):
     angleToAdjust = math.atan(abs(centerX - midpointX)/image.shape[0])
     speed = 1
     if (midpointX < centerX):
-        joyX = speed * (math.cos(angleToAdjust)) * -1 #incorrect calculation
+        joyX = speed * (math.sin(angleToAdjust)) * -1 #incorrect calculation
     elif midpointX >= centerX:
-        joyX = speed * (math.cos(angleToAdjust)) #incorrect calculation
-    joyY = speed * (math.sin(angleToAdjust))
+        joyX = speed * (math.sin(angleToAdjust)) #incorrect calculation
+    joyY = speed * (math.cos(angleToAdjust))
     print("Joystick Coords:")
     print("X: " + str(joyX))
     print("Y: " + str(joyY))

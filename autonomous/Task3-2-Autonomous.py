@@ -52,9 +52,12 @@ def center(videoImg):
         distanceToAdjust = math.sqrt(changeInX ** 2 + changeInY ** 2)
         if leftx1 != leftx2:
             angleToAdjust = math.atan(abs(leftx1 - leftx2)/abs(lefty1 - lefty2))
-
+        timeForAdjustment = 5
+        #distance --> velocity
     #calculate the pwm to output to the bot by calculating the force necessary to push the bot a certain distance
-    #
+    #F =
+    #distance = asdfasdf
+    #velocity =
 
 def trackLine(videoImg):
     image = cv2.imread(videoImg)

@@ -506,12 +506,12 @@ def task1():
     print("hi")
 
 Bu = tk.Button(root, text ="Hello6", command = task1, font = 'Roboto', borderwidth = 1, bg = 'dark gray', height = 1,width = 10).place(x=700, y=350)
-
-labelframe = LabelFrame(root, text="This is a LabelFrame")
-labelframe.pack(fill="both", expand="yes")
-
-left = Label(labelframe, text="Inside the LabelFrame")
-left.pack()
+#
+# labelframe = LabelFrame(root, text="This is a LabelFrame")
+# labelframe.pack(fill="both", expand="yes")
+# 
+# left = Label(labelframe, text="Inside the LabelFrame")
+# left.pack()
 
 #BM: Main Loop --------------------------------------------------------------------------------------------------------
 Result = True

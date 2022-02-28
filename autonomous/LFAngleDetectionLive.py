@@ -43,11 +43,12 @@ def LineFollowerAngleDetection(videoImg):
     mask2 = cv2.inRange(image, (175, 50, 20), (180, 255, 255))
     #cv2.waitKey()
     mask = cv2.bitwise_or(mask1, mask2)
+    blur = cv2.GaussianBlur(mask, (10,10), cv2.BORDER_DEFAULT)
     #cv2.imshow("mask", mask)
     #cv2.waitKey()
 
     #find edges
-    edges = cv2.Canny(mask, 50, 150)
+    edges = cv2.Canny(blur, 50, 150)
     #cv2.imshow("edges", edges)
     #cv2.waitKey()
 
