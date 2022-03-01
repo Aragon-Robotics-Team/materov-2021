@@ -66,56 +66,56 @@ def joytests():
             # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
             if event.type == pygame.JOYBUTTONDOWN:
                     if event.button == 0: # event.type == pygame.JOYBUTTONUP:
-                        print("Select Has Been Pressed")
+                        print("X Has Been Pressed") #
                     if event.button == 1:
-                        print("Left Joystick button has been pressed")
+                        print("Circle has been pressed") #
                     if event.button == 2:
-                        print("Right Joystick button has been pressed")
+                        print("Right Joystick button has been pressed") #
                     if event.button == 3:
-                        print("Start has been pressed. Will exit joytests.")
+                        print("Square has been pressed. Will exit joytests.") #
                         loop()
                     if event.button == 4:
-                        print("Surface top button has been pressed")
+                        print("Shoulder L1 has been pressed")
                     if event.button == 5:
-                        print("Surface right button has been pressed")
+                        print("Shoulder R1 has been pressed")
                     if event.button == 6:
                         print("Surface Bottom Has Been Pressed")
                     if event.button == 7:
-                        print("Surface left button has been pressed")
+                        print("Shoulder R2 has been pressed")
                     if event.button == 8:
-                        print("Left 2 has been pressed")
+                        print("Select has been pressed")
                     if event.button == 9:
-                        print("Right 2 has been pressed")
+                        print("Start has been pressed")
                     if event.button == 10:
-                        print("Left 1 has been pressed")
+                        print("Center has been pressed")
                     if event.button == 11:
-                        print("Right 1 has been pressed")
+                        print("Left Joystick button has been pressed")
                     if event.button == 12: # event.type == pygame.JOYBUTTONUP:
                         print("Triangle Has Been Pressed")
                     if event.button == 13:
-                        print("Circle has been pressed")
+                        print("Surface up has been pressed")
                     if event.button == 14:
-                        print("X has been pressed")
+                        print("Surface bottom has been pressed")
                     if event.button == 15:
-                        print("Square has been pressed")
+                        print("Surface left has been pressed")
                     if event.button == 16:
-                        print("Center PS has been pressed")
+                        print("Surface Right has been pressed")
             elif event.type == pygame.JOYAXISMOTION:
                 if event.axis == 0 and abs(j.get_axis(0))> deadband:
                     zero = j.get_axis(0)
-                    print('1 has been moved ' + str(zero))
+                    print('0 (left horizontal) has been moved ' + str(zero))
                 if event.axis == 1 and abs(j.get_axis(1))> deadband:
                     one = j.get_axis(1)
-                    print('2 has been moved ' + str(one))
+                    print('1 (left vertical) has been moved ' + str(one))
                 if event.axis == 2 and abs(j.get_axis(2))> deadband:
                     two = j.get_axis(2)
-                    print('3 has been moved ' + str(two))
+                    print('Shoulder L2 has been moved ' + str(two))
                 if event.axis == 3 and abs(j.get_axis(3))> deadband:
                     three = j.get_axis(3)
-                    print('4 has been moved ' + str(three))
+                    print('3 (right vertical) has been moved ' + str(three))
                 if event.axis == 4 and abs(j.get_axis(4)) > deadband:
                     four = j.get_axis(4)
-                    print('4 has been moved ' + str(four))
+                    print('4 (right horizontal) has been moved ' + str(four))
 
 def loop():
     while True:
