@@ -17,14 +17,14 @@ RV = 3 #RIght vertical axis
 
 serialPort = '/dev/cu.usbmodem14101'
 
-serialOn = True
+serialOn = False
 joyTestsOn = True
 
 turnconstant = 400
 forwardconstant = 400
 thrustermiddle = 1500
-trianglebutton = 12
-squarebutton = 15
+trianglebutton = 2
+startbutton = 9
 
 servocloseindex = 2 #using triangle
 servoopenindex = 3 # using square
@@ -66,14 +66,13 @@ def joytests():
             # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
             if event.type == pygame.JOYBUTTONDOWN:
                     if event.button == 0: # event.type == pygame.JOYBUTTONUP:
-                        print("X Has Been Pressed") #
+                        print("X Has Been Pressed") 
                     if event.button == 1:
-                        print("Circle has been pressed") #
+                        print("Circle has been pressed") 
                     if event.button == 2:
-                        print("Right Joystick button has been pressed") #
+                        print("Triangle has been pressed") #
                     if event.button == 3:
-                        print("Square has been pressed. Will exit joytests.") #
-                        loop()
+                        print("Square has been pressed.") 
                     if event.button == 4:
                         print("Shoulder L1 has been pressed")
                     if event.button == 5:
@@ -83,17 +82,18 @@ def joytests():
                     if event.button == 7:
                         print("Shoulder R2 has been pressed")
                     if event.button == 8:
-                        print("Select has been pressed")
+                        print("Share has been pressed")
                     if event.button == 9:
-                        print("Start has been pressed")
+                        print("Start has been pressed. Will exit joytests")
+                        loop()
                     if event.button == 10:
                         print("Center has been pressed")
                     if event.button == 11:
-                        print("Left Joystick button has been pressed")
+                        print("Left Joystick button has been pressed") #      
                     if event.button == 12: # event.type == pygame.JOYBUTTONUP:
-                        print("Triangle Has Been Pressed")
+                        print("Right Joystick button Has Been Pressed") #
                     if event.button == 13:
-                        print("Surface up has been pressed")
+                        print("Surface up has been pressed") 
                     if event.button == 14:
                         print("Surface bottom has been pressed")
                     if event.button == 15:
@@ -125,7 +125,7 @@ def loop():
         #write and read
 
         buttonclose = j.get_button(trianglebutton)
-        buttonopen = j.get_button(squarebutton)
+        buttonopen = j.get_button(startbutton)
         JS_X = j.get_axis(LH)
         JS_Y = j.get_axis(LV)
 
@@ -169,11 +169,11 @@ def loop():
             data = arduino.readline().decode("ascii")
             print('ard: ' + data)
 
-        if j.get_button(0) == 1:
+        if j.get_button(8) == 1: #select button
+            
             break
         pygame.event.clear()
         sleep(loopsleep)
-
 def write_read(): # not using
 
     # write = str(finallist[0])

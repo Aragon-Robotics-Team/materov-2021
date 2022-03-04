@@ -17,7 +17,7 @@ RV = 3 #RIght vertical axis
 
 serialPort = '/dev/cu.usbmodem14101'
 
-serialOn = True
+serialOn = False
 joyTestsOn = True
 
 turnconstant = 400
