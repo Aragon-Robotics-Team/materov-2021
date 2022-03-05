@@ -17,6 +17,13 @@ def midpoint(videoImg): #Find the center of the two lines
     image = cv2.cvtColor(image, cv2.COLOR_BGR2HLS)
 
     #mask everything but the red
+
+    #Method:
+    #increase contrast
+    #decrease noise cv.fastNlMeansDenoisingColored()
+    #mask
+    #draw lines 
+
     mask1 = cv2.inRange(image, (0, 50, 20), (5, 255, 255))
     mask2 = cv2.inRange(image, (175, 50, 20), (180, 255, 255))
     #cv2.waitKey()

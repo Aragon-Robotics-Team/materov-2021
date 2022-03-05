@@ -1,3 +1,4 @@
+
 #Import the required library
 from tkinter import *
 from tkinter import ttk
@@ -13,35 +14,37 @@ canvas= Canvas(win, width=650, height= 350)
 canvas.pack()
 #Create a button to update the canvas image
 
-
-videoCaptureObject = cv2.VideoCapture(0)
-ret, frame = videoCaptureObject.read()
-img1 = cv2.imwrite("/Users/valeriefan/Desktop/videoCapture.jpg", frame)
+# videoCaptureObject = cv2.VideoCapture(0)
+# ret, frame = videoCaptureObject.read()
+img = "/Users/valeriefan/Desktop/lines2.jpg"
+#cv2.imwrite(img, frame)
 
 #Open an Image in a Variable
 #Image.open("bll.jpg")
 #img1= PhotoImage(file="/Users/valeriefan/Desktop/videoCapture.jpg")
-img1 = PhotoImage(Image.open("/Users/valeriefan/Desktop/videoCapture.jpg"))
-img = "/Users/valeriefan/Desktop/videoCapture.jpg"
-#Add image to the canvas
+# filename = PhotoImage(file = "sunshine.gif")
+# image = canvas.create_image(50, 50, anchor=NE, image=filename)
+filename = PhotoImage(Image.open(img))
+image_container = canvas.create_image(0, 0, anchor = NE, image = filename)
 
 #ret, frame = #read camera what else we need to do xd smiley face i like men
 #cv2.imwrite(img1, frame)
 
-#image_container = canvas.create_image(0,0, anchor="nw",image=img1)
-image_container = canvas.create_image(10,10, anchor="nw",image=img1)
-#Define function to update the image
-
-def videoCapture():
-    while True:
-        ret, frame = videoCaptureObject.read()
-        cv2.imwrite("/Users/valeriefan/Desktop/videoCapture.jpg", frame)
-        img1= PhotoImage(file="/Users/valeriefan/Desktop/videoCapture.jpg")
-        canvas.itemconfig(image_container,image=img1)
-
-thread = threading.Thread(target=videoCapture)
-thread.daemon = 1
-thread.start()
-
+# image_container = canvas.create_image(0,0, anchor=NW, image=img1)
+#
+# #Define function to update the image
+# videoCaptureObject = cv2.VideoCapture(0)
+# #image = cv2.imread("C:\Users\mz141\Downloads\VideoInput.png")
+#
+# def videoCapture():
+#     global img1
+#     while True:
+#         ret, frame = videoCaptureObject.read()
+#         cv2.imwrite("/Users/valeriefan/Desktop/VideoInput.jpg", frame)
+#         img1= PhotoImage(file="/Users/valeriefan/Desktop/VideoInput.jpg")
+#         canvas.itemconfig(image_container,image=img1)
+#
 while True:
+#     #videoCapture()
     win.update()
+# win.mainloop()

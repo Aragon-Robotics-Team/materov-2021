@@ -163,6 +163,17 @@ def midpoint(videoImg): #Find the center of the two lines
     # plt.subplot(122),plt.imshow(dst)
     # plt.show()
 
+    #ljkasklhKSJDHFLHSDLKFHKJSDHLFHDSF
+    # path to input image specified and
+    # image is loaded with imread command
+    # convert the input image into
+    # grayscale color space
+    # # Reverting back to the original image,
+    # # with optimal threshold value
+    # result[dest > 0.01 * dest.max()]=[255, 255, 255]
+    #
+    # #AKJSHDKHSKDLJFHKLSDHKFJHjkldf
+
     #set the low and high tuples based on the chosen color
     blurred = cv2.bilateralFilter(result, 9, 75, 75)
 
@@ -174,79 +185,129 @@ def midpoint(videoImg): #Find the center of the two lines
     #cv2.waitKey()
     output = cv2.bitwise_and(blurred, blurred, mask = mask)
 
-    blurred2 = cv2.bilateralFilter(output, 9, 75, 75)
+    #denoise the mask
+    denoise_1 = cv2.fastNlMeansDenoisingColored(output,None,3,3,7,21)
+    cv2.imshow("1",denoise_1)
+    cv2.waitKey(0)
+
+    #Find the contours in the mask
+    gray = cv2.cvtColor(denoise_1, cv2.COLOR_BGR2GRAY)
+
+    #threshold = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+
+    thresh = cv2.threshold(gray, 45, 255, cv2.THRESH_BINARY)[1]
+    thresh = cv2.erode(thresh, None, iterations=2)
+    thresh = cv2.dilate(thresh, None, iterations=2)
+
+    contours = cv2.findContours(output, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
+
+    rectangles = []
+
+    i = 0
+    for contour in contours:
+
+        # here we are ignoring first counter because
+        # find contour function detects whole image as shape
+        if i == 0:
+            i = 1
+            continue
+
+        # cv2.approxPloyDP() function to approximate the shape
+        peri = cv2.arcLength(contour, True)
+        approx = cv2.approxPolyDP(contour, 0.04 * peri, True)
+
+        # finding center point of shape
+        # M = cv2.moments(contour)
+        # if M['m00'] != 0.0:
+        #     x = int(M['m10']/M['m00'])
+        #     y = int(M['m01']/M['m00'])
+
+        cv2.drawContours(denoise_1, contour, 0, (255, 255, 255), 5)
+
+        if len(approx) == 4:
+            print("found rectangle oohhhoohoh")
+            rectangles.append(approx)
+
+    max = 0
+    #find the biggest area
+    for i in range(len(rectangles)):
+        area = cv2.contourArea(rectangles[i])
+        if area > cv2.contourArea(rectangles[max]):
+            max = i
+
+    #find center of mass of the largest contour
+    # M = cv2.moments(rectangles[max])
+    # if M['m00'] != 0.0:
+    #     x = int(M['m10']/M['m00'])
+    #     y = int(M['m01']/M['m00'])
+
+    #draw the largest contour onto the image
+    # cv2.putText(denoise_1, 'Quadrilateral', (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+    # using drawContours() function
+    #cv2.drawContours(denoise_1, [rectangles[max]], 0, (255, 255, 255), 5)
+    cv2.imshow("denoise_1", denoise_1)
+
+
+
+    # blurred2 = cv2.bilateralFilter(denoise_1, 9, 75, 75)
     # cv2.imshow("mask", output)
     # cv2.waitKey(0)
+    #
+    # operatedImage = cv2.cvtColor(denoise_1, cv2.COLOR_BGR2GRAY)
+    #
+    # # modify the data type
+    # # setting to 32-bit floating point
+    # operatedImage = np.float32(operatedImage)
+    #
+    # # apply the cv2.cornerHarris method
+    # # to detect the corners with appropriate
+    # # values as input parameters
+    # dest = cv2.cornerHarris(operatedImage, 2, 5, 0.07)
+    #
+    # # Results are marked through the dilated corners
+    # dest = cv2.dilate(dest, None)
+    # cv2.imshow("denoise_1", denoise_1)
+    # cv2.imshow("dest",dest)
+    cv2.waitKey(0)
+    #
 
     # create more contrast between light blue background and red line, and replace green netting with light blue
 
-    edges = cv2.Canny(blurred2, 50, 150)
-    cv2.imshow("edges", edges);
-
-    #find and draw lines on images
-    lines = cv2.HoughLinesP(edges, 1, np.pi/180, 40, minLineLength = 250, maxLineGap = 250)
-
-    #draw line on the original image
-    i = 0
-
-    for leftx1, lefty1, leftx2, lefty2 in lines[0]:
-        cv2.line(result, (leftx1, lefty1), (leftx2, lefty2), (255, 255, 255), 10)
-        #cv2.imshow('',result) #bm: threading
-
-        if lefty1 > lefty2:
-            leftTopX = leftx2
-            print("left circle")
-            #cv2.circle(image, center_coordinates, radius, color, thickness)
-            cv2.circle(result, (leftx2, lefty2), 3, (5, 255, 255), 3)
-        else:
-            print("left circle")
-            leftTopX = leftx1
-            cv2.circle(result, (leftx1, lefty1), 3, (5, 255, 255), 3)
-
-    for rightx1, righty1, rightx2, righty2 in lines[1]:
-        #If the lines are too close together (the detected lines are on the same line)
-        if abs(rightx1 - leftx1) < 100:
-            print("Line is too close")
-            i+=2
-        else:
-            cv2.line(result, (rightx1, righty1), (rightx2, righty2), (255, 255, 255), 10)
-            #cv2.imshow('', result) #bm: threading
-            if righty1 > righty2:
-                print("right circle")
-                rightTopX = rightx2
-                cv2.circle(result, (rightx2, righty2), 3, (5, 255, 255), 3)
-            else:
-                print("right circle")
-                rightTopX = rightx1
-                cv2.circle(result, (rightx1, righty1), 3, (5, 255, 255), 3)
-
-    while i > 1:
-        print("Checking next line")
-        if len(lines) <i:
-            i = 0
-        else:
-            for rightx1, righty1, rightx2, righty2 in lines[i]:
-                if abs(rightx1 - leftx1) < 100:
-                    i+=1
-                else:
-                    cv2.line(result, (rightx1, righty1), (rightx2, righty2), (255, 255, 255), 10)
-                    #cv2.imshow('', result) #bm: threading
-                    if righty1 > righty2:
-                        print("right circle")
-                        rightTopX = rightx2
-                        cv2.circle(result, (rightx2, righty2), 3, (5, 255, 255), 3)
-                    else:
-                        print("right circle")
-                        rightTopX = rightx1
-                        cv2.circle(result, (rightx1, righty1), 3, (5, 255, 255), 3)
-                    i = 0
-
-
-    midpointX = (int)((leftTopX + rightTopX) / 2) #account for the rounding when we're checking it against the center value
-    cv2.circle(result, (midpointX, 10), 3, (5, 255, 255), 3)
-    #cv2.imshow('', result)
-    #cv2.imshow("mask", output)
-
+    # edges = cv2.Canny(blurred2, 50, 150)
+    #cv2.imshow("edges", edges);
+    #Find corners of lines
+    #ljkasklhKSJDHFLHSDLKFHKJSDHLFHDSF
+    # path to input image specified and
+    # image is loaded with imread command
+    # convert the input image into
+    # grayscale color space
+    # operatedImage = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
+    #
+    # # modify the data type
+    # # setting to 32-bit floating point
+    # operatedImage = np.float32(operatedImage)
+    #
+    # #edges = np.float32(edges)
+    #
+    # # apply the cv2.cornerHarris method
+    # # to detect the corners with appropriate
+    # # values as input parameters
+    # dest = cv2.cornerHarris(operatedImage, 2, 5, 0.07)
+    #
+    # # Results are marked through the dilated corners
+    # dest = cv2.dilate(output, None)
+    #
+    # # Reverting back to the original image,
+    # # with optimal threshold value
+    # output[dest > 0.01 * dest.max()]=[0, 0, 255]
+    # cv2.imshow("output", output);
+    # #AKJSHDKHSKDLJFHKLSDHKFJHjkldf
+    # #
+    # # midpointX = (int)((leftTopX + rightTopX) / 2) #account for the rounding when we're checking it against the center value
+    # cv2.circle(result, (midpointX, 10), 3, (5, 255, 255), 3)
+    # #cv2.imshow('', result)
+    # #cv2.imshow("mask", output)
+    midpointX= 0
     return midpointX
 
 autoInitCompleted = False
