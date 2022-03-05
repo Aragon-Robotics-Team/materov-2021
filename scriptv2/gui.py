@@ -1,16 +1,18 @@
 from tkinter import *
 import glob
+from img_proc.measure_fishes import measureFishie
+import cv2
 
 #SETUP ------------------------------------------------------------------------------------------------------
 root = Tk()
-root.geometry("1400x2000")
+root.geometry("1300x750")
 
 #TEST ------------------------------------------------------------------------------------------------------
 def asdf():
     print("hello")
 
 btn = Button(root, text = "hello", command = asdf)
-btn.pack()
+btn.grid(row = 0, column = 1, sticky = 'e')
 
 #PHOTOMOSAIC ------------------------------------------------------------------------------------------------------
 def startPhotomosaic():
@@ -22,16 +24,16 @@ def startPhotomosaic():
     glob.photomosaicVideo = True #switches video feed to photomosaic Video
 
 btn = Button(root, text = "Start Photomosaic", command = startPhotomosaic)
-btn.pack()
+btn.grid(row = 1,column = 1, sticky = 'e')
 
 #MEASURE FISHIES ------------------------------------------------------------------------------------------------------
-from img_proc.measure_fishes import measureFishie
-import cv2
 
 def start_measure_fish():
     measureFishie()
-
-Bu = Button(root, text="Measure Fish (Click to 3 times to take photos and calculate)", command = start_measure_fish).pack()
+label = Label(root, text = "(Click to 3 times to take photos and calculate)", font = 10)
+label.grid(row = 3, column = 1, sticky = 'n')
+btn = Button(root, text="Measure Fish", command = start_measure_fish)
+btn.grid(row = 2,column = 1, sticky = 'e')
 
 def resetMeasureFish():
     print("Measuring Fish Task Reset")
@@ -39,17 +41,16 @@ def resetMeasureFish():
     glob.countfishCoords = 0
     glob.fishPictureCount = 0
 
-Bu = Button(root, text="Reset Fish Measuring", command = resetMeasureFish).pack()
+btn = Button(root, text="Reset Fish Measuring", command = resetMeasureFish)
+btn.grid(row = 4, column = 1, sticky = 'e')
 
 #VIDEO FEED ------------------------------------------------------------------------------------------------------
 #pretty much the same lag as when the video feed is in the loop
 from PIL import Image, ImageTk
 
-root.geometry("1400x2000")
-
 # Create a Label to capture the Video frames
-label = Label(root, height = 700, width = 700)
-label.place(x = 700,y = 0)
+label = Label(root, height = 700, width = 1000)
+label.grid(row = 0, column = 0, rowspan = 30)
 cap = cv2.VideoCapture(0)
 
 # Define function to show frame

@@ -12,7 +12,7 @@ import threading
 
 from img_proc import imgqueue
 
-#joy_init() #for controllers
+joy_init() #for controllers
 
 # t1 = threading.Thread(target=joytests) <-- doesn't work because pygame is not threadsafe
 # t1.start()
@@ -22,7 +22,7 @@ from img_proc import imgqueue
 
 if __name__ == "__main__":
     while True:
-        #joytests() #<-- Fatal error sometimes?????
+        joytests() #<-- Fatal error sometimes?????
         #imgqueue.queue() #<-- same effect as directly calling the video module; it lags bc the images are being shown and the controller
         #is being checked at the same time
         gui.root.update()
