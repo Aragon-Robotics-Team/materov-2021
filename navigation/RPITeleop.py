@@ -163,17 +163,21 @@ def loop():
         stringToSend = str(finallist[0]) + ',' + str(finallist[1]) + ',' + str(finallist[2]) + ',' + str(finallist[3]) + '\n'
         print('py: ' + str(stringToSend.encode()))
         if serialOn == True:
-            arduino.write(stringToSend.encode("ascii"))
-            while arduino.in_waiting < 10:
-                pass
-            data = arduino.readline().decode("ascii")
-            print('ard: ' + data)
-
-        if j.get_button(8) == 1: #select button
-            
+            serialSendAndPrint(str(finallist[0]), str(finallist[1]), str(finallist[2]), str(finallist[3]))
+        if j.get_button(8) == 1:
+            serialSendAndPrint(1500, 1500, 0, 0)
             break
         pygame.event.clear()
         sleep(loopsleep)
+
+def serialSendAndPrint(w, x, y, z):
+    stringToSend = str(w) + ',' + str(x) + ',' + str(y) + ',' + str(z) + '\n'
+    print('py: ' + stringToSend.encode())  # print python
+    arduino.write(stringToSend.encode("ascii"))  # send to arduino
+    while arduino.in_waiting < 10:  # wait for data
+        pass
+    data = arduino.readline().decode("ascii")  # read arduino data
+    print('ard: ' + data)  # print arduino data
 def write_read(): # not using
 
     # write = str(finallist[0])
