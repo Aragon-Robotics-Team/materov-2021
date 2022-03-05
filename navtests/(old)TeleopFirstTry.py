@@ -1,11 +1,8 @@
 # Importing Libraries
-import struct
-
 import pygame
 import serial
 import time
 from time import sleep
-from struct import *
 
 
 #global in a function will be visible to the whole program
@@ -23,8 +20,8 @@ joyTestsOn = True
 turnconstant = 400
 forwardconstant = 400
 thrustermiddle = 1500
-trianglebutton = 2
-startbutton = 9
+trianglebutton = 12
+squarebutton = 15
 
 servocloseindex = 2 #using triangle
 servoopenindex = 3 # using square
@@ -66,56 +63,56 @@ def joytests():
             # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
             if event.type == pygame.JOYBUTTONDOWN:
                     if event.button == 0: # event.type == pygame.JOYBUTTONUP:
-                        print("X Has Been Pressed") 
+                        print("Select Has Been Pressed")
                     if event.button == 1:
-                        print("Circle has been pressed") 
+                        print("Left Joystick button has been pressed")
                     if event.button == 2:
-                        print("Triangle has been pressed") #
+                        print("Right Joystick button has been pressed")
                     if event.button == 3:
-                        print("Square has been pressed.") 
+                        print("Start has been pressed. Will exit joytests.")
+                        loop()
                     if event.button == 4:
-                        print("Shoulder L1 has been pressed")
+                        print("Surface top button has been pressed")
                     if event.button == 5:
-                        print("Shoulder R1 has been pressed")
+                        print("Surface right button has been pressed")
                     if event.button == 6:
                         print("Surface Bottom Has Been Pressed")
                     if event.button == 7:
-                        print("Shoulder R2 has been pressed")
+                        print("Surface left button has been pressed")
                     if event.button == 8:
-                        print("Share has been pressed")
+                        print("Left 2 has been pressed")
                     if event.button == 9:
-                        print("Start has been pressed. Will exit joytests")
-                        loop()
+                        print("Right 2 has been pressed")
                     if event.button == 10:
-                        print("Center has been pressed")
+                        print("Left 1 has been pressed")
                     if event.button == 11:
-                        print("Left Joystick button has been pressed") #      
+                        print("Right 1 has been pressed")
                     if event.button == 12: # event.type == pygame.JOYBUTTONUP:
-                        print("Right Joystick button Has Been Pressed") #
+                        print("Triangle Has Been Pressed")
                     if event.button == 13:
-                        print("Surface up has been pressed") 
+                        print("Circle has been pressed")
                     if event.button == 14:
-                        print("Surface bottom has been pressed")
+                        print("X has been pressed")
                     if event.button == 15:
-                        print("Surface left has been pressed")
+                        print("Square has been pressed")
                     if event.button == 16:
-                        print("Surface Right has been pressed")
+                        print("Center PS has been pressed")
             elif event.type == pygame.JOYAXISMOTION:
                 if event.axis == 0 and abs(j.get_axis(0))> deadband:
                     zero = j.get_axis(0)
-                    print('0 (left horizontal) has been moved ' + str(zero))
+                    print('1 has been moved ' + str(zero))
                 if event.axis == 1 and abs(j.get_axis(1))> deadband:
                     one = j.get_axis(1)
-                    print('1 (left vertical) has been moved ' + str(one))
+                    print('2 has been moved ' + str(one))
                 if event.axis == 2 and abs(j.get_axis(2))> deadband:
                     two = j.get_axis(2)
-                    print('Shoulder L2 has been moved ' + str(two))
+                    print('3 has been moved ' + str(two))
                 if event.axis == 3 and abs(j.get_axis(3))> deadband:
                     three = j.get_axis(3)
-                    print('3 (right vertical) has been moved ' + str(three))
+                    print('4 has been moved ' + str(three))
                 if event.axis == 4 and abs(j.get_axis(4)) > deadband:
                     four = j.get_axis(4)
-                    print('4 (right horizontal) has been moved ' + str(four))
+                    print('4 has been moved ' + str(four))
 
 def loop():
     while True:
@@ -125,7 +122,7 @@ def loop():
         #write and read
 
         buttonclose = j.get_button(trianglebutton)
-        buttonopen = j.get_button(startbutton)
+        buttonopen = j.get_button(squarebutton)
         JS_X = j.get_axis(LH)
         JS_Y = j.get_axis(LV)
 
@@ -163,21 +160,17 @@ def loop():
         stringToSend = str(finallist[0]) + ',' + str(finallist[1]) + ',' + str(finallist[2]) + ',' + str(finallist[3]) + '\n'
         print('py: ' + str(stringToSend.encode()))
         if serialOn == True:
-            serialSendAndPrint(str(finallist[0]), str(finallist[1]), str(finallist[2]), str(finallist[3]))
-        if j.get_button(8) == 1:
-            serialSendAndPrint(1500, 1500, 0, 0)
+            arduino.write(stringToSend.encode("ascii"))
+            while arduino.in_waiting < 10:
+                pass
+            data = arduino.readline().decode("ascii")
+            print('ard: ' + data)
+
+        if j.get_button(0) == 1:
             break
         pygame.event.clear()
         sleep(loopsleep)
 
-def serialSendAndPrint(w, x, y, z):
-    stringToSend = str(w) + ',' + str(x) + ',' + str(y) + ',' + str(z) + '\n'
-    print('py: ' + stringToSend.encode())  # print python
-    arduino.write(stringToSend.encode("ascii"))  # send to arduino
-    while arduino.in_waiting < 10:  # wait for data
-        pass
-    data = arduino.readline().decode("ascii")  # read arduino data
-    print('ard: ' + data)  # print arduino data
 def write_read(): # not using
 
     # write = str(finallist[0])

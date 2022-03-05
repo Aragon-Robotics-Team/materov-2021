@@ -1,11 +1,8 @@
 # Importing Libraries
-import struct
-
 import pygame
 import serial
 import time
 from time import sleep
-from struct import *
 
 
 #global in a function will be visible to the whole program
@@ -66,7 +63,7 @@ def loop():
         buttonclose = j.get_button(trianglebutton)
         buttonopen = j.get_button(squarebutton)
         JS_X = j.get_axis(LH)
-        JS_Y = j.get_axis(LV)
+        JS_Y = -j.get_axis(LV)
 
         # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
         # turn1, turn2, forward1, forward2 = JS_X * turnconstant, JS_X * turnconstant, JS_Y * forwardconstant, JS_Y * turnconstant
