@@ -44,6 +44,11 @@ def resetMeasureFish():
 btn = Button(root, text="Reset Fish Measuring", command = resetMeasureFish)
 btn.grid(row = 4, column = 1, sticky = 'e')
 
+#DRIFT
+from misc.drift import floatLocation
+btn = Button(root, text = "Calculate Float Location", command = floatLocation)
+btn.grid(row = 5, column = 1, sticky = 'e')
+
 #VIDEO FEED ------------------------------------------------------------------------------------------------------
 #pretty much the same lag as when the video feed is in the loop
 from PIL import Image, ImageTk
