@@ -23,8 +23,8 @@ joyTestsOn = True
 turnconstant = 400
 forwardconstant = 400
 thrustermiddle = 1500
-trianglebutton = 12
-squarebutton = 15
+trianglebutton = 2
+startbutton = 9
 
 servocloseindex = 2 #using triangle
 servoopenindex = 3 # using square
@@ -66,56 +66,56 @@ def joytests():
             # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
             if event.type == pygame.JOYBUTTONDOWN:
                     if event.button == 0: # event.type == pygame.JOYBUTTONUP:
-                        print("Select Has Been Pressed")
+                        print("X Has Been Pressed") 
                     if event.button == 1:
-                        print("Left Joystick button has been pressed")
+                        print("Circle has been pressed") 
                     if event.button == 2:
-                        print("Right Joystick button has been pressed")
+                        print("Triangle has been pressed") #
                     if event.button == 3:
-                        print("Start has been pressed. Will exit joytests.")
-                        loop()
+                        print("Square has been pressed.") 
                     if event.button == 4:
-                        print("Surface top button has been pressed")
+                        print("Shoulder L1 has been pressed")
                     if event.button == 5:
-                        print("Surface right button has been pressed")
+                        print("Shoulder R1 has been pressed")
                     if event.button == 6:
                         print("Surface Bottom Has Been Pressed")
                     if event.button == 7:
-                        print("Surface left button has been pressed")
+                        print("Shoulder R2 has been pressed")
                     if event.button == 8:
-                        print("Left 2 has been pressed")
+                        print("Share has been pressed")
                     if event.button == 9:
-                        print("Right 2 has been pressed")
+                        print("Start has been pressed. Will exit joytests")
+                        loop()
                     if event.button == 10:
-                        print("Left 1 has been pressed")
+                        print("Center has been pressed")
                     if event.button == 11:
-                        print("Right 1 has been pressed")
+                        print("Left Joystick button has been pressed") #      
                     if event.button == 12: # event.type == pygame.JOYBUTTONUP:
-                        print("Triangle Has Been Pressed")
+                        print("Right Joystick button Has Been Pressed") #
                     if event.button == 13:
-                        print("Circle has been pressed")
+                        print("Surface up has been pressed") 
                     if event.button == 14:
-                        print("X has been pressed")
+                        print("Surface bottom has been pressed")
                     if event.button == 15:
-                        print("Square has been pressed")
+                        print("Surface left has been pressed")
                     if event.button == 16:
-                        print("Center PS has been pressed")
+                        print("Surface Right has been pressed")
             elif event.type == pygame.JOYAXISMOTION:
                 if event.axis == 0 and abs(j.get_axis(0))> deadband:
                     zero = j.get_axis(0)
-                    print('1 has been moved ' + str(zero))
+                    print('0 (left horizontal) has been moved ' + str(zero))
                 if event.axis == 1 and abs(j.get_axis(1))> deadband:
                     one = j.get_axis(1)
-                    print('2 has been moved ' + str(one))
+                    print('1 (left vertical) has been moved ' + str(one))
                 if event.axis == 2 and abs(j.get_axis(2))> deadband:
                     two = j.get_axis(2)
-                    print('3 has been moved ' + str(two))
+                    print('Shoulder L2 has been moved ' + str(two))
                 if event.axis == 3 and abs(j.get_axis(3))> deadband:
                     three = j.get_axis(3)
-                    print('4 has been moved ' + str(three))
+                    print('3 (right vertical) has been moved ' + str(three))
                 if event.axis == 4 and abs(j.get_axis(4)) > deadband:
                     four = j.get_axis(4)
-                    print('4 has been moved ' + str(four))
+                    print('4 (right horizontal) has been moved ' + str(four))
 
 def loop():
     while True:
@@ -125,7 +125,7 @@ def loop():
         #write and read
 
         buttonclose = j.get_button(trianglebutton)
-        buttonopen = j.get_button(squarebutton)
+        buttonopen = j.get_button(startbutton)
         JS_X = j.get_axis(LH)
         JS_Y = j.get_axis(LV)
 
@@ -163,17 +163,21 @@ def loop():
         stringToSend = str(finallist[0]) + ',' + str(finallist[1]) + ',' + str(finallist[2]) + ',' + str(finallist[3]) + '\n'
         print('py: ' + str(stringToSend.encode()))
         if serialOn == True:
-            arduino.write(stringToSend.encode("ascii"))
-            while arduino.in_waiting < 10:
-                pass
-            data = arduino.readline().decode("ascii")
-            print('ard: ' + data)
-
-        if j.get_button(0) == 1:
+            serialSendAndPrint(str(finallist[0]), str(finallist[1]), str(finallist[2]), str(finallist[3]))
+        if j.get_button(8) == 1:
+            serialSendAndPrint(1500, 1500, 0, 0)
             break
         pygame.event.clear()
         sleep(loopsleep)
 
+def serialSendAndPrint(w, x, y, z):
+    stringToSend = str(w) + ',' + str(x) + ',' + str(y) + ',' + str(z) + '\n'
+    print('py: ' + stringToSend.encode())  # print python
+    arduino.write(stringToSend.encode("ascii"))  # send to arduino
+    while arduino.in_waiting < 10:  # wait for data
+        pass
+    data = arduino.readline().decode("ascii")  # read arduino data
+    print('ard: ' + data)  # print arduino data
 def write_read(): # not using
 
     # write = str(finallist[0])
