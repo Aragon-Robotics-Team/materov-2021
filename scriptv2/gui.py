@@ -30,8 +30,10 @@ btn.grid(row = 1,column = 1, sticky = 'e')
 
 def start_measure_fish():
     measureFishie()
+
 label = Label(root, text = "(Click to 3 times to take photos and calculate)", font = 10)
 label.grid(row = 3, column = 1, sticky = 'n')
+
 btn = Button(root, text="Measure Fish", command = start_measure_fish)
 btn.grid(row = 2,column = 1, sticky = 'e')
 

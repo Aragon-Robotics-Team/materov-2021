@@ -14,3 +14,9 @@ snapshots = ["/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/center.png",
     "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/left.png",
     "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/right.png"]
     #file paths for photomosaic snapshots, used in photomosaic.py and video.py
+
+blankFile = "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/blank.png"
+middleTileFile = "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/middleTile.png"
+topTileFile = "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/topTile.png"
+bottomTileFile = "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/bottomTile.png"
+photomosaicFile = "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/photomosaic.png"

@@ -6,12 +6,12 @@ import imutils
 def stitch():
     print("Starting Photomosaic Process")
     #---------rereading the original images from the glob.snapshots-----------
-    center = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/center.png") #change to glob.snapshots variables later
-    top = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/top.png")
-    bottom = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/bottom.png")
-    left = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/left.png")
-    right = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/right.png")
-    blank = cv2.imread("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/blank.png")
+    center = cv2.imread(glob.snapshots[0]) #change to glob.snapshots variables later
+    top = cv2.imread(glob.snapshots[1])
+    bottom = cv2.imread(glob.snapshots[2])
+    left = cv2.imread(glob.snapshots[3])
+    right = cv2.imread(glob.snapshots[4])
+    blank = cv2.imread(glob.blankFile)
 
     # #--------calculate the size of the blank images to make up for the size difference in the tiles------------
     print("Resizing Images")
@@ -32,25 +32,25 @@ def stitch():
     print("Concat Middle Tile")
     middleTileLeft = cv2.hconcat([cv2.imread(glob.snapshots[3]), cv2.imread(glob.snapshots[0])])
     middleTile = cv2.hconcat([middleTileLeft, cv2.imread(glob.snapshots[4])])
-    cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/middleTile.png", middleTile)
+    cv2.imwrite(glob.middleTileFile, middleTile)
 
     #----------concat top tile-----------------
     print("Concat Top Tile")
     topTileLeft = cv2.hconcat([topLeftBlank, cv2.imread(glob.snapshots[1])])
     topTile = cv2.hconcat([topTileLeft, topRightBlank])
-    cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/topTile.png", topTile)
+    cv2.imwrite(glob.topTileFile, topTile)
 
     #-------------concat bottom tile--------------
     print("Concat Bottom Tile")
     bottomTileLeft = cv2.hconcat([bottomLeftBlank, cv2.imread(glob.snapshots[4])])
     bottomTile = cv2.hconcat([bottomTileLeft, bottomRightBlank])
-    cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/bottomTile.png", bottomTile)
+    cv2.imwrite(glob.bottomTileFile, bottomTile)
 
     #---------stitch together all the tiles-----------
     print("Stitch together all the tiles")
     topSection = cv2.vconcat([topTile, middleTile])
     photomosaic = cv2.vconcat([topSection, bottomTile])
-    cv2.imwrite("/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/photomosaic.png", photomosaic)
+    cv2.imwrite(glob.photomosaicFile, photomosaic)
     print("Showing Photomosaic Image")
     #q.put(photomosaic)
     cv2.imshow("PHOTOMOSAIC", photomosaic)

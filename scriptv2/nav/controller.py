@@ -33,7 +33,6 @@ thrusterrightindex = 1
 initsleep = 3
 loopsleep = 1/12
 
-
 def joy_init():
     ######################## 1. Initializing Serial
     if serialOn:
