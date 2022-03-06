@@ -1,16 +1,21 @@
 # Importing Libraries
 import struct
 
+import cv2
 import pygame
 import serial
 import time
 from time import sleep
 from struct import *
+from tkinter import *
 
 arduino = None
 j = None
 serialOn = False
 joyTestsOn = True
+
+videoCaptureObject = cv2.VideoCapture(0)
+result = True
 
 # global in a function will be visible to the whole program
 deadBand = 0.12  # axis value must be greater than this number
@@ -22,17 +27,18 @@ RV = 3  # Right vertical axis
 serialPort = '/dev/cu.usbmodem14101'
 controllerName = None
 
+top = Tk()
+
 mapK = 400
 tspeedMiddle = 1500
 
-startButton = None  # starts loop()
-selectButton = None  # exits loop()
-
-squareButton = None  # button open
-triangleButton = None  # button close
+startButton = 9  # starts loop()
+selectButton = 8  # exits loop()
+squareButton = 3  # button open
+triangleButton = 2  # button close
 
 initSleep = 3
-loopSleep = 0
+loopSleep = 1/5
 
 toArduino = [tspeedMiddle, tspeedMiddle, 0, 0]  #this array keeps updating thruster values
 
@@ -55,7 +61,6 @@ def init():
     # pygame.event.set_allowed(pygame.JOYBUTTONUP)
 
     sleep(initSleep)
-
     if controllerName == "Sony PLAYSTATION(R)3 Controller":
         joy_tests_ps3()
     elif controllerName == "Sony PLAYSTATION (R)4 Controller":
@@ -63,28 +68,19 @@ def init():
 
 
 def joy_tests():
-    global startButton
-    global selectButton
-    global squareButton
-    global triangleButton
-    startButton = 9  # starts loop()
-    selectButton = 8  # exits loop()
-    squareButton = 3  # button open
-    triangleButton = 2  # button close
-
     while joyTestsOn:
         sleep(0.1)
         for event in pygame.event.get():
             # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
             if event.type == pygame.JOYBUTTONDOWN:
                     if event.button == 0:
-                        print("X Has Been Pressed") 
+                        print("X Has Been Pressed")
                     if event.button == 1:
-                        print("Circle has been pressed") 
+                        print("Circle has been pressed")
                     if event.button == 2:
                         print("Triangle has been pressed")
                     if event.button == 3:
-                        print("Square has been pressed.") 
+                        print("Square has been pressed.")
                     if event.button == 4:
                         print("Shoulder L1 has been pressed")
                     if event.button == 5:
@@ -105,7 +101,7 @@ def joy_tests():
                     if event.button == 12:
                         print("Right Joystick button Has Been Pressed")
                     if event.button == 13:
-                        print("Surface up has been pressed") 
+                        print("Surface up has been pressed")
                     if event.button == 14:
                         print("Surface bottom has been pressed")
                     if event.button == 15:
@@ -261,7 +257,31 @@ def serial_send_and_print(w, x, y, z):
     else:
         print('ard: serial not on')
 
+def guiinit():
+    btn = Button(top, text = "hello", command = asdf)
+    btn.pack()
+
+    top.mainloop()
+
+def asdf():
+    print("hello")
+
+def videoInit():
+    while result:
+        ret, frame = videoCaptureObject.read()
+        cv2.imshow("Capturing Video", frame)
+        if (cv2.waitKey(1) & 0xFF == ord('q')):
+            videoCaptureObject.release()
+            cv2.destroyAllWindows()
+
 
 if __name__ == "__main__":
-    init()
+    import multiprocessing as mp
+
+    joystickprocess = mp.Process(target = init)
+    guiprocess = mp.Process(target = guiinit)
+    videoprocess = mp.Process(target = videoInit)
+    joystickprocess.start()
+    guiprocess.start()
+    videoprocess.start()
 
