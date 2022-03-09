@@ -22,3 +22,5 @@ middleTileFile = "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/middleTile.p
 topTileFile = "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/topTile.png"
 bottomTileFile = "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/bottomTile.png"
 photomosaicFile = "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/photomosaic.png"
+
+#Thruster Process --------------------------------------------------------------------------------------

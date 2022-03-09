@@ -1,0 +1,2 @@
+GUI and controller can both be run at the same time, but the current method of doing
+so does not accommodate autonomous  

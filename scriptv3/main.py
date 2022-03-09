@@ -19,6 +19,11 @@ from img_proc import imgqueue
 #
 # t1 = threading.Thread(target = video)
 # t1.start()
+#
+# print("starting thruster process")
+# multiprocessing.set_start_method('spawn')
+# thruster_proc = multiprocessing.Process(target = thrusterProcess)
+# auto_queue = multiprocessing.Queue()
 
 if __name__ == "__main__":
     while True:
