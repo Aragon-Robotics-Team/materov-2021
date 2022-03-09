@@ -52,6 +52,7 @@ def init():
     global controllerName
     controllerName = j.get_name()
     print('Detected controller : %s' % controllerName)
+    print(pygame.joystick.get_count())
     # pygame.event.set_allowed(pygame.JOYBUTTONUP)
 
     sleep(initSleep)
