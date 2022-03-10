@@ -7,8 +7,6 @@ import time
 from time import sleep
 from struct import *
 
-arduino = None
-j = None
 serialOn = False
 joyTestsOn = True
 
@@ -25,16 +23,18 @@ controllerName = None
 mapK = 400
 tspeedMiddle = 1500
 
-startButton = None  # starts loop()
-selectButton = None  # exits loop()
+startButton = 9  # starts loop()
+selectButton = 8  # exits loop()
 
-squareButton = None  # button open
-triangleButton = None  # button close
+squareButton = 3  # button open
+triangleButton = 2  # button close
+circleButton = 1  # up constant speed
+xButton = 0  # down constant speed
 
 initSleep = 3
-loopSleep = 0
+loopSleep = 1/15
 
-toArduino = [tspeedMiddle, tspeedMiddle, 0, 0]  #this array keeps updating thruster values
+toArduino = [tspeedMiddle, tspeedMiddle, tspeedMiddle, tspeedMiddle, 0, 0, 0]  #this array keeps updating thruster values
 
 
 def joy_init():
@@ -61,14 +61,6 @@ def joy_init():
 
 
 def joy_tests():
-    global startButton
-    global selectButton
-    global squareButton
-    global triangleButton
-    startButton = 9  # starts loop()
-    selectButton = 8  # exits loop()
-    squareButton = 3  # button open
-    triangleButton = 2  # button close
 
     while joyTestsOn:
         sleep(0.1)
@@ -131,19 +123,29 @@ def joy_tests():
 def loop():
     while True:
         pygame.event.pump()
-        #get buttons
-        #get thrusters
-        #write and read
+        # get buttons
+        # get thrusters
+        # write and read
 
         buttonopen = j.get_button(squareButton)
         buttonclose = j.get_button(triangleButton)
+        upconst = j.get_button(circleButton)
+        downconst = j.get_button(squareButton)
         JS_X = j.get_axis(LH)
         JS_Y = j.get_axis(LV) # y-direction joystick values are flipped
+        JS_Y_UD = j.get_axis()
 
         # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
         turn1, turn2,  = JS_X * mapK, JS_X * mapK
         forward1, forward2 = JS_Y * mapK, JS_Y * mapK
+        updown = JS_Y_UD * mapK
+
         # calculating thruster speeds
+        tspeed_1, tspeed_2, tspeed_3, tspeed_4 = 1500, 1500, 1500, 1500
+
+        if abs(JS_Y_UD) > deadBand:
+            tspeed_3 = int(tspeedMiddle + updown)  # side thrusters
+            tspeed_4 = int(tspeedMiddle + updown)
 
         if abs(JS_X) > deadBand and abs(JS_Y) > deadBand:
             tspeed_1 = int(tspeedMiddle + forward1 + turn1)  # left thruster
@@ -154,15 +156,16 @@ def loop():
         elif abs(JS_X) <= deadBand < abs(JS_Y):
             tspeed_1 = int(tspeedMiddle - forward1)  # cast to integer
             tspeed_2 = int(tspeedMiddle - forward2)
-        else:
-            tspeed_1 = 1500
-            tspeed_2 = 1500
 
         # assign statuses to toArduino
         toArduino[0] = tspeed_1  # left thruster
         toArduino[1] = tspeed_2  # right thruster
-        toArduino[2] = buttonopen
-        toArduino[3] = buttonclose
+        toArduino[2] = tspeed_3
+        toArduino[3] = tspeed_4
+        toArduino[4] = buttonopen
+        toArduino[5] = buttonclose
+        toArduino[6] = upconst
+        toArduino[7] = downconst
 
         for i in range(2):  # making sure thruster values don't go above 1900 and below 1100
             if toArduino[i] > 1900:
@@ -171,26 +174,28 @@ def loop():
                 toArduino[i] = 1100
 
         if j.get_button(selectButton) == 1:
-            serial_send_and_print(1500, 1500, 0, 0)
+            serial_send_print(1500, 1500, 0, 0)
             break
-        serial_send_and_print(str(toArduino[0]), str(toArduino[1]), str(toArduino[2]), str(toArduino[3]))
+        serial_send_print(str(toArduino[0]), str(toArduino[1]), str(toArduino[2]), str(toArduino[3]))
         pygame.event.clear()
         sleep(loopSleep)
 
 
-def serial_send_and_print(w, x, y, z):
+def serial_send_print(a, b, c, d, e, f, g):  # seven rings by ariana grande
 
-    stringToSend = str(w) + ',' + str(x) + ',' + str(y) + ',' + str(z) + '\n'
+    stringToSend = '%s,%s,%s,%s,%s,%s,%s\n' %(a, b, c, d, e, f, g)
     print('py: ' + stringToSend)  # print python
     if serialOn:
         arduino.write(stringToSend.encode("ascii"))  # send to arduino
         while arduino.in_waiting < 10:  # wait for data
             pass
-        data = arduino.readline().decode("ascii")  # read arduino data
-        print('ard: ' + data)  # print arduino data
+        stringFromArd = arduino.readline().decode("ascii")  # read arduino data
+        print('ard: ' + stringFromArd)  # print arduino data
     else:
         print('ard: ')
 
 
 if __name__ == "__main__":
     joy_init()
+    # serial_send_print(1, 2, 3, 2, 3, 3, 3)
+

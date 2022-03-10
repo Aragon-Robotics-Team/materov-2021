@@ -3,11 +3,13 @@
 Servo servo;
 Servo thruster1;
 Servo thruster2;
-//Servo thruster2;
+Servo thruster3;
+Servo thruster4;
+
 int thruster1signal;
 int thruster2signal;
-int thruster3;
-int thruster4;
+int thruster3signal;
+int thruster4signal;
 
 int sendValue;
 int servoopen;
@@ -19,11 +21,15 @@ int var;
 
 void setup() {
   Serial.begin(115200);
-  servo.attach(9);
-  thruster1.attach(10);
-  thruster2.attach(11);
+  servo.attach(9); //servo pin
+  thruster1.attach(2); //thruster pins
+  thruster2.attach(3);
+  thruster3.attach(4);
+  thruster4.attach(5);
   thruster1.writeMicroseconds(1500);
   thruster2.writeMicroseconds(1500);
+  thruster3.writeMicroseconds(1500);
+  thruster4.writeMicroseconds(1500);
   servo.write(90);
   angle = 90;
 }
@@ -33,8 +39,8 @@ void loop(){
  
   thruster1signal = Serial.readStringUntil(',').toInt();
   thruster2signal = Serial.readStringUntil(',').toInt();
-//  thruster3 = Serial.readStringUntil(',').toInt();
-//  thruster4 = Serial.readStringUntil(',').toInt();
+  thruster3signal = Serial.readStringUntil(',').toInt();
+  thruster4signal = Serial.readStringUntil(',').toInt();
   
   sendValue = Serial.readStringUntil(',').toInt();
   servoopen = Serial.readStringUntil('\n').toInt();
@@ -45,7 +51,9 @@ void loop(){
   Serial.println(
     String(thruster1signal) + "," 
   + String(thruster2signal) + "," 
-  + String(sendValue) + "," 
+  + String(thruster3signal) + ","
+  + String(thruster4signal) + ","
+  + String(sendValue) + ","
   + String(servoopen)
   );
 
@@ -55,6 +63,12 @@ thruster1.writeMicroseconds(thruster1signal);
 }
 if(thruster2signal < 1900 && thruster2signal > 1100){
 thruster2.writeMicroseconds(thruster2signal);
+}
+if(thruster3signal < 1900 && thruster3signal > 1100){
+thruster3.writeMicroseconds(thruster3signal);
+}
+if(thruster4signal < 1900 && thruster4signal > 1100){
+thruster4.writeMicroseconds(thruster4signal);
 }
   
 //servo output
