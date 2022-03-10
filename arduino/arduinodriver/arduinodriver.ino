@@ -51,8 +51,6 @@ void loop(){
   upButton = Serial.readStringUntil(',').toInt();
   downButton = Serial.readStringUntil(',').toInt();
 
-
-
 //send to python
 
   Serial.println(
