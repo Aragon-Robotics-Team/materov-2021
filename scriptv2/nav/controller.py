@@ -133,7 +133,7 @@ def loop():
         downconst = j.get_button(squareButton)
         JS_X = j.get_axis(LH)
         JS_Y = j.get_axis(LV) # y-direction joystick values are flipped
-        JS_Y_UD = j.get_axis()
+        JS_Y_UD = j.get_axis(RV)
 
         # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
         turn1, turn2,  = JS_X * mapK, JS_X * mapK
