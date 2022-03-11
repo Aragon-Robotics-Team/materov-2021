@@ -1,6 +1,6 @@
 import cv2
 
-videoCaptureObject = cv2.VideoCapture(0)
+videoCaptureObject = cv2.VideoCapture(-1)
 result = True
 
 while result:
