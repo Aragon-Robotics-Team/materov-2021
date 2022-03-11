@@ -64,35 +64,36 @@ void loop(){
   + String(downButton);
 
 //thruster output
-if(thruster1signal < 1900 && thruster1signal > 1100){
-thruster1.writeMicroseconds(thruster1signal);
+if(thruster1signal > 1900 || thruster1signal < 1100){
+thruster1signal = 1500;
 }
-if(thruster2signal < 1900 && thruster2signal > 1100){
-thruster2.writeMicroseconds(thruster2signal);
+if(thruster2signal > 1900 || thruster2signal < 1100){
+thruster2signal = 1500;
 }
 
 if(upButton == 1){
-thruster3signal.writeMicroseconds(upSpeed);
-thruster4signal.writeMicroseconds(upSpeed);
+thruster3signal = upSpeed;
+thruster4signal = upSpeed;
 }
 else if(downButton == 1){
-thruster3signal.writeMicroseconds(downSpeed);
-thruster4signal.writeMicroseconds(downSpeed);
+thruster3signal = downSpeed;
+thruster4signal = downSpeed;
 }
-else if(thruster3signal < 1900 && thruster3signal > 1100){
-thruster3.writeMicroseconds(thruster3signal);
-thruster4.writeMicroseconds(thruster4signal);
+else if(thruster3signal > 1900 || thruster3signal < 1100){
+thruster3signal = 1500;
+thruster4signal = 1500;
 }
   
 //servo output
 if(servo.read() > 5 && sendValue == 1){
   angle = angle - 5;
-  servo.write(angle);
   }
 else if(servo.read() <  175 && servOpen == 1){
   angle = angle + 5;
-  servo.write(angle);
   }
+
+servo.write(angle);
+
 //
 //  if(sendValue == 1){
 //      if (servo.read()> 0 && servo.read()<= 175){

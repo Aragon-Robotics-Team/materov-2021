@@ -254,9 +254,9 @@ def loop():
                 toArduino[i] = 1100
 
         if j.get_button(selectButton) == 1:
-            serial_send_print(1500, 1500, 0, 0)
+            serial_send_print(1500, 1500, 1500, 1500, 0, 0, 0)
             break
-        serial_send_print(str(toArduino[0]), str(toArduino[1]), str(toArduino[2]), str(toArduino[3]))
+        serial_send_print(str(toArduino[0]), str(toArduino[1]), str(toArduino[2]), str(toArduino[3]), str(toArduino[4]), str(toArduino[5]), str(toArduino[6]))
         pygame.event.clear()
         sleep(loopSleep)
 
@@ -265,14 +265,13 @@ def serial_send_print(a, b, c, d, e, f, g):  # seven rings by ariana grande
 
     stringToSend = '%s,%s,%s,%s,%s,%s,%s\n' %(a, b, c, d, e, f, g)
     print('py: ' + stringToSend)  # print python
+    stringFromArd = ''
     if serialOn:
         arduino.write(stringToSend.encode("ascii"))  # send to arduino
         while arduino.in_waiting < 10:  # wait for data
             pass
         stringFromArd = arduino.readline().decode("ascii")  # read arduino data
-        print('ard: ' + stringFromArd)  # print arduino data
-    else:
-        print('ard: ')
+    print('ard: ' + stringFromArd)  # print arduino data
 
 
 if __name__ == "__main__":
