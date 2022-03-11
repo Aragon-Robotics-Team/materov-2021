@@ -85,6 +85,11 @@ else if(servo.read() <  175 && servOpen == 1){
   }
 
 servo.write(angle);
+thruster1.writeMicroseconds(thruster1signal)
+thruster2.writeMicroseconds(thruster2signal)
+thruster3.writeMicroseconds(thruster3signal)
+thruster4.writeMicroseconds(thruster4signal)
+thruster5.writeMicroseconds(thruster5signal)
 
 //
 //  if(sendValue == 1){
@@ -101,8 +106,5 @@ servo.write(angle);
 //    if(sendValue == 60){
 //      angle = angle + 0;
 //    }
-  
+
   }
-
-
-  
