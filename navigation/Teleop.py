@@ -228,12 +228,14 @@ def loop():
         updown = JS_Y_UD * mapK
 
         # calculating thruster speeds
-        tspeed_1, tspeed_2, tspeed_3, tspeed_4, tspeed_5 = 1500, 1500, 1500, 1500, 1500
+        tspeed_1, tspeed_2, tspeed_3, tspeed_4 = 1500, 1500, 1500, 1500
 
         if abs(upconst) == 1:
-            tspeed_5 = 1700
+            tspeed_3 = 1700
+            tspeed_4 = 1700
         if abs(downconst) == 1:
-            tspeed_5 = 1300
+            tspeed_3 = 1300
+            tspeed_4 = 1300
 
         if abs(JS_Y_UD) > deadBand:
             tspeed_3 = int(tspeedMiddle + updown)  # side thrusters
@@ -254,9 +256,8 @@ def loop():
         toArduino[1] = tspeed_2  # right thruster
         toArduino[2] = tspeed_3
         toArduino[3] = tspeed_4
-        toArduino[4] = tspeed_5
-        toArduino[5] = buttonopen
-        toArduino[6] = buttonclose
+        toArduino[4] = buttonopen
+        toArduino[5] = buttonclose
 
         for i in range(2):  # making sure thruster values don't go above 1900 and below 1100
             if toArduino[i] > 1900:
@@ -265,16 +266,16 @@ def loop():
                 toArduino[i] = 1100
 
         if j.get_button(selectButton) == 1:
-            serial_send_print(1500, 1500, 1500, 1500, 0, 0, 0)
+            serial_send_print(1500, 1500, 1500, 1500, 0, 0)
             break
-        serial_send_print(str(toArduino[0]), str(toArduino[1]), str(toArduino[2]), str(toArduino[3]), str(toArduino[4]), str(toArduino[5]), str(toArduino[6]))
+        serial_send_print(str(toArduino[0]), str(toArduino[1]), str(toArduino[2]), str(toArduino[3]), str(toArduino[4]), str(toArduino[5]))
         pygame.event.clear()
         sleep(loopSleep)
 
 
-def serial_send_print(a, b, c, d, e, f, g):  # seven rings by ariana grande
+def serial_send_print(a, b, c, d, e, f):  # six rings by ariana grande
 
-    stringToSend = '%s,%s,%s,%s,%s,%s,%s\n' %(a, b, c, d, e, f, g)
+    stringToSend = '%s,%s,%s,%s,%s,%s\n' % (a, b, c, d, e, f)
     print('py: ' + stringToSend)  # print python
     stringFromArd = ''
     if serialOn:
