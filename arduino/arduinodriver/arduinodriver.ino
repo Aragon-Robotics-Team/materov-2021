@@ -10,6 +10,7 @@ int thruster1signal;
 int thruster2signal;
 int thruster3signal;
 int thruster4signal;
+int thruster5signal;
 int upSpeed = 1700;
 int downSpeed = 1300;
 
@@ -37,31 +38,29 @@ void setup() {
   servo.write(90);
   angle = 90;
 }
-  
+
 void loop(){
   while (!Serial.available());
- 
+
   thruster1signal = Serial.readStringUntil(',').toInt();
   thruster2signal = Serial.readStringUntil(',').toInt();
   thruster3signal = Serial.readStringUntil(',').toInt();
   thruster4signal = Serial.readStringUntil(',').toInt();
-  
+  thruster5signal = Serial.readStringUntil(',').toInt();
   sendValue = Serial.readStringUntil(',').toInt();
   servoOpen = Serial.readStringUntil(',').toInt();
-  upButton = Serial.readStringUntil(',').toInt();
-  downButton = Serial.readStringUntil(',').toInt();
+
 
 //send to python
 
   Serial.println(
-    String(thruster1signal) + "," 
-  + String(thruster2signal) + "," 
+    String(thruster1signal) + ","
+  + String(thruster2signal) + ","
   + String(thruster3signal) + ","
   + String(thruster4signal) + ","
+  + String(thruster5signal) + ","
   + String(sendValue) + ","
-  + String(servoOpen) + ","
-  + String(upButton) + ","
-  + String(downButton);
+  + String(servoOpen));
 
 //thruster output
 if(thruster1signal > 1900 || thruster1signal < 1100){
@@ -83,7 +82,6 @@ else if(thruster3signal > 1900 || thruster3signal < 1100){
 thruster3signal = 1500;
 thruster4signal = 1500;
 }
-  
 //servo output
 if(servo.read() > 5 && sendValue == 1){
   angle = angle - 5;

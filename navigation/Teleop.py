@@ -18,7 +18,7 @@ LV = 1  # Left vertical axis
 RH = 2  # Right horizontal axis
 RV = 3  # Right vertical axis
 
-serialPort = '/dev/cu.usbmodem14101'
+serialPort = '/dev/cu.usbmodem142201'
 controllerName = None
 
 mapK = 400
@@ -27,10 +27,17 @@ tspeedMiddle = 1500
 startButton = 9  # starts loop()
 selectButton = 8  # exits loop()
 
-squareButton = 3  # button open
-triangleButton = 2  # button close
-circleButton = 1  # up constant speed
-xButton = 0  # down constant speed
+#this is for the ps3 controller - used for the thrusters and servo
+squareButton = 15  # button open
+triangleButton = 12  # button close
+circleButton = 13  # up constant speed
+xButton = 14  # down constant speed
+
+#this is for the ps4 controller - used for the thrusters and servo
+# squareButton = 3  # button open
+# triangleButton = 2  # button close
+# circleButton = 1  # up constant speed
+# xButton = 0  # down constant speed
 
 initSleep = 3
 loopSleep = 1/15
@@ -210,10 +217,10 @@ def loop():
         buttonopen = j.get_button(squareButton)
         buttonclose = j.get_button(triangleButton)
         upconst = j.get_button(circleButton)
-        downconst = j.get_button(squareButton)
+        downconst = j.get_button(xButton)
         JS_X = j.get_axis(LH)
         JS_Y = j.get_axis(LV) # y-direction joystick values are flipped
-        JS_Y_UD = j.get_axis()
+        JS_Y_UD = j.get_axis(RV)
 
         # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
         turn1, turn2,  = JS_X * mapK, JS_X * mapK
@@ -221,7 +228,12 @@ def loop():
         updown = JS_Y_UD * mapK
 
         # calculating thruster speeds
-        tspeed_1, tspeed_2, tspeed_3, tspeed_4 = 1500, 1500, 1500, 1500
+        tspeed_1, tspeed_2, tspeed_3, tspeed_4, tspeed_5 = 1500, 1500, 1500, 1500, 1500
+
+        if abs(upconst) == 1:
+            tspeed_5 = 1700
+        if abs(downconst) == 1:
+            tspeed_5 = 1300
 
         if abs(JS_Y_UD) > deadBand:
             tspeed_3 = int(tspeedMiddle + updown)  # side thrusters
@@ -242,10 +254,9 @@ def loop():
         toArduino[1] = tspeed_2  # right thruster
         toArduino[2] = tspeed_3
         toArduino[3] = tspeed_4
-        toArduino[4] = buttonopen
-        toArduino[5] = buttonclose
-        toArduino[6] = upconst
-        toArduino[7] = downconst
+        toArduino[4] = tspeed_5
+        toArduino[5] = buttonopen
+        toArduino[6] = buttonclose
 
         for i in range(2):  # making sure thruster values don't go above 1900 and below 1100
             if toArduino[i] > 1900:
