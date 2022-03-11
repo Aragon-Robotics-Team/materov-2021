@@ -69,19 +69,13 @@ thruster1signal = 1500;
 if(thruster2signal > 1900 || thruster2signal < 1100){
 thruster2signal = 1500;
 }
-
-if(upButton == 1){
-thruster3signal = upSpeed;
-thruster4signal = upSpeed;
-}
-else if(downButton == 1){
-thruster3signal = downSpeed;
-thruster4signal = downSpeed;
-}
-else if(thruster3signal > 1900 || thruster3signal < 1100){
+if(thruster3signal > 1900 || thruster3signal < 1100){
 thruster3signal = 1500;
+}
+if(thruster4signal > 1900 || thruster4signal < 1100){
 thruster4signal = 1500;
 }
+
 //servo output
 if(servo.read() > 5 && sendValue == 1){
   angle = angle - 5;
