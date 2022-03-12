@@ -103,7 +103,7 @@ def joy_tests():
                     print("Select has been pressed")
                 if event.button == 9:
                     print("Start has been pressed. Will exit joytests")
-                    loop()  # starts loop()
+                    NonLinearLoop()  # starts loop()
                 if event.button == 10:
                     print("Center has been pressed")
                 if event.button == 11:
@@ -135,7 +135,7 @@ def joy_tests():
                     four = j.get_axis(4)
                     print('4 (right vertical) has been moved ' + str(four))
 
-def loop():
+def LinearLoop():
     while True:
         pygame.event.pump()
         # get buttons
@@ -178,6 +178,77 @@ def loop():
         elif abs(JS_X) <= deadBand < abs(JS_Y):
             tspeed_1 = int(tspeedMiddle - forward1)  # cast to integer
             tspeed_2 = int(tspeedMiddle - forward2)
+
+        # assign statuses to toArduino
+        toArduino[0] = tspeed_1  # left thruster
+        toArduino[1] = tspeed_2  # right thruster
+        toArduino[2] = tspeed_3
+        toArduino[3] = tspeed_4
+        toArduino[4] = buttonopen
+        toArduino[5] = buttonclose
+
+        for i in range(2):  # making sure thruster values don't go above 1900 and below 1100
+            if toArduino[i] > 1900:
+                toArduino[i] = 1900
+            if toArduino[i] < 1100:
+                toArduino[i] = 1100
+
+        if j.get_button(selectButton) == 1:
+            serial_send_print(1500, 1500, 1500, 1500, 0, 0)
+            print('Stopping teleop')
+            break
+        serial_send_print(str(toArduino[0]), str(toArduino[1]), str(toArduino[2]), str(toArduino[3]), str(toArduino[4]), str(toArduino[5]))
+        pygame.event.clear()
+        sleep(loopSleep)
+
+def NonLinearLoop():
+    while True:
+        pygame.event.pump()
+        # get buttons
+        # get thrusters
+        # write and read
+
+        buttonopen = j.get_button(squareButton)
+        buttonclose = j.get_button(triangleButton)
+        upconst = j.get_button(circleButton)
+        downconst = j.get_button(xButton)
+        JS_X = j.get_axis(LH)
+        JS_Y = j.get_axis(LV) # y-direction joystick values are flipped
+        JS_Y_UD = -j.get_axis(RV)
+
+        updown = JS_Y_UD * mapK
+
+        NL_X = mapK *(JS_X**3)
+        NL_Y = mapK *(JS_Y**3)
+
+        # calculating thruster speeds
+        tspeed_1, tspeed_2, tspeed_3, tspeed_4 = 1500, 1500, 1500, 1500
+
+        # button z thrusters
+        if abs(upconst) == 1:
+            tspeed_3 = 1700
+            tspeed_4 = 1700
+        if abs(downconst) == 1:
+            tspeed_3 = 1300
+            tspeed_4 = 1300
+
+        # joystick z thrusters
+        if abs(JS_Y_UD) > deadBand:
+            tspeed_3 = int(tspeedMiddle + updown)  # side thrusters
+            tspeed_4 = int(tspeedMiddle + updown)
+
+        if abs(JS_X) > deadBand and abs(JS_Y) > deadBand: #calculate thruster values
+            tspeed_1 = int(tspeedMiddle + NL_X + NL_Y)
+            tspeed_2 = int(tspeedMiddle + (NL_X - NL_Y))
+        elif abs(JS_X) > deadBand and abs(JS_Y) <= deadBand: #only turn
+            tspeed_1 = int(tspeedMiddle + NL_X)  # cast to integer
+            tspeed_2 = int(tspeedMiddle - NL_X)
+        elif abs(JS_X) <= deadBand and abs(JS_Y) > deadBand: #only forward/back
+            tspeed_1 = int(tspeedMiddle - NL_Y)  # cast to integer
+            tspeed_2 = int(tspeedMiddle - NL_Y)
+        else:
+            tspeed_1 = 1500
+            tspeed_2 = 1500
 
         # assign statuses to toArduino
         toArduino[0] = tspeed_1  # left thruster
