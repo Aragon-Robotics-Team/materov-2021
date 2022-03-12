@@ -33,7 +33,7 @@ mapK = 400
 tspeedMiddle = 1500
 
 startButton = 9  # starts loop()
-selectButton = 8  # exits loop()
+shareButton = 8  # exits loop()
 squareButton = 3  # button open
 triangleButton = 2  # button close
 
@@ -128,7 +128,7 @@ def joy_tests():
 
 def joy_tests_ps3():
     global startButton
-    global selectButton
+    global shareButton
     global squareButton
     global triangleButton
     startButton = 3  # starts loop()
@@ -236,7 +236,7 @@ def loop():
             if toArduino[i] < 1100:
                 toArduino[i] = 1100
 
-        if j.get_button(selectButton) == 1:
+        if j.get_button(shareButton) == 1:
             serial_send_and_print(1500, 1500, 0, 0)
             break
         serial_send_and_print(str(toArduino[0]), str(toArduino[1]), str(toArduino[2]), str(toArduino[3]))

@@ -25,7 +25,7 @@ mapK = 400
 tspeedMiddle = 1500
 
 startButton = 9  # starts loop()
-selectButton = 8  # exits loop()
+shareButton = 8  # exits loop()
 
 #this is for the ps3 controller - used for the thrusters and servo
 squareButton = 15  # button open
@@ -73,7 +73,7 @@ def joy_init():
 
 def joy_tests():
     global startButton
-    global selectButton
+    global shareButton
     global squareButton
     global triangleButton
     startButton = 9  # starts loop()
@@ -141,7 +141,7 @@ def joy_tests():
 
 def joy_tests_ps3():
     global startButton
-    global selectButton
+    global shareButton
     global squareButton
     global triangleButton
     startButton = 3  # starts loop()
@@ -265,7 +265,7 @@ def loop():
             if toArduino[i] < 1100:
                 toArduino[i] = 1100
 
-        if j.get_button(selectButton) == 1:
+        if j.get_button(shareButton) == 1:
             serial_send_print(1500, 1500, 1500, 1500, 0, 0)
             break
         serial_send_print(str(toArduino[0]), str(toArduino[1]), str(toArduino[2]), str(toArduino[3]), str(toArduino[4]), str(toArduino[5]))

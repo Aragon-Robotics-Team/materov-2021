@@ -25,7 +25,7 @@ mapK = 400
 tspeedMiddle = 1500
 
 startButton = 9  # starts loop()
-selectButton = 8  # exits loop()
+shareButton = 8  # exits loop()
 
 #this is for the ps3 controller - used for the thrusters and servo
 #squareButton = 15  # button open
@@ -70,11 +70,11 @@ def joy_init():
 
 def joy_tests():
     global startButton
-    global selectButton
+    global shareButton
     global squareButton
     global triangleButton
     startButton = 9  # starts loop()
-    selectButton = 8  # exits loop()
+    shareButton = 8  # exits loop()
     squareButton = 3  # button open
     triangleButton = 2  # button close
 
@@ -100,12 +100,12 @@ def joy_tests():
                 if event.button == 7:
                     print("Shoulder R2 has been pressed")
                 if event.button == 8:
-                    print("Select has been pressed")
+                    print("Share has been pressed")
                 if event.button == 9:
-                    print("Start has been pressed. Will exit joytests")
+                    print("Start has been pressed. Starting teleop")
                     LinearLoop()  # starts loop()
                 if event.button == 10:
-                    print("Center has been pressed")
+                    print("Center has been pressed. starting nonlinear")
                     NonLinearLoop()
                 if event.button == 11:
                     print("Left Joystick button has been pressed")
@@ -194,7 +194,7 @@ def LinearLoop():
             if toArduino[i] < 1100:
                 toArduino[i] = 1100
 
-        if j.get_button(selectButton) == 1:
+        if j.get_button(shareButton) == 1:
             serial_send_print(1500, 1500, 1500, 1500, 0, 0)
             print('Stopping teleop')
             break
@@ -265,7 +265,7 @@ def NonLinearLoop():
             if toArduino[i] < 1100:
                 toArduino[i] = 1100
 
-        if j.get_button(selectButton) == 1:
+        if j.get_button(shareButton) == 1:
             serial_send_print(1500, 1500, 1500, 1500, 0, 0)
             print('Stopping teleop')
             break
@@ -290,5 +290,3 @@ def serial_send_print(a, b, c, d, e, f):  # six rings by ariana grande
 if __name__ == "__main__":
     joy_init()
     # serial_send_print(1, 2, 3, 2, 3, 3, 3)
-
-
