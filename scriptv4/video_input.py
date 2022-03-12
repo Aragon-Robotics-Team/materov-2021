@@ -1,6 +1,6 @@
 import glob
 
-import keyboard
+# import keyboard
 
 from img_proc.photomosaic import cropping #import functions directly so we don't have to change code that much
 from img_proc.photomosaic import resize_image
@@ -17,6 +17,8 @@ def general_video():
     #in which case, cv2.imwrite() to the image file that we will be showing for the video feed
 
 def photomosaic():
+    import keyboard
+    print("starting photomosaic")
     ret, frame = glob.videoCaptureObject.read()
     # cv2.imshow("Photomosaic Capturing Video", frame)
     if keyboard.is_pressed('s'):
@@ -34,7 +36,7 @@ def photomosaic():
                 resized = resize_image(cv2.imread(glob.snapshots[glob.photomosaicCount]), height_ratio, height_ratio)
 
             cv2.imwrite(glob.snapshots[glob.photomosaicCount], resized)
-            print("Snapshot #" + str(glob.photomosaicCount) + " taken")
+            print("Snapshot #" + str(glob.phtomosaicCount) + " taken")
             #cv2.imshow(glob.snapshots[i], frame)
             time.sleep(1)
             glob.photomosaicCount += 1

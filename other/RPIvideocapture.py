@@ -12,7 +12,7 @@ result = True
 
 while result:
     camera.capture(rawCapture, format = "bgr")
-    image = rawCapture.PiRGBArray
+    image = rawCapture.array
     cv2.imshow("Image", image)
     # if (cv2.waitKey(1) & 0xFF == ord('q')):
     #     videoCaptureObject.release()
