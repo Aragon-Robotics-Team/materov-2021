@@ -103,9 +103,10 @@ def joy_tests():
                     print("Select has been pressed")
                 if event.button == 9:
                     print("Start has been pressed. Will exit joytests")
-                    NonLinearLoop()  # starts loop()
+                    LinearLoop()  # starts loop()
                 if event.button == 10:
                     print("Center has been pressed")
+                    NonLinearLoop()
                 if event.button == 11:
                     print("Left Joystick button has been pressed")
                 if event.button == 12:
