@@ -12,6 +12,7 @@ def appStart(input_q, output_q, fish_q):
     output_queue = output_q
     fish_queue = fish_q
 
+    #fish_queue.put()
     videoCaptureObject = cv2.VideoCapture(0)
     class Application(tk.Frame):
         def __init__(self, master = None):
@@ -41,6 +42,9 @@ def appStart(input_q, output_q, fish_q):
             # video_thread.start()
             self.show_frames()
 
+        # root = tk.Tk()
+        # root.geometry("1300x750")
+
         #PHOTOMOSAIC ------------------------------------------------------------------------------------------------------
 
         #MEASURE FISHIES ------------------------------------------------------------------------------------------------------
@@ -59,7 +63,18 @@ def appStart(input_q, output_q, fish_q):
         def resetMeasureFish(self):
             measure_fishes.resetFish()
 
+        # label = tk.Label(root, text = "(Click to 3 times to take photos and calculate)", font = 10)
+        # label.grid(row = 3, column = 1, sticky = 'n')
+        #
+        # btn = tk.Button(root, text="Measure Fish", command = start_measure_fish)
+        # btn.grid(row = 2,column = 1, sticky = 'e')
+
         #VIDEO FEED ------------------------------------------------------------------------------------------------------
+        #cap = cv2.VideoCapture(0)
+
+        # label = tk.Label(root, height = 700, width = 1000)
+        # label.grid(row = 0, column = 0, rowspan = 30)
+        # Define function to show frame
         def show_frames(self):
            # Get the latest frame and convert into Image
            cv2image= cv2.cvtColor(videoCaptureObject.read()[1],cv2.COLOR_BGR2RGB)
@@ -70,6 +85,36 @@ def appStart(input_q, output_q, fish_q):
            self.vid_label.configure(image=imgtk)
            # Repeat after an interval to capture continiously
            self.vid_label.after(10, self.show_frames)
+
+
+        #SET UP ------------------------------------------------------------------------------------------------------
+        # def setup(self):
+        #     root = tk.Tk()
+        #     root.geometry("1300x750")
+        #
+        #     #MEASURE FISHIES ------------------------------------------------------------------------------------------------------
+        #     label = tk.Label(root, text = "(Click to 3 times to take photos and calculate)", font = 10)
+        #     label.grid(row = 3, column = 1, sticky = 'n')
+        #
+        #     btn = tk.Button(root, text="Measure Fish", command = self.start_measure_fish)
+        #     btn.grid(row = 2,column = 1, sticky = 'e')
+        #
+        #     #VIDEO FEED ------------------------------------------------------------------------------------------------------
+        #     label = tk.Label(root, height = 700, width = 1000)
+        #     label.grid(row = 0, column = 0, rowspan = 30)
+
+            # def show_frames(label):
+            #    # Get the latest frame and convert into Image
+            #    cv2image= cv2.cvtColor(videoCaptureObject.read()[1],cv2.COLOR_BGR2RGB)
+            #    img = Image.fromarray(cv2image)
+            #    # Convert image to PhotoImage
+            #    imgtk = ImageTk.PhotoImage(image = img)
+            #    label.imgtk = imgtk
+            #    label.configure(image=imgtk)
+            #    # Repeat after an interval to capture continiously
+            #    label.after(20, show_frames)
+            #
+            # show_frames()
 
     app = Application()
 

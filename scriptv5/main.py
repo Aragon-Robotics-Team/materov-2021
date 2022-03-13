@@ -25,6 +25,7 @@ if __name__ == "__main__":
 
     while True:
         # print("hello")
+
         if fish_queue.empty() == False:
             averageLength = fish_queue.get()
             print("averageLength recieved")
