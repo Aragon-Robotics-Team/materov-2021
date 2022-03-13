@@ -53,6 +53,7 @@ btn.grid(row = 5, column = 1, sticky = 'e')
 
 #VIDEO FEED & BUTTONS ------------------------------------------------------------------------------------------------------
 #pretty much the same lag as when the video feed is in the loop
+from PIL import Image, ImageTk
 label = Label(root, height = 700, width = 1000)
 label.grid(row = 0, column = 0, rowspan = 30)
 cap = cv2.VideoCapture(0)
