@@ -1,7 +1,7 @@
 
-from navigation.Teleop import serial_send_print, joy_tests, joy_init
-
-
+"""
+Configuration for everything
+"""
 class Config():
     def __init__(self):
         self.serialOn = False
@@ -24,9 +24,12 @@ class Config():
         self.loopSleep = 1/25
 
         self.toArduino = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]  #this array keeps updating thruster values
+        self.arduino = None
+        self.j = None
 
 class PS4Config(Config):
     def __init__(self):
+        Config.__init__(self)
         # this is for the ps4 controller
         self.squareButton = 3  # button open
         self.triangleButton = 2  # button close
@@ -35,6 +38,7 @@ class PS4Config(Config):
 
 class PS3Config(Config):
     def __init__(self):
+        Config.__init__(self)
         # this is for the ps3 controller
         self.squareButton = 15  # button open
         self.triangleButton = 12  # button close
@@ -42,5 +46,5 @@ class PS3Config(Config):
         self.xButton = 14  # down constant speed
 
 if __name__ == "__main__":
-    config = Config()
-    joy_init(config)  # calls navigation.Teleop.py methods
+    config = PS4Config()
+    print(config.serialOn)
