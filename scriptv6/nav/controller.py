@@ -83,7 +83,7 @@ def controllerStart():
                             print("Share has been pressed")
                         if event.button == 9:
                             print("Start has been pressed. Will exit joytests")
-                            loop()
+                            self.loop()
                         if event.button == 10:
                             print("Center has been pressed")
                         if event.button == 11:
@@ -115,7 +115,7 @@ def controllerStart():
                         four = j.get_axis(4)
                         print('4 (right horizontal) has been moved ' + str(four))
 
-        def loop():
+        def loop(self):
             while True:
                 pygame.event.pump()
                 #get buttons

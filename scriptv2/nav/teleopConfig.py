@@ -2,6 +2,9 @@
 """
 Configuration for everything
 """
+from navigation.Teleop import joy_init
+
+
 class Config():
     def __init__(self):
         self.serialOn = False
@@ -17,6 +20,7 @@ class Config():
         self.MinSpeed = 1100
 
         self.serialPort = '/dev/ttyACM0'
+        self.minBytes = 10
 
         self.mapK = 400
         self.tspeedMiddle = 1500
@@ -53,4 +57,4 @@ class PS3Config(Config):
 
 if __name__ == "__main__":
     config = PS4Config()
-    print(config.serialOn)
+    joy_init(config)

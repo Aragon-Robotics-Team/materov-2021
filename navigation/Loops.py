@@ -90,11 +90,11 @@ def NonLinearLoop(config):
 
         # button z thrusters
         if abs(upconst) == 1:
-            tspeeds[2] = 1700
-            tspeeds[3] = 1700
+            tspeeds[2] = config.tspeedUp
+            tspeeds[3] = config.tspeedUp
         elif abs(downconst) == 1:
-            tspeeds[2] = 1300
-            tspeeds[3] = 1300
+            tspeeds[2] = config.tspeedDown
+            tspeeds[3] = config.tspeedDown
         elif abs(JS_Y_UD) > config.deadBand:
             tspeeds[2] = int(config.tspeedMiddle + updown)  # side thrusters
             tspeeds[3] = int(config.tspeedMiddle + updown)
@@ -132,8 +132,7 @@ def serial_send_print(config):  # print to terminal / send regularly updated arr
     stringFromArd = ''
     if config.serialOn:
         config.arduino.write(stringToSend.encode("ascii"))  # send to arduino
-        while config.arduino.in_waiting < 10:  # wait for data
+        while config.arduino.in_waiting < config.minBytes:  # wait for data
             pass
         stringFromArd = config.arduino.readline().decode("ascii")  # read arduino data
     print('ard: ' + stringFromArd)  # print arduino data
-
