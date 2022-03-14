@@ -1,9 +1,14 @@
 from tkinter import *
 import glob
-from img_proc.measure_fishes import measureFishie
+from img_proc.measure_fishes import measureFish
+from img_proc.measure_fishes import averageLength
+
+from img_proc.measure_fishes import ValuesAndCalc
+
 import cv2
 import multiprocessing
 
+cap = cv2.VideoCapture(0)
 #SETUP ------------------------------------------------------------------------------------------------------
 root = Tk()
 root.geometry("1300x750")
@@ -28,9 +33,16 @@ btn = Button(root, text = "Start Photomosaic", command = startPhotomosaic)
 btn.grid(row = 1,column = 1, sticky = 'e')
 
 #MEASURE FISHIES ------------------------------------------------------------------------------------------------------
-
+fishCount = 0
 def start_measure_fish():
-    measureFishie()
+    global fishCount
+    ret, frame = cap.read()
+    if fishCount < 3:
+        measureFish(frame)
+        fishCount = fishCount + 1
+    else:    
+        averageFishLength = averageLength()
+        ValuesAndCalc(averageFishLength)
 
 label = Label(root, text = "(Click to 3 times to take photos and calculate)", font = 10)
 label.grid(row = 3, column = 1, sticky = 'n')
@@ -59,7 +71,6 @@ from PIL import Image, ImageTk
 # Create a Label to capture the Video frames
 label = Label(root, height = 700, width = 1000)
 label.grid(row = 0, column = 0, rowspan = 30)
-cap = cv2.VideoCapture(0)
 
 # Define function to show frame
 def show_frames():

@@ -9,8 +9,9 @@ class ThrusterProcess(multiprocessing.Process):
         self.input_queue = input_queue
         self.output_queue = output_queue
     def run(self):
-        p = multiprocessing.Process(target = controller.controllerStart(), args = (self.input_queue, self.output_queue, self.fish_queue))
-        p.start()
+        controller.controllerStart()
+        # p = multiprocessing.Process(target = controller.controllerStart(), args = (self.input_queue, self.output_queue, self.fish_queue))
+        # p.start()
 
 if __name__ == "__main__":
     thruster_in_queue = multiprocessing.Queue()
@@ -18,6 +19,6 @@ if __name__ == "__main__":
 
     thruster_proc = ThrusterProcess(thruster_in_queue, thruster_out_queue)
     thruster_proc.start()
-    
+
     while True:
         gui.updateGUI()

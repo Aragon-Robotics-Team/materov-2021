@@ -17,6 +17,15 @@ fishImg = ""
 fishPictureCount = 0
 allFishLengths = [0,0,0]
 
+def resetFish():
+    global allFishLengths
+    global countFishCoords
+    global fishPictureCount
+    print("Measuring Fish Task Reset")
+    allFishLengths = [0,0,0]
+    countfishCoords = 0
+    fishPictureCount = 0
+
 def click_event(event, x, y, flags, params):
     global image
     global countFishCoords
@@ -67,7 +76,7 @@ def measureFishieCalculations():
     allFishLengths[fishPictureCount] = fishLength
     fishPictureCount = fishPictureCount + 1
 
-def measureFishie():
+def measureFish(videoImg):
     #reset variables for new image
     global countFishCoords
     global measureFishieClick
@@ -76,44 +85,51 @@ def measureFishie():
     countFishCoords = 0
     measureFishieClick = True
 
-    #take 3photos and measure
+    #take 3 photos and measure
     if fishPictureCount < 3:
         #show image and read coordinates
         print("Fish #: " + str(fishPictureCount + 1))
         #ret, frame = glob.videoCaptureObject.read()
-        fishImg = glob.frame
+        #fishImg = glob.frame
+        fishImg = videoImg
         cv2.imshow("Fish", fishImg)
         cv2.setMouseCallback("Fish", click_event)
-    else:
-        #print all the measured fish lengths, input N, a, and b, and calculate the biomass of the cohort
-        print("Fish Lengths: " + str(allFishLengths))
-        averageFishLength = (allFishLengths[0]+allFishLengths[1]+allFishLengths[2])/3
-        print("Average Fish Length: " + str(averageFishLength))
 
-        askForValues = True
-        while askForValues:
-            #ask for the values
-            numFish = int(input("Enter the number of fish (N): "))
-            print("Number of Fish: " + str(numFish))
+def averageLength():
+    # else:
+    #print all the measured fish lengths, input N, a, and b, and calculate the biomass of the cohort
+    print("Fish Lengths: " + str(allFishLengths))
+    averageFishLength = (allFishLengths[0]+allFishLengths[1]+allFishLengths[2])/3
+    print("Average Fish Length: " + str(averageFishLength))
+    cv2.destroyAllWindows()
+    return averageFishLength
 
-            numA = int(input("Enter the value of A: "))
-            print("Value of A: " + str(numA))
+def ValuesAndCalc(avgFishLength):
+    askForValues = True
+    averageFishLength = avgFishLength
+    while askForValues:
+        #ask for the values
+        numFish = int(input("Enter the number of fish (N): "))
+        print("Number of Fish: " + str(numFish))
 
-            numB = int(input("Enter the value of B: "))
-            print("Value of B: " + str(numB))
+        numA = int(input("Enter the value of A: "))
+        print("Value of A: " + str(numA))
 
-            askForValuesInput = input("Are these values correct? Type Y or N: ")
+        numB = int(input("Enter the value of B: "))
+        print("Value of B: " + str(numB))
 
-            if askForValuesInput == "Y":
-                #calculate the biomass of the cohort
-                askForValues = False
-                print("Calculating biomass of the cohort using the equation M = N * a * L^b")
-                fishMass = numFish * numA * ((averageFishLength)**numB)
-                print("Biomass of the Cohort: " + str(fishMass))
-            elif askForValuesInput == "N":
-                #if these values are wrong, as for them again
-                askForValues = True
-            else:
-                print("You're kind of stupid for not even typing Y or N, enter all the values in again")
-                askForValues = True
-        cv2.destroyAllWindows()
+        askForValuesInput = input("Are these values correct? Type Y or N: ")
+
+        if askForValuesInput == "Y":
+            #calculate the biomass of the cohort
+            askForValues = False
+            print("Calculating biomass of the cohort using the equation M = N * a * L^b")
+            fishMass = numFish * numA * ((averageFishLength)**numB)
+            print("Biomass of the Cohort: " + str(fishMass))
+            #return fishMass
+        elif askForValuesInput == "N":
+            #if these values are wrong, as for them again
+            askForValues = True
+        else:
+            print("You're kind of stupid for not even typing Y or N, enter all the values in again")
+            askForValues = True
