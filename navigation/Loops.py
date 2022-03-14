@@ -51,23 +51,23 @@ def LinearLoop(config):
             tspeed_2 = int(config.tspeedMiddle - forward2)
 
         # assign statuses to toArduino
-        config.toArduino[0] = tspeed_1  # left thruster
-        config.toArduino[1] = tspeed_2  # right thruster
-        config.toArduino[2] = tspeed_3
-        config.toArduino[3] = tspeed_4
-        config.toArduino[4] = buttonopen
-        config.toArduino[5] = buttonclose
+        config.arduinoParams[0] = tspeed_1  # left thruster
+        config.arduinoParams[1] = tspeed_2  # right thruster
+        config.arduinoParams[2] = tspeed_3
+        config.arduinoParams[3] = tspeed_4
+        config.arduinoParams[4] = buttonopen
+        config.arduinoParams[5] = buttonclose
 
         for i in range(2):  # making sure thruster values don't go above 1900 and below 1100
-            if config.toArduino[i] > 1900:
-                config.toArduino[i] = 1900
-            if config.toArduino[i] < 1100:
-                config.toArduino[i] = 1100
+            if config.arduinoParams[i] > 1900:
+                config.arduinoParams[i] = 1900
+            if config.arduinoParams[i] < 1100:
+                config.arduinoParams[i] = 1100
 
         if config.j.get_button(config.shareButton) == 1:
-            serial_send_print(1500, 1500, 1500, 1500, 0, 0)
+            serial_send_print(config)
             break
-        serial_send_print(str(config.toArduino[0]), str(config.toArduino[1]), str(config.toArduino[2]), str(config.toArduino[3]), str(config.toArduino[4]), str(config.toArduino[5]))
+        serial_send_print(config)
         pygame.event.clear()
         sleep(config.loopSleep)
 
@@ -117,36 +117,34 @@ def NonLinearLoop(config):
         elif abs(JS_X) <= config.deadBand and abs(JS_Y) > config.deadBand: #only forward/back
             tspeed_1 = int(config.tspeedMiddle - NL_Y)  # cast to integer
             tspeed_2 = int(config.tspeedMiddle - NL_Y)
-        else:
-            tspeed_1 = 1500
-            tspeed_2 = 1500
 
         # assign statuses to toArduino
-        config.toArduino[0] = tspeed_1  # left thruster
-        config.toArduino[1] = tspeed_2  # right thruster
-        config.toArduino[2] = tspeed_3
-        config.toArduino[3] = tspeed_4
-        config.toArduino[4] = buttonopen
-        config.toArduino[5] = buttonclose
+        config.arduinoParams[0] = tspeed_1  # left thruster
+        config.arduinoParams[1] = tspeed_2  # right thruster
+        config.arduinoParams[2] = tspeed_3
+        config.arduinoParams[3] = tspeed_4
+        config.arduinoParams[4] = buttonopen
+        config.arduinoParams[5] = buttonclose
 
         for i in range(2):  # making sure thruster values don't go above 1900 and below 1100
-            if config.toArduino[i] > 1900:
-                config.toArduino[i] = 1900
-            if config.toArduino[i] < 1100:
-                config.toArduino[i] = 1100
+            if config.arduinoParams[i] > 1900:
+                config.arduinoParams[i] = 1900
+            if config.arduinoParams[i] < 1100:
+                config.arduinoParams[i] = 1100
 
         if config.j.get_button(config.shareButton) == 1:
-            serial_send_print(1500, 1500, 1500, 1500, 0, 0)
+            config.arduinoParams = [1500, 1500, 1500, 1500, 0, 0]
+            serial_send_print(config)
             print('Stopping teleop')
-            break
-        serial_send_print(config, str(config.toArduino[0]), str(config.toArduino[1]), str(config.toArduino[2]), str(config.toArduino[3]), str(config.toArduino[4]), str(config.toArduino[5]))
+            break  # exit entire loop
+        serial_send_print(config)
         pygame.event.clear()
         sleep(config.loopSleep)
 
 
-def serial_send_print(config, a, b, c, d, e, f):  # six rings by ariana grande
+def serial_send_print(config):  # six rings by ariana grande
 
-    stringToSend = '%s,%s,%s,%s,%s,%s\n' % (a, b, c, d, e, f)
+    stringToSend = ','.join(str(x) for x in config.arduinoParams) + '\n'
     print('py: ' + stringToSend)  # print python
     stringFromArd = ''
     if config.serialOn:

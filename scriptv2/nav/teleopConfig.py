@@ -23,7 +23,7 @@ class Config():
         self.initSleep = 3
         self.loopSleep = 1/25
 
-        self.toArduino = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]  #this array keeps updating thruster values
+        self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]  #this array keeps updating thruster values
         self.arduino = None
         self.j = None
 
