@@ -12,10 +12,16 @@ class Config():
         self.RH = 3  # Right horizontal axis
         self.RV = 4  # Right vertical axis
 
+        self.SpeedSize = 4
+        self.MaxSpeed = 1900
+        self.MinSpeed = 1100
+
         self.serialPort = '/dev/ttyACM0'
 
         self.mapK = 400
         self.tspeedMiddle = 1500
+        self.tspeedUp = 1700
+        self.tspeedDown = 1300
 
         self.startButton = 9  # starts loop()
         self.shareButton = 8  # exits loop()
