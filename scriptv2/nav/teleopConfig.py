@@ -20,23 +20,26 @@ class Config():
         self.startButton = 9  # starts loop()
         self.shareButton = 8  # exits loop()
 
-        #this is for the ps3 controller
-        #self.squareButton = 15  # button open
-        #self.triangleButton = 12  # button close
-        #self.circleButton = 13  # up constant speed
-        #self.xButton = 14  # down constant speed
-
-        #this is for the ps4 controller
-        self.squareButton = 3  # button open
-        self.triangleButton = 2  # button close
-        self.circleButton = 1  # up constant speed
-        self.xButton = 0  # down constant speed
-
         self.initSleep = 3
         self.loopSleep = 1/25
 
         self.toArduino = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]  #this array keeps updating thruster values
 
+class PS4Config(Config):
+    def __init__(self):
+        # this is for the ps4 controller
+        self.squareButton = 3  # button open
+        self.triangleButton = 2  # button close
+        self.circleButton = 1  # up constant speed
+        self.xButton = 0  # down constant speed
+
+class PS3Config(Config):
+    def __init__(self):
+        # this is for the ps3 controller
+        self.squareButton = 15  # button open
+        self.triangleButton = 12  # button close
+        self.circleButton = 13  # up constant speed
+        self.xButton = 14  # down constant speed
 
 if __name__ == "__main__":
     config = Config()

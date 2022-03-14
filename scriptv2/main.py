@@ -6,7 +6,7 @@ import cv2
 from video_input import general_video
 from video_input import photomosaic
 
-from scriptv2.nav.teleopConfig import Config
+from scriptv2.nav.teleopConfig import Config, PS3Config, PS4Config
 from navigation.Teleop import joy_init
 import threading
 
@@ -22,9 +22,9 @@ from img_proc import imgqueue
 # t1.start()
 
 if __name__ == "__main__":
-    config = Config()
+    config = PS3Config()
     joy_init(config)
-    while False:
+    while True:
         #joytests() #<-- Fatal error sometimes?????
         #imgqueue.queue() #<-- same effect as directly calling the video module; it lags bc the images are being shown and the controller
         #is being checked at the same time
