@@ -3,7 +3,7 @@
 Configuration for everything
 """
 
-from navigation.Teleop import joy_init
+from scriptv2.nav.navigation.Teleop import joy_init
 
 class Config():
     def __init__(self):
@@ -19,7 +19,7 @@ class Config():
         self.MaxSpeed = 1900
         self.MinSpeed = 1100
 
-        self.serialPort = '/dev/cu.usbmodem141101'
+        self.serialPort = '/dev/cu.usbmodem14201'
         self.minBytes = 10
 
         self.mapK = 400
