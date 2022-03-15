@@ -5,13 +5,13 @@
 CALLED BY CONTROLLER TESTS
 """
 
-import time
+from time import sleep, time
 import pygame
 import serial
 
 
 def LinearLoop(config):
-    program_starts = time.time()
+    program_starts = time()
     while True:
         pygame.event.pump()
 
