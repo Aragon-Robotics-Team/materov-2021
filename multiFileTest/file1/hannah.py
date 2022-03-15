@@ -1,1 +1,2 @@
-import file
+def min(v):
+    print(str(v))
