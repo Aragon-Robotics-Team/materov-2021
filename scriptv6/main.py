@@ -19,6 +19,12 @@ if __name__ == "__main__":
 
     thruster_proc = ThrusterProcess(thruster_in_queue, thruster_out_queue)
     thruster_proc.start()
+<<<<<<< HEAD
     #
     # while True:
     #     gui.updateGUI()
+=======
+
+    while True:
+        gui.updateGUI()
+>>>>>>> 7d6a68796e6014e5997257d2daa8a2aca4fc94ed

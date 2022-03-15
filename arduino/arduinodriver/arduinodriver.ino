@@ -22,10 +22,10 @@ int var;
 void setup() {
   Serial.begin(115200);
   servo.attach(9); //servo pin
-  thruster1.attach(2); //thruster pins
-  thruster2.attach(3);
-  thruster3.attach(4);
-  thruster4.attach(5);
+  thruster1.attach(10); //thruster pins
+  thruster2.attach(11);
+  thruster3.attach(12);
+  thruster4.attach(13);
   thruster1.writeMicroseconds(1500);
   thruster2.writeMicroseconds(1500);
   thruster3.writeMicroseconds(1500);
@@ -67,9 +67,9 @@ else if(servo.read() <  175 && servoOpen == 1){
   }
 
 servo.write(angle);
-thruster1.writeMicroseconds(thruster1signal);
-thruster2.writeMicroseconds(thruster2signal);
-thruster3.writeMicroseconds(thruster3signal);
+//thruster1.writeMicroseconds(thruster1signal);
+//thruster2.writeMicroseconds(thruster2signal);
+//thruster3.writeMicroseconds(thruster3signal);
 thruster4.writeMicroseconds(thruster4signal);
 
 //send to python
@@ -82,7 +82,7 @@ thruster4.writeMicroseconds(thruster4signal);
   + String(servoClose) + ","
   + String(servoOpen));
 
-delay(100);
+delay((1/50) * 1000);
 
 //
 //  if(sendValue == 1){

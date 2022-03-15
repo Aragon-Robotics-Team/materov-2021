@@ -2,15 +2,10 @@
 import glob
 import gui #use gui.top.update()
 
-import cv2
-from video_input import general_video
 from video_input import photomosaic
 
-from scriptv2.nav.teleopConfig import Config, PS3Config, PS4Config
-from navigation.Teleop import joy_init
-import threading
-
-from img_proc import imgqueue
+from scriptv2.nav.teleopConfig import PS3Config
+from scriptv2.nav.navigation.Teleop import joy_init
 
 #joy_init() #for controllers
 
