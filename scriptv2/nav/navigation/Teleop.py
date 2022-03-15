@@ -9,7 +9,7 @@ from time import sleep
 import pygame
 import serial
 
-from navigation.ControllerTests import joy_tests_ps3, joy_tests
+from scriptv2.nav.navigation.ControllerTests import joy_tests_ps3, joy_tests
 # DO NOT IMPORT CONFIG
 
 def joy_init(config):
