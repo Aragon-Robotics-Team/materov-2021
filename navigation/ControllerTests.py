@@ -1,9 +1,14 @@
 
 # Importing Libraries
 
+"""
+CALLED BY TELEOP
+"""
+
 from time import sleep
 import pygame
 from navigation.Loops import LinearLoop, NonLinearLoop
+
 
 def joy_tests_ps3(config):
     while config.joyTestsOn:

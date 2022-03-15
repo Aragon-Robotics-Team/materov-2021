@@ -82,7 +82,7 @@ thruster4.writeMicroseconds(thruster4signal);
   + String(servoClose) + ","
   + String(servoOpen));
 
-delay(10);
+delay((1/50) * 1000);
 
 //
 //  if(sendValue == 1){

@@ -3,6 +3,8 @@
 Configuration for everything
 """
 
+from navigation.Teleop import joy_init
+
 class Config():
     def __init__(self):
         self.serialOn = True
@@ -27,7 +29,7 @@ class Config():
 
 
         self.initSleep = 3
-        self.loopSleep = 0.04
+        self.loopSleep = 1/12
 
         self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]  #this array keeps updating thruster values
         self.arduino = None
@@ -58,6 +60,5 @@ class PS4Config(Config):
         self.shareButton = 0  # exits loop()
 
 if __name__ == "__main__":
-    pass
-    # config = PS4Config()
-    # joy_init(config)
+    config = PS4Config()
+    joy_init(config)

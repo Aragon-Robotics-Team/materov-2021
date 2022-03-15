@@ -1,12 +1,16 @@
 
 # Importing Libraries
 
+"""
+CALLED BY CONFIG
+"""
+
 from time import sleep
 import pygame
 import serial
 
 from navigation.ControllerTests import joy_tests_ps3, joy_tests
-from scriptv2.nav.teleopConfig import *
+# DO NOT IMPORT CONFIG
 
 def joy_init(config):
     ######################## 1. Initializing Serial
@@ -32,6 +36,7 @@ def joy_init(config):
 
 
 if __name__ == "__main__":
-    config = PS4Config()
-    joy_init(config)
+    pass
+    # config = PS4Config()
+    # joy_init(config)
     # serial_send_print(1, 2, 3, 2, 3, 3, 3)
