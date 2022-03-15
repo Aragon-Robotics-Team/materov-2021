@@ -2,8 +2,6 @@
 """
 Configuration for everything
 """
-from navigation.Teleop import joy_init
-
 
 class Config():
     def __init__(self):
@@ -12,14 +10,14 @@ class Config():
         self.deadBand = 0.07  # axis value must be greater than this number
         self.LH = 0  # Left horizontal axis
         self.LV = 1  # Left vertical axis
-        self.RH = 3  # Right horizontal axis
-        self.RV = 4  # Right vertical axis
+        self.RH = 2  # Right horizontal axis
+        self.RV = 3  # Right vertical axis
 
         self.SpeedSize = 4
         self.MaxSpeed = 1900
         self.MinSpeed = 1100
 
-        self.serialPort = '/dev/ttyACM0'
+        self.serialPort = '/dev/cu.usbmodem14301'
         self.minBytes = 10
 
         self.mapK = 400
@@ -27,8 +25,6 @@ class Config():
         self.tspeedUp = 1700
         self.tspeedDown = 1300
 
-        self.startButton = 9  # starts loop()
-        self.shareButton = 8  # exits loop()
 
         self.initSleep = 3
         self.loopSleep = 1/25
@@ -37,7 +33,7 @@ class Config():
         self.arduino = None
         self.j = None
 
-class PS4Config(Config):
+class PS3Config(Config):
     def __init__(self):
         Config.__init__(self)
         # this is for the ps4 controller
@@ -46,7 +42,10 @@ class PS4Config(Config):
         self.circleButton = 1  # up constant speed
         self.xButton = 0  # down constant speed
 
-class PS3Config(Config):
+        self.startButton = 9  # starts loop()
+        self.shareButton = 8  # exits loop()
+
+class PS4Config(Config):
     def __init__(self):
         Config.__init__(self)
         # this is for the ps3 controller
@@ -55,6 +54,10 @@ class PS3Config(Config):
         self.circleButton = 13  # up constant speed
         self.xButton = 14  # down constant speed
 
+        self.startButton = 3  # starts loop()
+        self.shareButton = 0  # exits loop()
+
 if __name__ == "__main__":
-    config = PS4Config()
-    joy_init(config)
+    pass
+    # config = PS4Config()
+    # joy_init(config)

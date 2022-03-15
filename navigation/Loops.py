@@ -34,10 +34,10 @@ def LinearLoop(config):
         tspeeds = [config.tspeedMiddle, config.tspeedMiddle, config.tspeedMiddle, config.tspeedMiddle, buttonopen, buttonclose]
 
         if abs(upconst) == 1:
-            tspeeds[2] = config.tspeedUp
+            tspeeds[2] = config.tspeedUp  # 1700
             tspeeds[3] = config.tspeedUp
         elif abs(downconst) == 1:
-            tspeeds[2] = config.tspeedDown
+            tspeeds[2] = config.tspeedDown  # 1300
             tspeeds[3] = config.tspeedDown
         elif abs(JS_Y_UD) > config.deadBand:
             tspeeds[2] = int(config.tspeedMiddle + updown)  # side thrusters
@@ -56,7 +56,7 @@ def LinearLoop(config):
         # assign statuses
         config.arduinoParams = tspeeds
 
-        for i in range(config.SpeedsSize):  # making sure thruster values don't go above 1900 and below 1100
+        for i in range(config.SpeedSize):  # making sure thruster values don't go above 1900 and below 1100
             config.arduinoParams[i] = min(config.MaxSpeed, config.arduinoParams[i])
             config.arduinoParams[i] = max(config.MinSpeed, config.arduinoParams[i])
 
@@ -112,7 +112,7 @@ def NonLinearLoop(config):
         # assign statuses
         config.arduinoParams = tspeeds
 
-        for i in range(config.SpeedsSize):  # making sure thruster values don't go above 1900 and below 1100
+        for i in range(config.SpeedSize):  # making sure thruster values don't go above 1900 and below 1100
             config.arduinoParams[i] = min(config.MaxSpeed, config.arduinoParams[i])
             config.arduinoParams[i] = max(config.MinSpeed, config.arduinoParams[i])
 

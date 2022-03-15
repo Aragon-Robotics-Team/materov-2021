@@ -5,7 +5,7 @@ from time import sleep
 import pygame
 from navigation.Loops import LinearLoop, NonLinearLoop
 
-def joy_tests(config):
+def joy_tests_ps3(config):
     while config.joyTestsOn:
         sleep(0.1)
         for event in pygame.event.get():
@@ -65,7 +65,7 @@ def joy_tests(config):
                     print('4 (right horizontal) has been moved ' + str(four))
 
 
-def joy_tests_ps3(config):
+def joy_tests(config):
     while config.joyTestsOn:
         sleep(0.1)
         for event in pygame.event.get():
@@ -79,7 +79,7 @@ def joy_tests_ps3(config):
                     print("Right Joystick button has been pressed")
                 if event.button == 3:
                     print("Start has been pressed. Will exit joytests.")
-                    LinearLoop()
+                    LinearLoop(config)
                 if event.button == 4:
                     print("Surface top button has been pressed")
                 if event.button == 5:
@@ -106,6 +106,7 @@ def joy_tests_ps3(config):
                     print("Square has been pressed")
                 if event.button == 16:
                     print("Center PS has been pressed")
+                    NonLinearLoop(config)
             elif event.type == pygame.JOYAXISMOTION:
                 if event.axis == 0 and abs(config.j.get_axis(0)) > config.deadBand:
                     zero = config.j.get_axis(0)
@@ -121,4 +122,8 @@ def joy_tests_ps3(config):
                     print('4 has been moved ' + str(three))
                 if event.axis == 4 and abs(config.j.get_axis(4)) > config.deadBand:
                     four = config.j.get_axis(4)
-                    print('4 has been moved ' + str(four))
+                    print('x has been moved ' + str(four))
+
+# if __name__ == '__main__':
+#     config = PS4Config()
+#     joy_init(config)
