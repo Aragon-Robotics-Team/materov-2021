@@ -1,12 +1,13 @@
 
 # Importing Libraries
 
-from time import sleep
+import time
 import pygame
 import serial
 
 
 def LinearLoop(config):
+    program_starts = time.time()
     while True:
         pygame.event.pump()
 
@@ -66,7 +67,9 @@ def LinearLoop(config):
             break
         serial_send_print(config)
         pygame.event.clear()
-        sleep(config.loopSleep)
+        time.sleep(config.loopSleep)
+        now = time.time()
+        print("It has been {0} seconds since the loop started".format(now - program_starts))
 
 
 def NonLinearLoop(config):
