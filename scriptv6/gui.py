@@ -40,7 +40,7 @@ def start_measure_fish():
     if fishCount < 3:
         measureFish(frame)
         fishCount = fishCount + 1
-    else:    
+    else:
         averageFishLength = averageLength()
         ValuesAndCalc(averageFishLength)
 

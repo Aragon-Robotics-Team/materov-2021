@@ -1,0 +1,15 @@
+Already downloaded packages:
+multiprocessing
+math
+time
+
+Imports that need to be downloaded:
+tkinter (pip3 install tk)
+opencv (pip3 install opencv-contrib-package)
+picamera (pip3 install picamera)
+imutils (pip3 install imutils)
+numpy (pip3 install numpy)
+PIL (pip3 install Pillow)
+  ^If ImageTK doesn't work, install sudo apt-get install python-imaging-tk
+pygame (pip3 install pygame)
+serial (pip3 install serial)

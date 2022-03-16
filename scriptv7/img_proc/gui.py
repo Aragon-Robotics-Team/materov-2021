@@ -12,7 +12,7 @@ def appStart(input_q, output_q, fish_q):
     output_queue = output_q
     fish_queue = fish_q
 
-    videoCaptureObject = cv2.VideoCapture(0)
+    videoCaptureObject = cv2.VideoCapture(1)
     class Application(tk.Frame):
         def __init__(self, master = None):
             print("init")
