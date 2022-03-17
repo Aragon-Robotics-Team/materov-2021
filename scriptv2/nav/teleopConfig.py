@@ -3,7 +3,7 @@
 Configuration for everything
 """
 
-from navigation.Teleop import joy_init
+from scriptv2.nav.navigation.Teleop import joy_init
 
 class Config():
     def __init__(self):
