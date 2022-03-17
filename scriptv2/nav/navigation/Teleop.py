@@ -40,3 +40,5 @@ if __name__ == "__main__":
     # config = PS4Config()
     # joy_init(config)
     # serial_send_print(1, 2, 3, 2, 3, 3, 3)
+    #test
+    #yes
