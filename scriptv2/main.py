@@ -4,8 +4,8 @@ import gui #use gui.top.update()
 
 from video_input import photomosaic
 
-from scriptv2.nav.teleopConfig import PS3Config
-from scriptv2.nav.navigation.Teleop import joy_init
+from nav.teleopConfig import PS3Config
+from nav.navigation1.Teleop import joy_init
 
 #joy_init() #for controllers
 

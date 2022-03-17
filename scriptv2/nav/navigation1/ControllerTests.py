@@ -7,7 +7,7 @@ CALLED BY TELEOP
 
 from time import sleep
 import pygame
-from scriptv2.nav.navigation.SerialLoop import LinearLoop, NonLinearLoop
+from navigation1.SerialLoop import LinearLoop, NonLinearLoop
 
 
 def joy_tests_ps3(config):
