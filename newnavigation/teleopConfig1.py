@@ -353,7 +353,7 @@ class Config:
             #     pass
             end('arduino-wait')
             stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
-        print('ard: ' + stringFromArd)  # print arduino data
+        # print('ard: ' + stringFromArd)  # print arduino data
 
 if __name__ == '__main__':
     pass
