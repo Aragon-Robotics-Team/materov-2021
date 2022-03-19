@@ -10,21 +10,24 @@ from tracer import start, end, agg
 class Config:
     def __init__(self, computerType, serialOn):
         if computerType == "RPI":
+            self.computerType = computerType
             self.serialPort = '/dev/ttyACM0'
             self.LH = 0  # Left horizontal axis
             self.LV = 1  # Left vertical axis
-            self.RH = 2  # Right horizontal axis
-            self.RV = 3  # Right vertical axis
+            self.RH = 3  # Right horizontal axis
+            self.RV = 4  # Right vertical axis
 
-            self.squareButton = 15  # button open
+            self.squareButton = 3  # button open
             self.triangleButton = 12  # button close
             self.circleButton = 13  # up constant speed
             self.xButton = 14  # down constant speed
 
-            self.startButton = 3  # starts loop()
-            self.shareButton = 0  # exits loop()
+            self.startButton = 9  # starts linear()
+            self.shareButton = 8  # exits
+            self.centerButton = 10  # non linear
 
         elif computerType == "Mac":
+            self.computerType = computerType
             self.serialPort = '/dev/cu.usbmodem14401'
             self.LH = 0  # Left horizontal axis
             self.LV = 1  # Left vertical axis
@@ -36,8 +39,9 @@ class Config:
             self.circleButton = 13  # up constant speed
             self.xButton = 14  # down constant speed
 
-            self.startButton = 3  # starts loop()
-            self.shareButton = 0  # exits loop()
+            self.startButton = 3  # starts linear()
+            self.shareButton = 0  # exits
+            self.centerButton = 16  # non linear
 
         self.serialOn = serialOn
         self.joyTestsOn = True
@@ -81,12 +85,128 @@ class Config:
 
         sleep(self.initSleep)
 
-        if controllerName == "Sony PLAYSTATION(R)3 Controller":
-            # self.joy_tests_ps3()
-            pass
-        else:
-            self.joy_tests()
+        if self.computerType=="Mac":
+            self.joy_tests_mac()
+        elif self.computerType=="RPI":
+            self.joy_tests_rpi()
 
+    def joy_tests_mac(self):
+        while self.joyTestsOn:
+            sleep(0.1)
+            for event in pygame.event.get():
+                # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
+                if event.type == pygame.JOYBUTTONDOWN:
+                    if event.button == 0:  # event.type == pygame.JOYBUTTONUP:
+                        print(event.button, "Select Has Been Pressed")
+                    if event.button == 1:
+                        print(event.button, "Left Joystick button has been pressed")
+                    if event.button == 2:
+                        print(event.button, "Right Joystick button has been pressed")
+                    if event.button == 3:
+                        print(event.button, "Start has been pressed. Will exit joytests.")
+                        self.LinearLoop()
+                    if event.button == 4:
+                        print(event.button, "Surface top button has been pressed")
+                    if event.button == 5:
+                        print(event.button, "Surface right button has been pressed")
+                    if event.button == 6:
+                        print(event.button, "Surface Bottom Has Been Pressed")
+                    if event.button == 7:
+                        print(event.button, "Surface left button has been pressed")
+                    if event.button == 8:
+                        print(event.button, "Left 2 has been pressed")
+                    if event.button == 9:
+                        print(event.button, "Right 2 has been pressed")
+                    if event.button == 10:
+                        print(event.button, "Left 1 has been pressed")
+                    if event.button == 11:
+                        print(event.button, "Right 1 has been pressed")
+                    if event.button == 12:  # event.type == pygame.JOYBUTTONUP:
+                        print(event.button, "Triangle Has Been Pressed")
+                    if event.button == 13:
+                        print(event.button, "Circle has been pressed")
+                    if event.button == 14:
+                        print(event.button, "X has been pressed")
+                    if event.button == 15:
+                        print(event.button, "Square has been pressed")
+                    if event.button == 16:
+                        print(event.button, "Center PS has been pressed")
+                        self.NonLinearLoop()
+                elif event.type == pygame.JOYAXISMOTION:
+                    if event.axis == 0 and abs(self.j.get_axis(0)) > self.deadBand:
+                        zero = self.j.get_axis(0)
+                        print('0 has been moved ' + str(zero))
+                    if event.axis == 1 and abs(self.j.get_axis(1)) > self.deadBand:
+                        one = self.j.get_axis(1)
+                        print('1 has been moved ' + str(one))
+                    if event.axis == 2 and abs(self.j.get_axis(2)) > self.deadBand:
+                        two = self.j.get_axis(2)
+                        print('2 has been moved ' + str(two))
+                    if event.axis == 3 and abs(self.j.get_axis(3)) > self.deadBand:
+                        three = self.j.get_axis(3)
+                        print('3 has been moved ' + str(three))
+                    if event.axis == 4 and abs(self.j.get_axis(4)) > self.deadBand:
+                        four = self.j.get_axis(4)
+                        print('4 has been moved ' + str(four))
+    def joy_tests_rpi(self):
+        while self.joyTestsOn:
+            sleep(0.1)
+            for event in pygame.event.get():
+                # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
+                if event.type == pygame.JOYBUTTONDOWN:
+                    if event.button == 0:  # event.type == pygame.JOYBUTTONUP:
+                        print(event.button, "X Has Been Pressed")
+                    if event.button == 1:
+                        print(event.button, "Circle has been pressed")
+                    if event.button == 2:
+                        print(event.button, "Triangle has been pressed")
+                    if event.button == 3:
+                        print(event.button, "Square has been pressed.")
+                    if event.button == 4:
+                        print(event.button, "Surface left button has been pressed")
+                    if event.button == 5:
+                        print(event.button, "Surface right button has been pressed")
+                    if event.button == 6:
+                        print(event.button, "Surface Bottom Has Been Pressed")
+                    if event.button == 7:
+                        print(event.button, "Surface left button has been pressed")
+                    if event.button == 8:
+                        print(event.button, "Share has been pressed")
+                    if event.button == 9:
+                        print(event.button, "Start has been pressed. will start linear teleop")
+                        self.LinearLoop()
+                    if event.button == 10:
+                        print(event.button, "PS Center has been pressed. will start NON linear teleop")
+                        self.NonLinearLoop()
+                    if event.button == 11:
+                        print(event.button, "Left joystick has been pressed")
+                    if event.button == 12:  # event.type == pygame.JOYBUTTONUP:
+                        print(event.button, "Right joystick Has Been Pressed")
+                    if event.button == 13:
+                        print(event.button, "cross top")
+                    if event.button == 14:
+                        print(event.button, "cross bottom")
+                    if event.button == 15:
+                        print(event.button, "cross left")
+                    if event.button == 16:
+                        print(event.button, "cross right")
+                        self.NonLinearLoop()
+                elif event.type == pygame.JOYAXISMOTION:
+                    if event.axis == 0 and abs(self.j.get_axis(0)) > self.deadBand:
+                        zero = self.j.get_axis(0)
+                        print('0 has been moved ' + str(zero))
+                    if event.axis == 1 and abs(self.j.get_axis(1)) > self.deadBand:
+                        one = self.j.get_axis(1)
+                        print('1 has been moved ' + str(one))
+                    if event.axis == 2 and abs(self.j.get_axis(2)) > self.deadBand:
+                        two = self.j.get_axis(2)
+                        print('Top Left trigger axis has been moved ' + str(two))
+                    if event.axis == 3 and abs(self.j.get_axis(3)) > self.deadBand:
+                        three = self.j.get_axis(3)
+                        print('3 has been moved ' + str(three))
+                    if event.axis == 4 and abs(self.j.get_axis(4)) > self.deadBand:
+                        four = self.j.get_axis(4)
+                        print('4 has been moved ' + str(four))
     def LinearLoop(self):
         program_starts = time()
         while True:
@@ -243,101 +363,6 @@ class Config:
             end('arduino-wait')
             stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
         print('ard: ' + stringFromArd)  # print arduino data
-
-    def joy_tests(self):
-        while self.joyTestsOn:
-            sleep(0.1)
-            for event in pygame.event.get():
-                # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
-                if event.type == pygame.JOYBUTTONDOWN:
-                    if event.button == 0:  # event.type == pygame.JOYBUTTONUP:
-                        print(event.button, "Select Has Been Pressed")
-                    if event.button == 1:
-                        print(event.button, "Left Joystick button has been pressed")
-                    if event.button == 2:
-                        print(event.button, "Right Joystick button has been pressed")
-                    if event.button == 3:
-                        print(event.button, "Start has been pressed. Will exit joytests.")
-                        self.LinearLoop()
-                    if event.button == 4:
-                        print(event.button, "Surface top button has been pressed")
-                    if event.button == 5:
-                        print(event.button, "Surface right button has been pressed")
-                    if event.button == 6:
-                        print(event.button, "Surface Bottom Has Been Pressed")
-                    if event.button == 7:
-                        print(event.button, "Surface left button has been pressed")
-                    if event.button == 8:
-                        print(event.button, "Left 2 has been pressed")
-                    if event.button == 9:
-                        print(event.button, "Right 2 has been pressed")
-                    if event.button == 10:
-                        print(event.button, "Left 1 has been pressed")
-                    if event.button == 11:
-                        print(event.button, "Right 1 has been pressed")
-                    if event.button == 12:  # event.type == pygame.JOYBUTTONUP:
-                        print(event.button, "Triangle Has Been Pressed")
-                    if event.button == 13:
-                        print(event.button, "Circle has been pressed")
-                    if event.button == 14:
-                        print(event.button, "X has been pressed")
-                    if event.button == 15:
-                        print(event.button, "Square has been pressed")
-                    if event.button == 16:
-                        print(event.button, "Center PS has been pressed")
-                        self.NonLinearLoop()
-                elif event.type == pygame.JOYAXISMOTION:
-                    if event.axis == 0 and abs(self.j.get_axis(0)) > self.deadBand:
-                        zero = self.j.get_axis(0)
-                        print('0 has been moved ' + str(zero))
-                    if event.axis == 1 and abs(self.j.get_axis(1)) > self.deadBand:
-                        one = self.j.get_axis(1)
-                        print('1 has been moved ' + str(one))
-                    if event.axis == 2 and abs(self.j.get_axis(2)) > self.deadBand:
-                        two = self.j.get_axis(2)
-                        print('2 has been moved ' + str(two))
-                    if event.axis == 3 and abs(self.j.get_axis(3)) > self.deadBand:
-                        three = self.j.get_axis(3)
-                        print('3 has been moved ' + str(three))
-                    if event.axis == 4 and abs(self.j.get_axis(4)) > self.deadBand:
-                        four = self.j.get_axis(4)
-                        print('4 has been moved ' + str(four))
-
-
-class MacConfig(Config):
-    def __init__(self):
-        super().__init__()
-        self.serialPort = '/dev/cu.usbmodem14401'
-        self.LH = 0  # Left horizontal axis
-        self.LV = 1  # Left vertical axis
-        self.RH = 2  # Right horizontal axis
-        self.RV = 3  # Right vertical axis
-
-        self.squareButton = 15  # button open
-        self.triangleButton = 12  # button close
-        self.circleButton = 13  # up constant speed
-        self.xButton = 14  # down constant speed
-
-        self.startButton = 3  # starts loop()
-        self.shareButton = 0  # exits loop()
-
-
-class RPIConfig(Config):
-    def __init__(self):
-        super().__init__()
-        self.serialPort = '/dev/ttyACM0'
-        self.LH = 0  # Left horizontal axis
-        self.LV = 1  # Left vertical axis
-        self.RH = 2  # Right horizontal axis
-        self.RV = 3  # Right vertical axis
-
-        self.squareButton = 15  # button open
-        self.triangleButton = 12  # button close
-        self.circleButton = 13  # up constant speed
-        self.xButton = 14  # down constant speed
-
-        self.startButton = 3  # starts loop()
-        self.shareButton = 0  # exits loop()
 
 if __name__ == '__main__':
     pass
