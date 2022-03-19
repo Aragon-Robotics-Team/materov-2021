@@ -8,20 +8,45 @@ from tracer import start, end, agg
 
 
 class Config:
-    def __init__(self):
-        self.serialOn = True
+    def __init__(self, computerType, serialOn):
+        if computerType == "RPI":
+            self.serialPort = '/dev/ttyACM0'
+            self.LH = 0  # Left horizontal axis
+            self.LV = 1  # Left vertical axis
+            self.RH = 2  # Right horizontal axis
+            self.RV = 3  # Right vertical axis
+
+            self.squareButton = 15  # button open
+            self.triangleButton = 12  # button close
+            self.circleButton = 13  # up constant speed
+            self.xButton = 14  # down constant speed
+
+            self.startButton = 3  # starts loop()
+            self.shareButton = 0  # exits loop()
+
+        elif computerType == "Mac":
+            self.serialPort = '/dev/cu.usbmodem14401'
+            self.LH = 0  # Left horizontal axis
+            self.LV = 1  # Left vertical axis
+            self.RH = 2  # Right horizontal axis
+            self.RV = 3  # Right vertical axis
+
+            self.squareButton = 15  # button open
+            self.triangleButton = 12  # button close
+            self.circleButton = 13  # up constant speed
+            self.xButton = 14  # down constant speed
+
+            self.startButton = 3  # starts loop()
+            self.shareButton = 0  # exits loop()
+
+        self.serialOn = serialOn
         self.joyTestsOn = True
         self.deadBand = 0.07  # axis value must be greater than this number
-        self.LH = 0  # Left horizontal axis
-        self.LV = 1  # Left vertical axis
-        self.RH = 2  # Right horizontal axis
-        self.RV = 3  # Right vertical axis
 
         self.SpeedSize = 4
         self.MaxSpeed = 1900
         self.MinSpeed = 1100
 
-        self.serialPort = '/dev/cu.usbmodem14401'  # '/dev/ttyAMA0'
         self.minBytes = 1
 
         self.mapK = 400
@@ -29,22 +54,15 @@ class Config:
         self.tspeedUp = 1700
         self.tspeedDown = 1300
 
-        self.squareButton = 15  # button open
-        self.triangleButton = 12  # button close
-        self.circleButton = 13  # up constant speed
-        self.xButton = 14  # down constant speed
-
-        self.startButton = 3  # starts loop()
-        self.shareButton = 0  # exits loop()
-
         self.initSleep = 3
-        self.loopSleep = 0.2
+        self.loopSleep = 0.1
 
         self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
         # this array keeps updating thruster values
 
         self.arduino = None
         self.j = None
+
 
     def joy_init(self):
         ######################## 1. Initializing Serial
@@ -233,58 +251,93 @@ class Config:
                 # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
                 if event.type == pygame.JOYBUTTONDOWN:
                     if event.button == 0:  # event.type == pygame.JOYBUTTONUP:
-                        print("Select Has Been Pressed")
+                        print(event.button, "Select Has Been Pressed")
                     if event.button == 1:
-                        print("Left Joystick button has been pressed")
+                        print(event.button, "Left Joystick button has been pressed")
                     if event.button == 2:
-                        print("Right Joystick button has been pressed")
+                        print(event.button, "Right Joystick button has been pressed")
                     if event.button == 3:
-                        print("Start has been pressed. Will exit joytests.")
+                        print(event.button, "Start has been pressed. Will exit joytests.")
                         self.LinearLoop()
                     if event.button == 4:
-                        print("Surface top button has been pressed")
+                        print(event.button, "Surface top button has been pressed")
                     if event.button == 5:
-                        print("Surface right button has been pressed")
+                        print(event.button, "Surface right button has been pressed")
                     if event.button == 6:
-                        print("Surface Bottom Has Been Pressed")
+                        print(event.button, "Surface Bottom Has Been Pressed")
                     if event.button == 7:
-                        print("Surface left button has been pressed")
+                        print(event.button, "Surface left button has been pressed")
                     if event.button == 8:
-                        print("Left 2 has been pressed")
+                        print(event.button, "Left 2 has been pressed")
                     if event.button == 9:
-                        print("Right 2 has been pressed")
+                        print(event.button, "Right 2 has been pressed")
                     if event.button == 10:
-                        print("Left 1 has been pressed")
+                        print(event.button, "Left 1 has been pressed")
                     if event.button == 11:
-                        print("Right 1 has been pressed")
+                        print(event.button, "Right 1 has been pressed")
                     if event.button == 12:  # event.type == pygame.JOYBUTTONUP:
-                        print("Triangle Has Been Pressed")
+                        print(event.button, "Triangle Has Been Pressed")
                     if event.button == 13:
-                        print("Circle has been pressed")
+                        print(event.button, "Circle has been pressed")
                     if event.button == 14:
-                        print("X has been pressed")
+                        print(event.button, "X has been pressed")
                     if event.button == 15:
-                        print("Square has been pressed")
+                        print(event.button, "Square has been pressed")
                     if event.button == 16:
-                        print("Center PS has been pressed")
+                        print(event.button, "Center PS has been pressed")
                         self.NonLinearLoop()
                 elif event.type == pygame.JOYAXISMOTION:
                     if event.axis == 0 and abs(self.j.get_axis(0)) > self.deadBand:
                         zero = self.j.get_axis(0)
-                        print('1 has been moved ' + str(zero))
+                        print('0 has been moved ' + str(zero))
                     if event.axis == 1 and abs(self.j.get_axis(1)) > self.deadBand:
                         one = self.j.get_axis(1)
-                        print('2 has been moved ' + str(one))
+                        print('1 has been moved ' + str(one))
                     if event.axis == 2 and abs(self.j.get_axis(2)) > self.deadBand:
                         two = self.j.get_axis(2)
-                        print('3 has been moved ' + str(two))
+                        print('2 has been moved ' + str(two))
                     if event.axis == 3 and abs(self.j.get_axis(3)) > self.deadBand:
                         three = self.j.get_axis(3)
-                        print('4 has been moved ' + str(three))
+                        print('3 has been moved ' + str(three))
                     if event.axis == 4 and abs(self.j.get_axis(4)) > self.deadBand:
                         four = self.j.get_axis(4)
-                        print('x has been moved ' + str(four))
+                        print('4 has been moved ' + str(four))
 
+
+class MacConfig(Config):
+    def __init__(self):
+        super().__init__()
+        self.serialPort = '/dev/cu.usbmodem14401'
+        self.LH = 0  # Left horizontal axis
+        self.LV = 1  # Left vertical axis
+        self.RH = 2  # Right horizontal axis
+        self.RV = 3  # Right vertical axis
+
+        self.squareButton = 15  # button open
+        self.triangleButton = 12  # button close
+        self.circleButton = 13  # up constant speed
+        self.xButton = 14  # down constant speed
+
+        self.startButton = 3  # starts loop()
+        self.shareButton = 0  # exits loop()
+
+
+class RPIConfig(Config):
+    def __init__(self):
+        super().__init__()
+        self.serialPort = '/dev/ttyACM0'
+        self.LH = 0  # Left horizontal axis
+        self.LV = 1  # Left vertical axis
+        self.RH = 2  # Right horizontal axis
+        self.RV = 3  # Right vertical axis
+
+        self.squareButton = 15  # button open
+        self.triangleButton = 12  # button close
+        self.circleButton = 13  # up constant speed
+        self.xButton = 14  # down constant speed
+
+        self.startButton = 3  # starts loop()
+        self.shareButton = 0  # exits loop()
 
 if __name__ == '__main__':
     pass
