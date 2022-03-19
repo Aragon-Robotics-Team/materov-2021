@@ -1,4 +1,4 @@
-from navigationSingleFile.teleopConfig1 import Config  # on rpi, DELETE navigationSingleFile part
+from newnavigation.teleopConfig1 import Config  # on rpi, DELETE newnavigation part
 from tracer import agg
 def main():
     robot = Config('Mac', False)

@@ -73,7 +73,7 @@ thruster4.writeMicroseconds(thruster4signal);
 
 Serial.println("recieved");
 
-delay((1/50) * 1000);
+delay((0.10) * 1000);
 
 
 }
