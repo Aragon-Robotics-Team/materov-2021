@@ -3,7 +3,7 @@ Configuration for everything
 """
 from time import sleep, time
 import pygame
-import serial
+from serial import Serial
 from tracer import start, end, agg
 
 
@@ -21,8 +21,8 @@ class Config:
         self.MaxSpeed = 1900
         self.MinSpeed = 1100
 
-        self.serialPort = '/dev/cu.usbmodem14401'
-        # self.minBytes = 10
+        self.serialPort = '/dev/cu.usbmodem14401'  # '/dev/ttyAMA0'
+        self.minBytes = 1
 
         self.mapK = 400
         self.tspeedMiddle = 1500
@@ -40,7 +40,7 @@ class Config:
         self.initSleep = 3
         self.loopSleep = 0.2
 
-        self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]
+        self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
         # this array keeps updating thruster values
 
         self.arduino = None
@@ -49,7 +49,7 @@ class Config:
     def joy_init(self):
         ######################## 1. Initializing Serial
         if self.serialOn:
-            self.arduino = serial.Serial(port=self.serialPort, baudrate=115200, timeout=1)
+            self.arduino = Serial(port=self.serialPort, baudrate=115200, timeout=1)
         ######################## 2. Initializing PyGame
         pygame.init()  # Initiate the pygame functions
         pygame.joystick.init()
@@ -133,6 +133,7 @@ class Config:
             start("end")
             start("getbutton")
             if self.j.get_button(self.shareButton) == 1:
+                self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
                 self.serial_send_print()
                 print("Stopping linear teleop")
                 for key, value in agg.items():
@@ -218,12 +219,12 @@ class Config:
         stringFromArd = ''
         if self.serialOn:
             self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
-        #     start('arduino-wait')
-        #     # while self.arduino.in_waiting < self.minBytes:  # wait for data
-        #     #     pass
-        #     end('arduino-wait')
-        #     stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
-        # print('ard: ' + stringFromArd)  # print arduino data
+            start('arduino-wait')
+            while self.arduino.in_waiting < self.minBytes:  # wait for data
+                pass
+            end('arduino-wait')
+            stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
+        print('ard: ' + stringFromArd)  # print arduino data
 
     def joy_tests(self):
         while self.joyTestsOn:
