@@ -45,7 +45,7 @@ class Config:
 
         self.serialOn = serialOn
         self.joyTestsOn = True
-        self.deadBand = 0.07  # axis value must be greater than this number
+        self.deadBand = 0.1  # axis value must be greater than this number
 
         self.SpeedSize = 4
         self.MaxSpeed = 1900
@@ -248,12 +248,12 @@ class Config:
                 tspeeds[2] = self.tspeedDown  # 1300
                 tspeeds[3] = self.tspeedDown
             elif abs(self.JS_Y_UD) > self.deadBand:
-                tspeeds[2] = int(self.tspeedMiddle + updown)  # side thrusters
-                tspeeds[3] = int(self.tspeedMiddle + updown)
+                tspeeds[2] = int(self.tspeedMiddle - updown)  # side thrusters
+                tspeeds[3] = int(self.tspeedMiddle - updown)
 
             if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:
-                tspeeds[0] = int(self.tspeedMiddle + forward1 + turn1)  # left thruster
-                tspeeds[1] = int(self.tspeedMiddle + forward2 - turn2)  # right thruster
+                tspeeds[0] = int(self.tspeedMiddle - forward1 + turn1)  # left thruster
+                tspeeds[1] = int(self.tspeedMiddle - forward2 - turn2)  # right thruster
             elif abs(self.JS_X) > self.deadBand >= abs(self.JS_Y):  # only turn
                 tspeeds[0] = int(self.tspeedMiddle + turn1)  # cast to integer
                 tspeeds[1] = int(self.tspeedMiddle - turn2)
@@ -281,8 +281,8 @@ class Config:
             self.get_buttons()
 
             NL_X = self.mapK * (self.JS_X ** 3)
-            NL_Y = self.mapK * (self.JS_Y ** 3)
-            NL_Y_UD = self.mapK * (self.JS_Y_UD ** 3)
+            NL_Y = self.mapK * ((-self.JS_Y) ** 3)
+            NL_Y_UD = self.mapK * ((-self.JS_Y_UD) ** 3)
 
             tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.buttonopen,
                        self.buttonclose]
@@ -295,8 +295,8 @@ class Config:
                 tspeeds[2] = self.tspeedDown
                 tspeeds[3] = self.tspeedDown
             elif abs(self.JS_Y_UD) > self.deadBand:
-                tspeeds[2] = int(self.tspeedMiddle - NL_Y_UD)  # side thrusters
-                tspeeds[3] = int(self.tspeedMiddle - NL_Y_UD)
+                tspeeds[2] = int(self.tspeedMiddle + NL_Y_UD)  # side thrusters
+                tspeeds[3] = int(self.tspeedMiddle + NL_Y_UD)
 
             if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:  # calculate thruster values
                 tspeeds[0] = int(self.tspeedMiddle + NL_X + NL_Y)
@@ -305,8 +305,8 @@ class Config:
                 tspeeds[0] = int(self.tspeedMiddle + NL_X)  # cast to integer
                 tspeeds[1] = int(self.tspeedMiddle - NL_X)
             elif abs(self.JS_X) <= self.deadBand < abs(self.JS_Y):  # only forward/back
-                tspeeds[0] = int(self.tspeedMiddle - NL_Y)  # cast to integer
-                tspeeds[1] = int(self.tspeedMiddle - NL_Y)
+                tspeeds[0] = int(self.tspeedMiddle + NL_Y)  # cast to integer
+                tspeeds[1] = int(self.tspeedMiddle + NL_Y)
 
             self.speed_limit(tspeeds)
             if self.check_button():
