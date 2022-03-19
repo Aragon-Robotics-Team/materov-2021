@@ -148,6 +148,7 @@ class Config:
                     if event.axis == 4 and abs(self.j.get_axis(4)) > self.deadBand:
                         four = self.j.get_axis(4)
                         print('4 has been moved ' + str(four))
+
     def joy_tests_rpi(self):
         while self.joyTestsOn:
             sleep(0.1)
@@ -206,6 +207,7 @@ class Config:
                     if event.axis == 4 and abs(self.j.get_axis(4)) > self.deadBand:
                         four = self.j.get_axis(4)
                         print('4 has been moved ' + str(four))
+
     def LinearLoop(self):
         program_starts = time()
         while True:
@@ -308,6 +310,7 @@ class Config:
 
             NL_X = self.mapK * (JS_X ** 3)
             NL_Y = self.mapK * (JS_Y ** 3)
+            NL_Y_UD = self.mapK * (JS_Y_UD ** 3)
 
             tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, buttonopen,
                        buttonclose]
@@ -320,8 +323,8 @@ class Config:
                 tspeeds[2] = self.tspeedDown
                 tspeeds[3] = self.tspeedDown
             elif abs(JS_Y_UD) > self.deadBand:
-                tspeeds[2] = int(self.tspeedMiddle + updown)  # side thrusters
-                tspeeds[3] = int(self.tspeedMiddle + updown)
+                tspeeds[2] = int(self.tspeedMiddle + NL_Y_UD)  # side thrusters
+                tspeeds[3] = int(self.tspeedMiddle + NL_Y_UD)
 
             if abs(JS_X) > self.deadBand and abs(JS_Y) > self.deadBand:  # calculate thruster values
                 tspeeds[0] = int(self.tspeedMiddle + NL_X + NL_Y)
@@ -347,7 +350,6 @@ class Config:
             self.serial_send_print()
             pygame.event.clear()
             sleep(self.loopSleep)
-
 
     def serial_send_print(self):  # print to terminal / send regularly updated array to arduino
 
