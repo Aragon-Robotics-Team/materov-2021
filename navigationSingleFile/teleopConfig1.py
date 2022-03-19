@@ -18,9 +18,9 @@ class Config:
             self.RV = 4  # Right vertical axis
 
             self.squareButton = 3  # button open
-            self.triangleButton = 12  # button close
-            self.circleButton = 13  # up constant speed
-            self.xButton = 14  # down constant speed
+            self.triangleButton = 2  # button close
+            self.circleButton = 1  # up constant speed
+            self.xButton = 0  # down constant speed
 
             self.startButton = 9  # starts linear()
             self.shareButton = 8  # exits
