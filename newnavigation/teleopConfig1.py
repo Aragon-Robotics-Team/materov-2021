@@ -352,8 +352,8 @@ class Config:
             # while self.arduino.in_waiting <= self.minBytes:  # wait for data
             #     pass
             end('arduino-wait')
-            stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
-        # print('ard: ' + stringFromArd)  # print arduino data
+            # stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
+        print('ard: ' + stringFromArd)  # print arduino data
 
 if __name__ == '__main__':
     pass
