@@ -59,7 +59,7 @@ class Config:
         self.tspeedDown = 1300
 
         self.initSleep = 3
-        self.loopSleep = 0.1
+        self.loopSleep = 0.23
 
         self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
         # this array keeps updating thruster values

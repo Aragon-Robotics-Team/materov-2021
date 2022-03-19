@@ -71,7 +71,7 @@ thruster2.writeMicroseconds(thruster2signal);
 thruster3.writeMicroseconds(thruster3signal);
 thruster4.writeMicroseconds(thruster4signal);
 
-delay((1/50) * 1000);
+delay((0.1) * 1000);
 
 
 }
