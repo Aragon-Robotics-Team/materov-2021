@@ -359,7 +359,7 @@ class Config:
         if self.serialOn:
             self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
             start('arduino-wait')
-            while self.arduino.in_waiting < self.minBytes:  # wait for data
+            while self.arduino.in_waiting <= self.minBytes:  # wait for data
                 pass
             end('arduino-wait')
             stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
