@@ -5,7 +5,7 @@ Configuration for everything
 
 from navigation1.Teleop import joy_init
 
-class Config():
+class Config:
     def __init__(self):
         self.serialOn = True
         self.joyTestsOn = True
@@ -19,7 +19,7 @@ class Config():
         self.MaxSpeed = 1900
         self.MinSpeed = 1100
 
-        self.serialPort = '/dev/cu.usbmodem14201'
+        self.serialPort = '/dev/cu.usbmodem14401'
         self.minBytes = 10
 
         self.mapK = 400
