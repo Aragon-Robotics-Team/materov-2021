@@ -190,7 +190,6 @@ class Config:
                         print(event.button, "cross left")
                     if event.button == 16:
                         print(event.button, "cross right")
-                        self.NonLinearLoop()
                 elif event.type == pygame.JOYAXISMOTION:
                     if event.axis == 0 and abs(self.j.get_axis(0)) > self.deadBand:
                         zero = self.j.get_axis(0)
