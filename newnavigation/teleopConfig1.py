@@ -63,6 +63,13 @@ class Config:
 
         self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
         # this array keeps updating thruster values
+        self.buttonopen = None
+        self.buttonclose = None
+        self.upconst = None
+        self.downconst = None
+        self.JS_X = None
+        self.JS_Y = None
+        self.JS_Y_UD = None
 
         self.arduino = None
         self.j = None
@@ -221,135 +228,118 @@ class Config:
             set incoming arduino data array to tspeeds
             repeatedly check if teleop is being ended
             """
-            buttonopen = self.j.get_button(self.squareButton)
-            buttonclose = self.j.get_button(self.triangleButton)
-            upconst = self.j.get_button(self.circleButton)
-            downconst = self.j.get_button(self.xButton)
-            JS_X = self.j.get_axis(self.LH)
-            JS_Y = self.j.get_axis(self.LV)  # y-direction joystick values are flipped
-            JS_Y_UD = self.j.get_axis(self.RV)
+            self.get_buttons()
 
             # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
-            turn1, turn2, = JS_X * self.mapK, JS_X * self.mapK
-            forward1, forward2 = JS_Y * self.mapK, JS_Y * self.mapK
-            updown = JS_Y_UD * self.mapK
+            turn1, turn2, = self.JS_X * self.mapK, self.JS_X * self.mapK
+            forward1, forward2 = self.JS_Y * self.mapK, self.JS_Y * self.mapK
+            updown = self.JS_Y_UD * self.mapK
 
             # calculating thruster speeds
-            tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, buttonopen,
-                       buttonclose]
+            tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.buttonopen,
+                       self.buttonclose]
             end("first-half")
             start("second-half")
             start("calcs")
-            if abs(upconst) == 1:
+            if abs(self.upconst) == 1:
                 tspeeds[2] = self.tspeedUp  # 1700
                 tspeeds[3] = self.tspeedUp
-            elif abs(downconst) == 1:
+            elif abs(self.downconst) == 1:
                 tspeeds[2] = self.tspeedDown  # 1300
                 tspeeds[3] = self.tspeedDown
-            elif abs(JS_Y_UD) > self.deadBand:
+            elif abs(self.JS_Y_UD) > self.deadBand:
                 tspeeds[2] = int(self.tspeedMiddle + updown)  # side thrusters
                 tspeeds[3] = int(self.tspeedMiddle + updown)
 
-            if abs(JS_X) > self.deadBand and abs(JS_Y) > self.deadBand:
+            if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:
                 tspeeds[0] = int(self.tspeedMiddle + forward1 + turn1)  # left thruster
                 tspeeds[1] = int(self.tspeedMiddle + forward2 - turn2)  # right thruster
-            elif abs(JS_X) > self.deadBand >= abs(JS_Y):  # only turn
+            elif abs(self.JS_X) > self.deadBand >= abs(self.JS_Y):  # only turn
                 tspeeds[0] = int(self.tspeedMiddle + turn1)  # cast to integer
                 tspeeds[1] = int(self.tspeedMiddle - turn2)
-            elif abs(JS_X) <= self.deadBand < abs(JS_Y):
+            elif abs(self.JS_X) <= self.deadBand < abs(self.JS_Y):
                 tspeeds[0] = int(self.tspeedMiddle - forward1)  # cast to integer
                 tspeeds[1] = int(self.tspeedMiddle - forward2)
             end("calcs")
-            start("assign")
-            # assign statuses
-            self.arduinoParams = tspeeds
-            end("assign")
-            start("boundaries")
-            for i in range(self.SpeedSize):  # making sure thruster values don't go above 1900 and below 1100
-                self.arduinoParams[i] = min(self.MaxSpeed, self.arduinoParams[i])
-                self.arduinoParams[i] = max(self.MinSpeed, self.arduinoParams[i])
-            end("boundaries")
-            start("end")
-            start("getbutton")
-            if self.j.get_button(self.shareButton) == 1:
-                self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
-                self.serial_send_print()
-                print("Stopping linear teleop")
-                for key, value in agg.items():
-                    print(key, round(value, 2))
+
+            start("end behavior")
+            self.speed_limit(tspeeds)
+            if self.check_button():
                 break
-            end("getbutton")
-            start("serialsend")
             self.serial_send_print()
-            end("serialsend")
-            start("eventclear")
+
+            end("end behavior")
+
             pygame.event.clear()
-            end("eventclear")
-            start("sleep")
             sleep(self.loopSleep)
-            end("sleep")
-            now = time()
-            print("It has been {0} seconds since the loop started".format(now - program_starts))
-            end("end")
-            end("second-half")
 
     def NonLinearLoop(self):
         while True:
 
             pygame.event.pump()
 
-            buttonopen = self.j.get_button(self.squareButton)
-            buttonclose = self.j.get_button(self.triangleButton)
-            upconst = self.j.get_button(self.circleButton)
-            downconst = self.j.get_button(self.xButton)
-            JS_X = self.j.get_axis(self.LH)
-            JS_Y = self.j.get_axis(self.LV)  # y-direction joystick values are flipped
-            JS_Y_UD = -self.j.get_axis(self.RV)
+            self.get_buttons()
 
-            updown = JS_Y_UD * self.mapK
+            NL_X = self.mapK * (self.JS_X ** 3)
+            NL_Y = self.mapK * (self.JS_Y ** 3)
+            NL_Y_UD = self.mapK * (self.JS_Y_UD ** 3)
 
-            NL_X = self.mapK * (JS_X ** 3)
-            NL_Y = self.mapK * (JS_Y ** 3)
-            NL_Y_UD = self.mapK * (JS_Y_UD ** 3)
-
-            tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, buttonopen,
-                       buttonclose]
+            tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.buttonopen,
+                       self.buttonclose]
 
             # button z thrusters
-            if abs(upconst) == 1:
+            if abs(self.upconst) == 1:
                 tspeeds[2] = self.tspeedUp
                 tspeeds[3] = self.tspeedUp
-            elif abs(downconst) == 1:
+            elif abs(self.downconst) == 1:
                 tspeeds[2] = self.tspeedDown
                 tspeeds[3] = self.tspeedDown
-            elif abs(JS_Y_UD) > self.deadBand:
-                tspeeds[2] = int(self.tspeedMiddle + NL_Y_UD)  # side thrusters
-                tspeeds[3] = int(self.tspeedMiddle + NL_Y_UD)
+            elif abs(self.JS_Y_UD) > self.deadBand:
+                tspeeds[2] = int(self.tspeedMiddle - NL_Y_UD)  # side thrusters
+                tspeeds[3] = int(self.tspeedMiddle - NL_Y_UD)
 
-            if abs(JS_X) > self.deadBand and abs(JS_Y) > self.deadBand:  # calculate thruster values
+            if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:  # calculate thruster values
                 tspeeds[0] = int(self.tspeedMiddle + NL_X + NL_Y)
                 tspeeds[1] = int(self.tspeedMiddle + (NL_X - NL_Y))
-            elif abs(JS_X) > self.deadBand >= abs(JS_Y):  # only turn
+            elif abs(self.JS_X) > self.deadBand >= abs(self.JS_Y):  # only turn
                 tspeeds[0] = int(self.tspeedMiddle + NL_X)  # cast to integer
                 tspeeds[1] = int(self.tspeedMiddle - NL_X)
-            elif abs(JS_X) <= self.deadBand < abs(JS_Y):  # only forward/back
+            elif abs(self.JS_X) <= self.deadBand < abs(self.JS_Y):  # only forward/back
                 tspeeds[0] = int(self.tspeedMiddle - NL_Y)  # cast to integer
                 tspeeds[1] = int(self.tspeedMiddle - NL_Y)
 
-            # assign statuses
-            self.arduinoParams = tspeeds
-
-            for i in range(self.SpeedSize):  # making sure thruster values don't go above 1900 and below 1100
-                self.arduinoParams[i] = min(self.MaxSpeed, self.arduinoParams[i])
-                self.arduinoParams[i] = max(self.MinSpeed, self.arduinoParams[i])
-
-            if self.j.get_button(self.shareButton) == 1:
-                self.serial_send_print()
-                print("Stopping Non-linear teleop")
+            self.speed_limit(tspeeds)
+            if self.check_button():
                 break
             self.serial_send_print()
+
             pygame.event.clear()
             sleep(self.loopSleep)
+
+    def speed_limit(self, tspeeds):
+        # assign statuses
+        self.arduinoParams = tspeeds
+
+        for i in range(self.SpeedSize):  # making sure thruster values don't go above 1900 and below 1100
+            self.arduinoParams[i] = min(self.MaxSpeed, self.arduinoParams[i])
+            self.arduinoParams[i] = max(self.MinSpeed, self.arduinoParams[i])
+
+    def get_buttons(self):
+        self.buttonopen = self.j.get_button(self.squareButton)
+        self.buttonclose = self.j.get_button(self.triangleButton)
+        self.upconst = self.j.get_button(self.circleButton)
+        self.downconst = self.j.get_button(self.xButton)
+        self.JS_X = self.j.get_axis(self.LH)
+        self.JS_Y = self.j.get_axis(self.LV)  # y-direction joystick values are flipped
+        self.JS_Y_UD = self.j.get_axis(self.RV)
+
+    def check_button(self):
+        if self.j.get_button(self.shareButton) == 1:
+            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
+            self.serial_send_print()
+            print("Stopping teleop, either linear or nonlinear")
+            return True
+
 
     def serial_send_print(self):  # print to terminal / send regularly updated array to arduino
 
