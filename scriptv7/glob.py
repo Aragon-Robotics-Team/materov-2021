@@ -27,5 +27,3 @@ middleTileFile = "/home/pi/Pictures/Photomosaic/middleTile.png"
 topTileFile = "/home/pi/Pictures/Photomosaic/topTile.png"
 bottomTileFile = "/home/pi/Pictures/Photomosaic/bottomTile.png"
 photomosaicFile = "/home/pi/Pictures/Photomosaic/photomosaic.png"
-
-#Thruster Process --------------------------------------------------------------------------------------

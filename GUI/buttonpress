@@ -1,0 +1,24 @@
+GUI SIDE:
+
+create rectangle to represent button
+set rectangle to grey
+variable: buttonxstatus
+
+while True:
+  if buttonxstatus = clicked:
+    set rectangle color to yellow
+  if buttonxstatus = not clicked:
+    set rectangle color to grey
+
+
+JOYSTICK SIDE:
+
+while True:
+  if event = button pressed:
+    buttonxstatus = clicked
+  if event = button released: #may not work this way
+    buttonxstatus = notclicked
+  else:
+    buttonxstatus = notclicked
+  if event = button b pressed:
+  else:

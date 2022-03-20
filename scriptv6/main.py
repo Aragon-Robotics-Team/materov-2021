@@ -14,11 +14,11 @@ class ThrusterProcess(multiprocessing.Process):
         # p.start()
 
 if __name__ == "__main__":
-    thruster_in_queue = multiprocessing.Queue()
-    thruster_out_queue = multiprocessing.Queue()
-
-    thruster_proc = ThrusterProcess(thruster_in_queue, thruster_out_queue)
-    #thruster_proc.start()
+    # thruster_in_queue = multiprocessing.Queue()
+    # thruster_out_queue = multiprocessing.Queue()
+    #
+    # thruster_proc = ThrusterProcess(thruster_in_queue, thruster_out_queue)
+    # thruster_proc.start()
 
     while True:
         gui.updateGUI()

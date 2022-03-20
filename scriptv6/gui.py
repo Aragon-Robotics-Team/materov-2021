@@ -8,6 +8,9 @@ from img_proc.measure_fishes import ValuesAndCalc
 import cv2
 import multiprocessing
 
+from img_proc.docking import dockpic
+from img_proc.docking import dockCalculate
+
 cap = cv2.VideoCapture(0)
 #SETUP ------------------------------------------------------------------------------------------------------
 root = Tk()
@@ -63,6 +66,22 @@ btn.grid(row = 4, column = 1, sticky = 'e')
 from misc.drift import floatLocation
 btn = Button(root, text = "Calculate Float Location", command = floatLocation)
 btn.grid(row = 5, column = 1, sticky = 'e')
+
+#DOCKING
+dockCount = 0
+def docking():
+    global dockCount
+    ret, frame = cap.read()
+    if dockCount == 0:
+        dockpic(frame)
+        dockCount = dockCount + 1
+    else:
+        cv2.destroyAllWindows()
+        dockCalculate()
+
+
+btn = Button(root, text = "Autonomous Docking Calibration", command = docking)
+btn.grid(row = 6, column = 1, sticky = 'e')
 
 #VIDEO FEED ------------------------------------------------------------------------------------------------------
 #pretty much the same lag as when the video feed is in the loop
