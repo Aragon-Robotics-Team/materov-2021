@@ -167,37 +167,37 @@ class Config:
                     if event.button == 1:
                         print(event.button, "Circle has been pressed")
                     if event.button == 2:
-                        print(event.button, "Square has been pressed")
+                        print(event.button, "Triangle has been pressed")
                     if event.button == 3:
-                        print(event.button, "Triangle has been pressed.")
+                        print(event.button, "Square has been pressed.")
                     if event.button == 4:
-                        print(event.button, "Share button has been pressed")
+                        print(event.button, "Surface left button has been pressed")
                     if event.button == 5:
-                        print(event.button, "Center button has been pressed. will start linear teleop")
+                        print(event.button, "Surface right button has been pressed")
                     if event.button == 6:
-                        print(event.button, "Options button Has Been Pressed. will start NON linear teleop")
+                        print(event.button, "Surface Bottom Has Been Pressed")
                     if event.button == 7:
-                        print(event.button, "Left stick has been pressed")
+                        print(event.button, "Surface left button has been pressed")
                     if event.button == 8:
-                        print(event.button, "Right stick has been pressed")
+                        print(event.button, "Share has been pressed")
                     if event.button == 9:
-                        print(event.button, "Left bumper has been pressed. ")
-                        # self.LinearLoop() :DDD
+                        print(event.button, "Start has been pressed. will start linear teleop")
+                        self.LinearLoop()
                     if event.button == 10:
-                        print(event.button, "Right bumper has been pressed.")
-                        # self.NonLinearLoop()
+                        print(event.button, "PS Center has been pressed. will start NON linear teleop")
+                        self.NonLinearLoop()
                     if event.button == 11:
-                        print(event.button, "Cross top has been pressed")
+                        print(event.button, "Left joystick has been pressed")
                     if event.button == 12:  # event.type == pygame.JOYBUTTONUP:
-                        print(event.button, "Cross down has been pressed")
+                        print(event.button, "Right joystick Has Been Pressed")
                     if event.button == 13:
-                        print(event.button, "Cross left has been pressed")
+                        print(event.button, "cross top")
                     if event.button == 14:
-                        print(event.button, "Cross right has been pressed")
+                        print(event.button, "cross bottom")
                     if event.button == 15:
-                        print(event.button, "Touch pad click")
+                        print(event.button, "cross left")
                     if event.button == 16:
-                        print(event.button, "nothing")
+                        print(event.button, "cross right")
                 elif event.type == pygame.JOYAXISMOTION:
                     if event.axis == 0 and abs(self.j.get_axis(0)) > self.deadBand:
                         zero = self.j.get_axis(0)
