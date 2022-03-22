@@ -17,14 +17,14 @@ class Config:
             self.RH = 3  # Right horizontal axis
             self.RV = 4  # Right vertical axis
 
-            self.squareButton = 3  # button open
-            self.triangleButton = 2  # button close
+            self.squareButton = 2  # button open
+            self.triangleButton = 3  # button close
             self.circleButton = 1  # up constant speed
             self.xButton = 0  # down constant speed
 
-            self.startButton = 9  # starts linear()
-            self.shareButton = 8  # exits
-            self.centerButton = 10  # non linear
+            self.startButton = 6  # starts linear()
+            self.shareButton = 4  # exits
+            self.centerButton = 5  # non linear
 
         elif computerType == "Mac":
             self.computerType = computerType
@@ -167,37 +167,37 @@ class Config:
                     if event.button == 1:
                         print(event.button, "Circle has been pressed")
                     if event.button == 2:
-                        print(event.button, "Triangle has been pressed")
+                        print(event.button, "Square has been pressed")
                     if event.button == 3:
-                        print(event.button, "Square has been pressed.")
+                        print(event.button, "Triangle has been pressed.")
                     if event.button == 4:
-                        print(event.button, "Surface left button has been pressed")
+                        print(event.button, "Share button has been pressed")
                     if event.button == 5:
-                        print(event.button, "Surface right button has been pressed")
+                        print(event.button, "Center button has been pressed. will start linear teleop")
                     if event.button == 6:
-                        print(event.button, "Surface Bottom Has Been Pressed")
+                        print(event.button, "Options button Has Been Pressed. will start NON linear teleop")
                     if event.button == 7:
-                        print(event.button, "Surface left button has been pressed")
+                        print(event.button, "Left stick has been pressed")
                     if event.button == 8:
-                        print(event.button, "Share has been pressed")
+                        print(event.button, "Right stick has been pressed")
                     if event.button == 9:
-                        print(event.button, "Start has been pressed. will start linear teleop")
-                        self.LinearLoop()
+                        print(event.button, "Left bumper has been pressed. ")
+                        # self.LinearLoop()
                     if event.button == 10:
-                        print(event.button, "PS Center has been pressed. will start NON linear teleop")
-                        self.NonLinearLoop()
+                        print(event.button, "Right bumper has been pressed.")
+                        # self.NonLinearLoop()
                     if event.button == 11:
-                        print(event.button, "Left joystick has been pressed")
+                        print(event.button, "Cross top has been pressed")
                     if event.button == 12:  # event.type == pygame.JOYBUTTONUP:
-                        print(event.button, "Right joystick Has Been Pressed")
+                        print(event.button, "Cross down has been pressed")
                     if event.button == 13:
-                        print(event.button, "cross top")
+                        print(event.button, "Cross left has been pressed")
                     if event.button == 14:
-                        print(event.button, "cross bottom")
+                        print(event.button, "Cross right has been pressed")
                     if event.button == 15:
-                        print(event.button, "cross left")
+                        print(event.button, "Touch pad click")
                     if event.button == 16:
-                        print(event.button, "cross right")
+                        print(event.button, "nothing")
                 elif event.type == pygame.JOYAXISMOTION:
                     if event.axis == 0 and abs(self.j.get_axis(0)) > self.deadBand:
                         zero = self.j.get_axis(0)
