@@ -182,7 +182,7 @@ class Config:
                         print(event.button, "Right stick has been pressed")
                     if event.button == 9:
                         print(event.button, "Left bumper has been pressed. ")
-                        # self.LinearLoop()
+                        # self.LinearLoop() :DDD
                     if event.button == 10:
                         print(event.button, "Right bumper has been pressed.")
                         # self.NonLinearLoop()
