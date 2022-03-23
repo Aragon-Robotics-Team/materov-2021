@@ -22,9 +22,9 @@ class Config:
             self.circleButton = 1  # up constant speed
             self.xButton = 0  # down constant speed
 
-            self.startButton = 6  # starts linear()
-            self.shareButton = 4  # exits
-            self.centerButton = 5  # non linear
+            self.startButton = 9  # starts linear()
+            self.shareButton = 8  # exits
+            self.centerButton = 10  # non linear
 
         elif computerType == "Mac":
             self.computerType = computerType
@@ -51,15 +51,15 @@ class Config:
         self.MaxSpeed = 1900
         self.MinSpeed = 1100
 
-        self.minBytes = 1
+        self.minBytes = 10
 
         self.mapK = 400
         self.tspeedMiddle = 1500
         self.tspeedUp = 1700
         self.tspeedDown = 1300
 
-        self.initSleep = 3
-        self.loopSleep = 0.23
+        self.initSleep = 5
+        self.loopSleep = 0.2
 
         self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
         # this array keeps updating thruster values
@@ -349,10 +349,10 @@ class Config:
         if self.serialOn:
             self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
             start('arduino-wait')
-            # while self.arduino.in_waiting <= self.minBytes:  # wait for data
-            #     pass
+            while self.arduino.in_waiting <= self.minBytes:  # wait for data
+                 pass
             end('arduino-wait')
-            # stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
+            stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
         print('ard: ' + stringFromArd)  # print arduino data
 
 if __name__ == '__main__':

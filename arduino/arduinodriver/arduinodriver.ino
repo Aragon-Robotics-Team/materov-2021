@@ -21,16 +21,17 @@ int var;
 void setup() {
   Serial.begin(115200);
   servo.attach(9); //servo pin
-  thruster1.attach(10); //thruster pins
-  thruster2.attach(11);
+  thruster1.attach(13); //thruster pins
+  thruster2.attach(10);
   thruster3.attach(12);
-  thruster4.attach(13);
+  thruster4.attach(11);
   thruster1.writeMicroseconds(1500);
   thruster2.writeMicroseconds(1500);
   thruster3.writeMicroseconds(1500);
   thruster4.writeMicroseconds(1500);
   servo.write(90);
   angle = 90;
+  delay(2000);
 }
 
 void loop(){
@@ -71,20 +72,19 @@ thruster2.writeMicroseconds(thruster2signal);
 thruster3.writeMicroseconds(thruster3signal);
 thruster4.writeMicroseconds(thruster4signal);
 
-Serial.println("recieved");
+//Serial.println("recieved");
 
-delay((0.10) * 1000);
+  
+  Serial.println(
+    String(thruster1signal) + ","
+  + String(thruster2signal) + ","
+  + String(thruster3signal) + ","
+  + String(thruster4signal) + ","
+  + String(servoClose) + ","
+  + String(servoOpen));
+
+
+delay(100);
 
 
 }
-
-
-  
-//  Serial.println(
-//    String(thruster1signal) + ","
-//  + String(thruster2signal) + ","
-//  + String(thruster3signal) + ","
-//  + String(thruster4signal) + ","
-//  + String(servoClose) + ","
-//  + String(servoOpen));
-//
