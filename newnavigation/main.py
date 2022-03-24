@@ -1,7 +1,7 @@
 from teleopConfig1 import Config  # on rpi, DELETE newnavigation part
 from tracer import agg
 def main():
-    robot = Config('RPI', True)
+    robot = Config('Mac', True, False) # comp type, serial on, serial recieve on
     robot.joy_init()
     
 if __name__ == '__main__':

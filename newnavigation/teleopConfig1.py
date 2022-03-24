@@ -8,7 +8,7 @@ from tracer import start, end, agg
 
 
 class Config:
-    def __init__(self, computerType, serialOn):
+    def __init__(self, computerType, serialOn, serialRecieveOn):
         if computerType == "RPI":
             self.computerType = computerType
             self.serialPort = '/dev/ttyACM0'
@@ -28,7 +28,7 @@ class Config:
 
         elif computerType == "Mac":
             self.computerType = computerType
-            self.serialPort = '/dev/cu.usbmodem14401'
+            self.serialPort = '/dev/cu.usbmodem14201'
             self.LH = 0  # Left horizontal axis
             self.LV = 1  # Left vertical axis
             self.RH = 2  # Right horizontal axis
@@ -44,7 +44,7 @@ class Config:
             self.centerButton = 16  # non linear
 
         self.serialOn = serialOn
-        self.serialRecieveOn = False
+        self.serialRecieveOn = serialRecieveOn
         self.joyTestsOn = True
         self.deadBand = 0.1  # axis value must be greater than this number
 
@@ -354,9 +354,9 @@ class Config:
             self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
             start('arduino-wait')
             while (self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes)):  # wait for data
-                pass
+                stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
+
             end('arduino-wait')
-            stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
         print('ard: ' + stringFromArd)  # print arduino data
 
 if __name__ == '__main__':
