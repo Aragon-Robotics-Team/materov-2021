@@ -17,8 +17,8 @@ class Config:
             self.RH = 3  # Right horizontal axis
             self.RV = 4  # Right vertical axis
 
-            self.squareButton = 3  # button open
-            self.triangleButton = 2  # button close
+            self.squareButton = 2  # button open
+            self.triangleButton = 3  # button close
             self.circleButton = 1  # up constant speed
             self.xButton = 0  # down constant speed
 
@@ -44,6 +44,7 @@ class Config:
             self.centerButton = 16  # non linear
 
         self.serialOn = serialOn
+        self.serialRecieveOn = False
         self.joyTestsOn = True
         self.deadBand = 0.1  # axis value must be greater than this number
 
@@ -51,15 +52,15 @@ class Config:
         self.MaxSpeed = 1900
         self.MinSpeed = 1100
 
-        self.minBytes = 1
+        self.minBytes = 10
 
         self.mapK = 400
         self.tspeedMiddle = 1500
         self.tspeedUp = 1700
         self.tspeedDown = 1300
 
-        self.initSleep = 3
-        self.loopSleep = 0.23
+        self.initSleep = 5
+        self.loopSleep = 0.2
 
         self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
         # this array keeps updating thruster values
@@ -262,10 +263,12 @@ class Config:
                 tspeeds[1] = int(self.tspeedMiddle - forward2)
             end("calcs")
 
-            start("end behavior")
+            start("check and limit")
             self.speed_limit(tspeeds)
             if self.check_button():
                 break
+            end("check and limit")
+            start("end behavior")
             self.serial_send_print()
 
             end("end behavior")
@@ -338,21 +341,22 @@ class Config:
             self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
             self.serial_send_print()
             print("Stopping teleop, either linear or nonlinear")
+            print(agg)
             return True
 
 
     def serial_send_print(self):  # print to terminal / send regularly updated array to arduino
 
-        stringToSend = ','.join(str(x) for x in self.arduinoParams) + '\n'
+        stringToSend = ','.join(str(x) for x in self.arduinoParams) + '.'
         print('py: ' + stringToSend)  # print python
         stringFromArd = ''
         if self.serialOn:
             self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
             start('arduino-wait')
-            # while self.arduino.in_waiting <= self.minBytes:  # wait for data
-            #     pass
+            while (self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes)):  # wait for data
+                pass
             end('arduino-wait')
-            # stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
+            stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
         print('ard: ' + stringFromArd)  # print arduino data
 
 if __name__ == '__main__':
