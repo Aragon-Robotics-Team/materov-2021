@@ -42,7 +42,7 @@ void loop(){
   thruster3signal = Serial.readStringUntil(',').toInt();
   thruster4signal = Serial.readStringUntil(',').toInt();
   servoClose = Serial.readStringUntil(',').toInt();
-  servoOpen = Serial.readStringUntil(',').toInt();
+  servoOpen = Serial.readStringUntil('.').toInt();
 
 //thruster output
 if(thruster1signal > 1900 || thruster1signal < 1100){
@@ -59,7 +59,7 @@ thruster4signal = 1500;
 }
 
 //servo output
-if(servo.read() > 5 && servoOpen == 1){
+if(servo.read() > 5 && servoClose == 1){
   angle = angle - 5;
   }
 else if(servo.read() <  175 && servoOpen == 1){
@@ -75,13 +75,13 @@ thruster4.writeMicroseconds(thruster4signal);
 //Serial.println("recieved");
 
   
-  Serial.println(
-    String(thruster1signal) + ","
-  + String(thruster2signal) + ","
-  + String(thruster3signal) + ","
-  + String(thruster4signal) + ","
-  + String(servoClose) + ","
-  + String(servoOpen));
+//  Serial.println(
+//    String(thruster1signal) + ","
+//  + String(thruster2signal) + ","
+//  + String(thruster3signal) + ","
+//  + String(thruster4signal) + ","
+//  + String(servoClose) + ","
+//  + String(servoOpen));
 
 
 delay(100);

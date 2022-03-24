@@ -44,6 +44,7 @@ class Config:
             self.centerButton = 16  # non linear
 
         self.serialOn = serialOn
+        self.serialRecieveOn = False
         self.joyTestsOn = True
         self.deadBand = 0.1  # axis value must be greater than this number
 
@@ -262,10 +263,12 @@ class Config:
                 tspeeds[1] = int(self.tspeedMiddle - forward2)
             end("calcs")
 
-            start("end behavior")
+            start("check and limit")
             self.speed_limit(tspeeds)
             if self.check_button():
                 break
+            end("check and limit")
+            start("end behavior")
             self.serial_send_print()
 
             end("end behavior")
@@ -338,19 +341,20 @@ class Config:
             self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
             self.serial_send_print()
             print("Stopping teleop, either linear or nonlinear")
+            print(agg)
             return True
 
 
     def serial_send_print(self):  # print to terminal / send regularly updated array to arduino
 
-        stringToSend = ','.join(str(x) for x in self.arduinoParams) + '\n'
+        stringToSend = ','.join(str(x) for x in self.arduinoParams) + '.'
         print('py: ' + stringToSend)  # print python
         stringFromArd = ''
         if self.serialOn:
             self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
             start('arduino-wait')
-            while self.arduino.in_waiting <= self.minBytes:  # wait for data
-                 pass
+            while (self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes)):  # wait for data
+                pass
             end('arduino-wait')
             stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
         print('ard: ' + stringFromArd)  # print arduino data
