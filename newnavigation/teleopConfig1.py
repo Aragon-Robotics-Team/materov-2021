@@ -28,9 +28,9 @@ class Config:
 
         elif computerType == "Mac":
             self.computerType = computerType
-            self.serialPort = '/dev/cu.usbmodem14201'
+            self.serialPort = '/dev/cu.usbmodem14301'
             self.LH = 0  # Left horizontal axis
-            self.LV = 1  # Left vertical axis
+            self.LV = 1  # Left vertical axis6
             self.RH = 2  # Right horizontal axis
             self.RV = 3  # Right vertical axis
 
@@ -358,6 +358,7 @@ class Config:
 
             end('arduino-wait')
         print('ard: ' + stringFromArd)  # print arduino data
+
 
 if __name__ == '__main__':
     pass
