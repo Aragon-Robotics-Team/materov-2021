@@ -12,6 +12,9 @@ from img_proc.docking import dockpic
 from img_proc.docking import dockCalculate
 
 cap = cv2.VideoCapture(0)
+#cap1 = cv2.VideoCapture(1) <-- Second Camera
+
+
 #SETUP ------------------------------------------------------------------------------------------------------
 root = Tk()
 root.geometry("1300x750")
@@ -91,17 +94,26 @@ from PIL import Image, ImageTk
 label = Label(root, height = 700, width = 1000)
 label.grid(row = 0, column = 0, rowspan = 30)
 
+camera = 0 #specifies the camera object to use
+
+
 # Define function to show frame
 def show_frames():
-   # Get the latest frame and convert into Image
-   cv2image= cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
-   img = Image.fromarray(cv2image)
-   # Convert image to PhotoImage
-   imgtk = ImageTk.PhotoImage(image = img)
-   label.imgtk = imgtk
-   label.configure(image=imgtk)
-   # Repeat after an interval to capture continiously
-   label.after(20, show_frames)
+    #To Change the cameras
+    # if camera = 0:
+    #     cv2image= cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
+    # elif camera = 1:
+    #     cv2image= cv2.cvtColor(cap1.read()[1],cv2.COLOR_BGR2RGB)
+
+    # Get the latest frame and convert into Image
+    cv2image= cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
+    img = Image.fromarray(cv2image)
+    # Convert image to PhotoImage
+    imgtk = ImageTk.PhotoImage(image = img)
+    label.imgtk = imgtk
+    label.configure(image=imgtk)
+    # Repeat after an interval to capture continiously
+    label.after(20, show_frames)
 
 show_frames()
 

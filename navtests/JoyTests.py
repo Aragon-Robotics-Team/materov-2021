@@ -221,9 +221,9 @@ def example4(): # https://stackoverflow.com/questions/46506850/how-can-i-get-inp
                 if event.axis == 3 and abs(myjoystick.get_axis(3))> deadband:
                     three = myjoystick.get_axis(3)
                     print('4 has been moved ' + str(three))
-                if event.axis == 4 and abs(myjoystick.get_axis(4)) > deadband:
-                    four = myjoystick.get_axis(4)
-                    print('4 has been moved ' + str(four))
+                # if event.axis == 4 and abs(myjoystick.get_axis(4)) > deadband:
+                #     four = myjoystick.get_axis(4)
+                #     print('4 has been moved ' + str(four))
 
 def example10():
     import pygame

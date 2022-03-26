@@ -47,10 +47,10 @@ def controllerStart():
             ######################## 2. Initializing PyGame
             print("initializing pygame")
             #pyinitfunc()
-            # pygame.init()  # Initiate the pygame functions
+            pygame.init()  # Initiate the pygame functions
             print("initializing joystick and display")
-            # pygame.joystick.init() #pass pygame.joystick through
-            # pygame.display.init()
+            pygame.joystick.init() #pass pygame.joystick through
+            pygame.display.init()
             global j
             j = pygame.joystick.Joystick(0)  # Define a joystick object to read from
             j.init()  # Initiate the joystick or controller
@@ -66,7 +66,6 @@ def controllerStart():
             finallist = [self.thrustermiddle, self.thrustermiddle, 0, 0]
 
         def joytests(self):
-            print("in joytests")
             sleep(0.1)
             for event in pygame.event.get():
                 # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
@@ -200,3 +199,6 @@ def controllerStart():
 
     while True:
         thruster.joytests()
+
+if __name__ == "__main__":
+    controllerStart()

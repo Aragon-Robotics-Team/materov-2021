@@ -1,7 +1,6 @@
 import multiprocessing
 from nav import controller
 import gui
-import pygame
 
 class ThrusterProcess(multiprocessing.Process):
     def __init__(self, input_queue, output_queue):
