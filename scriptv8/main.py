@@ -12,8 +12,7 @@ class ThrusterProcess(multiprocessing.Process):
         # pygame.init()
         # print("h")
         # pygame.joystick.init()
-        p = multiprocessing.Process(target = controller.controllerStart)
-        p.start()
+        controller.controllerStart()
         # p = multiprocessing.Process(target = controller.controllerStart(), args = (self.input_queue, self.output_queue, self.fish_queue))
         # p.start()
 
@@ -22,7 +21,7 @@ if __name__ == "__main__":
     thruster_out_queue = multiprocessing.Queue()
 
     thruster_proc = ThrusterProcess(thruster_in_queue, thruster_out_queue)
-    thruster_proc.run()
+    thruster_proc.start()
 
     # while True:
     #     gui.updateGUI()
