@@ -10,7 +10,7 @@ from picamera import PiCamera
 camera = PiCamera()
 frame = PiRGBArray(camera)
 #Photomosaic ------------------------------------------------------------------------------------------------------
-photomosaicVideo = False #used in main.py and gui.py to determine whether or not the program should use the photomosaic video feed
+photomosaicVideo = False #used in teleop.py and gui.py to determine whether or not the program should use the photomosaic video feed
 photomosaicCount = 0 #used in video.py and gui.py to keep track of the number of snapshots that are taken
 
 #Replace "/home/pi/Pictures/Photomosaic/" with the file path you want the files to go

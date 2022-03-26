@@ -5,7 +5,7 @@ import cv2
 videoCaptureObject = cv2.VideoCapture(0)
 
 #Photomosaic ------------------------------------------------------------------------------------------------------
-photomosaicVideo = False #used in main.py and gui.py to determine whether or not the program should use the photomosaic video feed
+photomosaicVideo = False #used in teleop.py and gui.py to determine whether or not the program should use the photomosaic video feed
 photomosaicCount = 0 #used in video.py and gui.py to keep track of the number of snapshots that are taken
 
 #Replace "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/" with the file path you want the files to go
