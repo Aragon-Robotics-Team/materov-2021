@@ -13,91 +13,21 @@ from img_proc.docking import dockCalculate
 
 cap = cv2.VideoCapture(0)
 #cap1 = cv2.VideoCapture(1) <-- Second Camera
+#cap2 = cv2.VideoCapture(2)
 
 #SETUP ------------------------------------------------------------------------------------------------------
 root = Tk()
 root.geometry("1300x750")
 
 #TEST ------------------------------------------------------------------------------------------------------
+vcol = 3
+
+
 def asdf():
     print("hello")
 
 btn = Button(root, text = "hello", command = asdf)
-btn.grid(row = 0, column = 1, sticky = 'e')
-
-#TIMER ------------------------------------------------------------------------------------------------------
-
-minute=StringVar()
-second=StringVar()
-hours=StringVar()
-
-sec = StringVar()
-mins= StringVar()
-hrs= StringVar()
-
-# #  # #
-
-tk.Entry(root, textvariable = sec, width = 2, font = 'arial 12').place(x=200, y=155) # Seconds
-tk.Entry(root, textvariable = mins, width =2, font = 'arial 12').place(x=175, y=155) # Mins
-tk.Entry(root, textvariable = hrs, width =2, font = 'arial 12').place(x=150, y=155) # Hours
-
-# #  # #
-
-minute.set('00')
-second.set('00')
-hours.set('00')
-
-sec.set('00')
-mins.set('00')
-hrs.set('00')
-times = 0
-
-# #  # #
-
-def countdown():
-    global times
-    print("hello") #testing, working but code not working
-    times = int(hrs.get())*3600+ int(mins.get())*60 + int(sec.get())
-    while times > 0:
-        minute,second = (times // 60 , times % 60)
-
-        hour = 0
-        if minute > 60:
-            hour , minute = (minute // 60 , minute % 60)
-
-        sec.set(second)
-        mins.set(minute)
-        hrs.set(hour)
-
-        root.update()
-        time.sleep(1)
-        times -= 1
-        if(times == 0):
-            sec.set('00')
-            mins.set('00')
-            hrs.set('00')
-            return
-
-
-tk.Button(root, text='START', bd ='5', command = countdown, bg = 'white', font = 'arial 10 bold').place(x=150, y=210)
-# #  # #
-
-def stop():
-    global times
-    minute.set('00')
-    second.set('00')
-    hours.set('00')
-    sec.set('00')
-    mins.set('00')
-    hrs.set('00')
-    times = 0
-    #root.destroy()
-    #python = sys.executable
-    #os.execl(python, python, * sys.argv)
-
-
-
-tk.Button(root, text='STOP', bd ='5', command = stop, bg = 'white', font = 'arial 10 bold').place(x=150, y=250)
+btn.grid(row = 0, column = vcol + 1, sticky = 'e')
 
 #PHOTOMOSAIC ------------------------------------------------------------------------------------------------------
 # def startPhotomosaic():
@@ -126,7 +56,7 @@ def beginPhotomosaic():
     photomosaicCount = 0
 
 btn = Button(root, text = "Start Photomosaic", command = beginPhotomosaic)
-btn.grid(row = 1, column = 1, sticky = 'e')
+btn.grid(row = 1, column = vcol + 1, sticky = 'e')
 
 def takePhotomosaicPhoto():
     global startPhotomosaic
@@ -151,7 +81,7 @@ def takePhotomosaicPhoto():
         print("Photomosaic has not been started yet")
 
 btn = Button(root, text = "Take Photomosaic Snapshot", command = takePhotomosaicPhoto)
-btn.grid(row = 2, column = 1, sticky = 'e')
+btn.grid(row = 2, column = vcol + 1, sticky = 'e')
 
 def resetPhotomosaic():
     global startPhotomosaic
@@ -160,7 +90,7 @@ def resetPhotomosaic():
     photomosaicCount = 0
 
 btn = Button(root, text = "Reset Photomosaic Snapshot", command = resetPhotomosaic)
-btn.grid(row = 3, column = 1, sticky = 'e')
+btn.grid(row = 3, column = vcol + 1, sticky = 'e')
 
 
 
@@ -177,10 +107,10 @@ def start_measure_fish():
         ValuesAndCalc(averageFishLength)
 
 label = Label(root, text = "(Click to 3 times to take photos and calculate)", font = 10)
-label.grid(row = 4, column = 1, sticky = 'n')
+label.grid(row = 4, column = vcol + 1, sticky = 'n')
 
 btn = Button(root, text="Measure Fish", command = start_measure_fish)
-btn.grid(row = 5 ,column = 1, sticky = 'e')
+btn.grid(row = 5 ,column = vcol + 1, sticky = 'e')
 
 def resetMeasureFish():
     print("Measuring Fish Task Reset")
@@ -189,12 +119,12 @@ def resetMeasureFish():
     glob.fishPictureCount = 0
 
 btn = Button(root, text="Reset Fish Measuring", command = resetMeasureFish)
-btn.grid(row = 6, column = 1, sticky = 'e')
+btn.grid(row = 6, column = vcol + 1, sticky = 'e')
 
 #DRIFT
 from misc.drift import floatLocation
 btn = Button(root, text = "Calculate Float Location", command = floatLocation)
-btn.grid(row = 7, column = 1, sticky = 'e')
+btn.grid(row = 7, column = vcol + 1, sticky = 'e')
 
 #DOCKING
 dockCount = 0
@@ -210,12 +140,12 @@ def docking():
 
 
 btn = Button(root, text = "Autonomous Docking Calibration", command = docking)
-btn.grid(row = 8, column = 1, sticky = 'e')
+btn.grid(row = 8, column = vcol + 1, sticky = 'e')
 
 #BUTTON GRAPHICS------------------------------------------------------------------------------------------------------
 buttoncanvas = Canvas(root,height=120,width=250,bg="#fff")
 
-buttoncanvas.grid(row = 9, column = 1, sticky = 'e')
+buttoncanvas.grid(row = 9, column = vcol + 1, sticky = 'e')
 
 buttoncanvas.create_line(10, 10, 240, 10, fill = "black", width = 5)
 
@@ -258,7 +188,7 @@ buttoncanvas.create_text(indleftx + ind_width/2 + 2, indlefty + ind_height/2 + i
 
 # from glob import statuses
 
-statuses = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+statuses = [1500, 1500, 1500, 1500, 0, 0, 0, 0, 0, 0]
 def buttonstatus():
     global buttonXstatus
     global buttonYstatus
@@ -312,7 +242,7 @@ buttonstatus()
 #THRUSTER GRAPHICS ------------------------------------------------------------------------------------------------------
 thrustercanvas = Canvas(root,height=200,width=250,bg="#fff")
 
-thrustercanvas.grid(row = 10, column = 1, sticky = 'e')
+thrustercanvas.grid(row = 10, column = vcol + 1, sticky = 'e')
 
 
 topx = 75 #this is also the center of the top left rectangle
@@ -337,8 +267,9 @@ center = t_height
 #background
 thrustercanvas.create_rectangle(centerx - t_width - width/2, centery - t_height, centerx + t_width - width/2, centery + t_height, fill = "dark gray", outline = "dark gray")
 #status
-t0status = t_height
-t0 = thrustercanvas.create_rectangle(centerx - t_width - width/2, centery - t_height + t0status, centerx + t_width - width/2, centery + t_height, fill = "green", outline = "green")
+t0status = 0
+t0 = thrustercanvas.create_rectangle(centerx - t_width - width/2, centery - t0status, centerx + t_width - width/2, centery + t_height, fill = "green", outline = "green")
+#t0 = thrustercanvas.create_rectangle(centerx - t_width - width/2, centery - t_height - t0status, centerx + t_width - width/2, centery + t_height, fill = "green", outline = "green")
 
 thrustercanvas.create_text(centerx - width/2, centery, text = "0", fill="black", font=('Helvetica 15 bold'))
 
@@ -346,8 +277,8 @@ thrustercanvas.create_text(centerx - width/2, centery, text = "0", fill="black",
 #background
 thrustercanvas.create_rectangle(centerx - t_width + width/2, centery - t_height, centerx + t_width + width/2, centery + t_height, fill = "dark gray", outline = "dark gray")
 #status
-t1status = center
-t1 = thrustercanvas.create_rectangle(centerx - t_width + width/2, centery - t_height + t1status, centerx + t_width + width/2, centery + t_height, fill = "green", outline = "green")
+t1status = 0
+t1 = thrustercanvas.create_rectangle(centerx - t_width + width/2, centery - t1status, centerx + t_width + width/2, centery + t_height, fill = "green", outline = "green")
 
 thrustercanvas.create_text(centerx + width/2, centery, text = "1", fill="black", font=('Helvetica 15 bold'))
 
@@ -355,8 +286,8 @@ thrustercanvas.create_text(centerx + width/2, centery, text = "1", fill="black",
 #background
 thrustercanvas.create_rectangle(centerx - t_width, centery - t_height - height/2, centerx + t_width, centery + t_height - height/2, fill = "dark gray", outline = "dark gray")
 #status
-t2status = center
-t2 = thrustercanvas.create_rectangle(centerx - t_width, centery - t_height - height/2 + t2status, centerx + t_width, centery + t_height - height/2, fill = "green", outline = "green")
+t2status = 0
+t2 = thrustercanvas.create_rectangle(centerx - t_width, centery - height/2 - t2status, centerx + t_width, centery + t_height - height/2, fill = "green", outline = "green")
 
 thrustercanvas.create_text(centerx, centery - height/2, text = "2", fill="black", font=('Helvetica 15 bold'))
 
@@ -364,9 +295,9 @@ thrustercanvas.create_text(centerx, centery - height/2, text = "2", fill="black"
 #background
 thrustercanvas.create_rectangle(centerx - t_width, centery - t_height + height/2, centerx + t_width, centery + t_height + height/2, fill = "dark gray", outline = "dark gray")
 #status
-t3status = center
+t3status = 0
 thrustercanvas.create_rectangle(centerx - t_width, centery - t_height + height/2, centerx + t_width, centery + t_height + height/2, fill = "dark gray", outline = "dark gray")
-t3 = thrustercanvas.create_rectangle(centerx - t_width, centery - t_height + height/2 + t3status, centerx + t_width, centery + t_height + height/2, fill = "green", outline = "green")
+t3 = thrustercanvas.create_rectangle(centerx - t_width, centery  + height/2 - t3status, centerx + t_width, centery + t_height + height/2, fill = "green", outline = "green")
 
 thrustercanvas.create_text(centerx, centery + height/2, text = "3", fill="black", font=('Helvetica 15 bold'))
 
@@ -377,16 +308,23 @@ def thrustergraphic():
     global t3status
 
     #get raw thruster values in pwm and convert to values for the gui
-    t0status = (statuses[0] - 1500) * height / 2000
-    t1status = (statuses[1] - 1500) * height / 2000
-    t2status = (statuses[2] - 1500) * height / 2000
-    t3status = (statuses[3] - 1500) * height / 2000
+    t0status = (statuses[0] - 1500) * 2 * height / 2000
+    t1status = (statuses[1] - 1500) * 2 * height / 2000
+    t2status = (statuses[2] - 1500) * 2 * height / 2000
+    t3status = (statuses[3] - 1500) * 2 * height / 2000
+    print("t0: " + str(t0status))
+    print("t1: " + str(t1status))
+    print("t2: " + str(t2status))
+    print("t3: " + str(t3status))
 
-    thrustercanvas.coords(t0, centerx - t_width - width/2, centery - t_height + t0status, centerx + t_width - width/2, centery + t_height)
-    thrustercanvas.coords(t1, centerx - t_width + width/2, centery - t_height + t1status, centerx + t_width + width/2, centery + t_height)
-    thrustercanvas.coords(t2, centerx - t_width, centery - t_height - height/2 + t2status, centerx + t_width, centery + t_height - height/2)
-    thrustercanvas.coords(t3,centerx - t_width, centery - t_height + height/2 + t3status, centerx + t_width, centery + t_height + height/2)
+
+    thrustercanvas.coords(t0, centerx - t_width - width/2, centery - t0status, centerx + t_width - width/2, centery + t_height)
+    thrustercanvas.coords(t1, centerx - t_width + width/2, centery - t1status, centerx + t_width + width/2, centery + t_height)
+    thrustercanvas.coords(t2, centerx - t_width, centery - height/2 - t2status, centerx + t_width, centery + t_height - height/2)
+    thrustercanvas.coords(t3, centerx - t_width, centery  + height/2 - t3status, centerx + t_width, centery + t_height + height/2)
     thrustercanvas.after(20, thrustergraphic)
+
+thrustergraphic()
 
 #QUEUE ------------------------------------------------------------------------------------------------------
 
@@ -402,13 +340,104 @@ def queuerecieve():
         #print("recieved from queue")
     root.after(10, queuerecieve)
 
+
+#TIMER ------------------------------------------------------------------------------------------------------
+timercanvas = Canvas(root, height = 130, width = 150, bg = "#fff")
+timercanvas.grid(row = 11, column = vcol + 1, sticky = 'e')
+
+minute=StringVar()
+second=StringVar()
+hours=StringVar()
+
+sec = StringVar()
+mins= StringVar()
+hrs= StringVar()
+
+# #  # #
+
+Entry(timercanvas, textvariable = sec, width = 2, font = 'arial 12').place(x=70, y=30) # Seconds
+Entry(timercanvas, textvariable = mins, width =2, font = 'arial 12').place(x=45, y=30) # Mins
+Entry(timercanvas, textvariable = hrs, width =2, font = 'arial 12').place(x=20, y=30) # Hours
+
+# #  # #
+
+minute.set('00')
+second.set('00')
+hours.set('00')
+
+sec.set('00')
+mins.set('00')
+hrs.set('00')
+times = 0
+
+# #  # #
+
+def countdown():
+    global times
+    print("hello") #testing, working but code not working
+    times = int(hrs.get())*3600+ int(mins.get())*60 + int(sec.get())
+
+
+    if times > 0:
+        minute,second = (times // 60 , times % 60)
+        timercanvas.after(1000, countdown)
+
+        hour = 0
+        if minute > 60:
+            hour , minute = (minute // 60 , minute % 60)
+
+        sec.set(second)
+        mins.set(minute)
+        hrs.set(hour)
+
+        root.update()
+        time.sleep(1)
+        times -= 1
+        if(times == 0):
+            sec.set('00')
+            mins.set('00')
+            hrs.set('00')
+            return
+
+#set the time
+#instead of times > 0, do if time > 0, and have an after function at the end of the if statement
+
+
+#time = 2
+#is time > 0?
+    #change the timer graphic
+    #time--
+    #timercanvas.after(1000, countdown)
+#is time == 0?
+    #reset everything
+
+Button(timercanvas, text='START', bd ='5', command = countdown, bg = 'white', font = 'arial 10 bold').place(x=15, y=70)
+
+
+def stop():
+    global times
+    minute.set('00')
+    second.set('00')
+    hours.set('00')
+    sec.set('00')
+    mins.set('00')
+    hrs.set('00')
+    times = 0
+    #root.destroy()
+    #python = sys.executable
+    #os.execl(python, python, * sys.argv)
+
+
+
+Button(timercanvas, text='STOP', bd ='5', command = stop, bg = 'white', font = 'arial 10 bold').place(x=15, y=100)
+
 #VIDEO FEED ------------------------------------------------------------------------------------------------------
 #pretty much the same lag as when the video feed is in the loop
 from PIL import Image, ImageTk
 
 # Create a Label to capture the Video frames
 label = Label(root, height = 700, width = 1000)
-label.grid(row = 0, column = 0, rowspan = 30)
+label.grid(row = 0, column = 0, rowspan = 30, columnspan = vcol)
 
 camera = 0 #specifies the camera object to use
 
@@ -416,9 +445,11 @@ camera = 0 #specifies the camera object to use
 def show_frames():
     #To Change the cameras
     # if camera = 0:
-    #     cv2image= cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
+    #     cv2image = cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
     # elif camera = 1:
-    #     cv2image= cv2.cvtColor(cap1.read()[1],cv2.COLOR_BGR2RGB)
+    #     cv2image = cv2.cvtColor(cap1.read()[1],cv2.COLOR_BGR2RGB)
+    # elif camera = 2:
+    #     cv2image = cv2.cvtColor(cap2.read()[1],cv2.COLOR_BGR2RGB)
 
     # Get the latest frame and convert into Image
     cv2image= cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
@@ -431,6 +462,24 @@ def show_frames():
     label.after(20, show_frames)
 
 show_frames()
+
+def cam0():
+    global camera
+    camera = 0
+
+Button(root, text = "CAMERA 0", command = cam0).grid(row = 21,column = 0)
+
+def cam1():
+    global camera
+    camera = 1
+
+Button(root, text = "CAMERA 1", command = cam1).grid(row = 21, column = 1)
+
+def cam2():
+    global camera
+    camera = 2
+
+Button(root, text = "CAMERA 2", command = cam2).grid(row = 21, column = 2)
 
 def updateGUI():
     root.update()

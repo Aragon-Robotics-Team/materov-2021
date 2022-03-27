@@ -41,10 +41,10 @@ def teleop_1(in_queue, out_queue):
                 self.RH = 2  # Right horizontal axis
                 self.RV = 3  # Right vertical axis
 
-                self.squareButton = 15  # button open
-                self.triangleButton = 12  # button close
-                self.circleButton = 13  # up constant speed
-                self.xButton = 14  # down constant speed
+                self.squareButton =0  # button open
+                self.triangleButton = 1  # button close
+                self.circleButton = 2  # up constant speed
+                self.xButton =  3# down constant speed
 
                 self.startButton = 3  # starts linear()
                 self.shareButton = 0  # exits
@@ -87,12 +87,14 @@ def teleop_1(in_queue, out_queue):
 
             #THIS IS FOR THE QUEUE
             self.statuses = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            self.tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
 
 
         def joy_init(self):
             ######################## 1. Initializing Serial
-            # if self.serialOn:
-            #     self.arduino = serial.Serial(port=self.serialPort, baudrate=115200, timeout=1)
+            self.serialOn = False
+            if self.serialOn:
+                self.arduino = serial.Serial(port=self.serialPort, baudrate=115200, timeout=1)
             ######################## 2. Initializing PyGame
             pygame.init()  # Initiate the pygame functions
             pygame.joystick.init()
@@ -130,22 +132,6 @@ def teleop_1(in_queue, out_queue):
                             print(event.button, "Start has been pressed. Will exit joytests.")
                             self.statuses[7] = 1
                             self.LinearLoop()
-                        if event.button == 4:
-                            print(event.button, "Surface top button has been pressed")
-                        if event.button == 5:
-                            print(event.button, "Surface right button has been pressed")
-                        if event.button == 6:
-                            print(event.button, "Surface Bottom Has Been Pressed")
-                        if event.button == 7:
-                            print(event.button, "Surface left button has been pressed")
-                        if event.button == 8:
-                            print(event.button, "Left 2 has been pressed")
-                        if event.button == 9:
-                            print(event.button, "Right 2 has been pressed")
-                        if event.button == 10:
-                            print(event.button, "Left 1 has been pressed")
-                        if event.button == 11:
-                            print(event.button, "Right 1 has been pressed")
                         if event.button == 12:  # event.type == pygame.JOYBUTTONUP:
                             print(event.button, "Triangle Has Been Pressed")
                         if event.button == 13:
@@ -156,7 +142,7 @@ def teleop_1(in_queue, out_queue):
                             print(event.button, "Square has been pressed")
                         if event.button == 16:
                             print(event.button, "Center PS has been pressed")
-                            self.NonLinearLoop()
+                            # self.NonLinearLoop()
                     elif event.type == pygame.JOYBUTTONUP:
                         if event.button == 0:  # event.type == pygame.JOYBUTTONUP:
                             print(event.button, "Select Has Been Released")
@@ -170,22 +156,6 @@ def teleop_1(in_queue, out_queue):
                         if event.button == 3:
                             print(event.button, "Start has been released.")
                             self.statuses[7] = 0
-                        if event.button == 4:
-                            print(event.button, "Surface top button has been released")
-                        if event.button == 5:
-                            print(event.button, "Surface right button has been released")
-                        if event.button == 6:
-                            print(event.button, "Surface Bottom Has Been released")
-                        if event.button == 7:
-                            print(event.button, "Surface left button has been released")
-                        if event.button == 8:
-                            print(event.button, "Left 2 has been released")
-                        if event.button == 9:
-                            print(event.button, "Right 2 has been released")
-                        if event.button == 10:
-                            print(event.button, "Left 1 has been released")
-                        if event.button == 11:
-                            print(event.button, "Right 1 has been released")
                         if event.button == 12:  # event.type == pygame.JOYBUTTONUP:
                             print(event.button, "Triangle Has Been released")
                         if event.button == 13:
@@ -225,7 +195,6 @@ def teleop_1(in_queue, out_queue):
                     if event.type == pygame.JOYBUTTONDOWN:
                         if event.button == 0:  # event.type == pygame.JOYBUTTONUP:
                             print(event.button, "X Has Been Pressed")
-
                         if event.button == 1:
                             print(event.button, "Circle has been pressed")
                         if event.button == 2:
@@ -324,6 +293,7 @@ def teleop_1(in_queue, out_queue):
                     tspeeds[1] = int(self.tspeedMiddle - forward2)
                 end("calcs")
 
+                self.statusesupdate()
 
                 start("check and limit")
                 self.speed_limit(tspeeds)
@@ -349,37 +319,51 @@ def teleop_1(in_queue, out_queue):
                 NL_Y = self.mapK * ((-self.JS_Y) ** 3)
                 NL_Y_UD = self.mapK * ((-self.JS_Y_UD) ** 3)
 
-                tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.buttonopen,
+                self.tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.buttonopen,
                            self.buttonclose]
 
                 # button z thrusters
                 if abs(self.upconst) == 1:
-                    tspeeds[2] = self.tspeedUp
-                    tspeeds[3] = self.tspeedUp
+                    self.tspeeds[2] = self.tspeedUp
+                    self.tspeeds[3] = self.tspeedUp
                 elif abs(self.downconst) == 1:
-                    tspeeds[2] = self.tspeedDown
-                    tspeeds[3] = self.tspeedDown
+                    self.tspeeds[2] = self.tspeedDown
+                    self.tspeeds[3] = self.tspeedDown
                 elif abs(self.JS_Y_UD) > self.deadBand:
-                    tspeeds[2] = int(self.tspeedMiddle + NL_Y_UD)  # side thrusters
-                    tspeeds[3] = int(self.tspeedMiddle + NL_Y_UD)
+                    self.tspeeds[2] = int(self.tspeedMiddle + NL_Y_UD)  # side thrusters
+                    self.tspeeds[3] = int(self.tspeedMiddle + NL_Y_UD)
 
                 if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:  # calculate thruster values
-                    tspeeds[0] = int(self.tspeedMiddle + NL_X + NL_Y)
-                    tspeeds[1] = int(self.tspeedMiddle + (NL_X - NL_Y))
+                    self.tspeeds[0] = int(self.tspeedMiddle + NL_X + NL_Y)
+                    self.tspeeds[1] = int(self.tspeedMiddle + (NL_X - NL_Y))
                 elif abs(self.JS_X) > self.deadBand >= abs(self.JS_Y):  # only turn
-                    tspeeds[0] = int(self.tspeedMiddle + NL_X)  # cast to integer
-                    tspeeds[1] = int(self.tspeedMiddle - NL_X)
+                    self.tspeeds[0] = int(self.tspeedMiddle + NL_X)  # cast to integer
+                    self.tspeeds[1] = int(self.tspeedMiddle - NL_X)
                 elif abs(self.JS_X) <= self.deadBand < abs(self.JS_Y):  # only forward/back
-                    tspeeds[0] = int(self.tspeedMiddle + NL_Y)  # cast to integer
-                    tspeeds[1] = int(self.tspeedMiddle + NL_Y)
+                    self.tspeeds[0] = int(self.tspeedMiddle + NL_Y)  # cast to integer
+                    self.tspeeds[1] = int(self.tspeedMiddle + NL_Y)
 
+                self.statusesupdate()
                 self.speed_limit(tspeeds)
                 if self.check_button():
                     break
                 self.serial_send_print()
 
+
                 pygame.event.clear()
                 sleep(self.loopSleep)
+
+        def statusesupdate(self):
+            self.statuses[0] = self.tspeeds[0]
+            self.statuses[1] = self.tspeeds[1]
+            self.statuses[2] = self.tspeeds[2]
+            self.statuses[3] = self.tspeeds[3]
+            self.statuses[4] = self.buttonopen
+            self.statuses[5] = self.buttonclose
+            self.statuses[6] = self.upconst
+            self.statuses[7] = self.downconst
+            output_queue.put(self.statuses)
+
 
         def speed_limit(self, tspeeds):
             # assign statuses
@@ -397,9 +381,12 @@ def teleop_1(in_queue, out_queue):
             self.JS_X = self.j.get_axis(self.LH)
             self.JS_Y = self.j.get_axis(self.LV)  # y-direction joystick values are flipped
             self.JS_Y_UD = self.j.get_axis(self.RV)
+            # square, triangle, circle, x
 
         def check_button(self):
+            self.statuses[8] = 0
             if self.j.get_button(self.shareButton) == 1:
+                self.statuses[8] = 1
                 self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
                 self.serial_send_print()
                 print("Stopping teleop, either linear or nonlinear")
@@ -410,7 +397,7 @@ def teleop_1(in_queue, out_queue):
         def serial_send_print(self):  # print to terminal / send regularly updated array to arduino
 
             stringToSend = ','.join(str(x) for x in self.arduinoParams) + '.'
-            print('py: ' + stringToSend)  # print python
+            #print('py: ' + stringToSend)  # print python
             stringFromArd = ''
             if self.serialOn:
                 self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
@@ -420,7 +407,7 @@ def teleop_1(in_queue, out_queue):
                     stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
 
                 end('arduino-wait')
-            print('ard: ' + stringFromArd)  # print arduino data
+            #print('ard: ' + stringFromArd)  # print arduino data
 
     robot = Config('Mac', True, False)
     robot.joy_init()

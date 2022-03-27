@@ -19,24 +19,16 @@ class ThrusterProcess(multiprocessing.Process):
         # p = multiprocessing.Process(target = controller.controllerStart(), args = (self.input_queue, self.output_queue, self.fish_queue))
         # p.start()
 
-def guiqueue():
-    print("asdf")
-    # if thruster_out_queue.empty() == False:
-    #     glob.statuses = thruster_out_queue.get()
-    #     print("recieved from queue")
-
-
 if __name__ == "__main__":
     multiprocessing.set_start_method('spawn')
 
     thruster_in_queue = multiprocessing.Queue()
     thruster_out_queue = multiprocessing.Queue()
     gui.queue(thruster_out_queue)
-    
+
     #
     thruster_proc = ThrusterProcess(thruster_in_queue, thruster_out_queue)
     thruster_proc.start()
 
     while True:
         gui.root.update()
-        guiqueue()
