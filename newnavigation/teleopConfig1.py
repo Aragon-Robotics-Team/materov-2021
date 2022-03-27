@@ -44,11 +44,7 @@ class Config:
             self.centerButton = 16  # non linear
 
         self.serialOn = serialOn
-<<<<<<< HEAD
-        self.serialRecieveOn = False
-=======
         self.serialRecieveOn = serialRecieveOn
->>>>>>> 324450329a7416b7c8b94eaaccd84516cde55965
         self.joyTestsOn = True
         self.deadBand = 0.1  # axis value must be greater than this number
 
@@ -358,15 +354,9 @@ class Config:
             self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
             start('arduino-wait')
             while (self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes)):  # wait for data
-<<<<<<< HEAD
-                pass
-            end('arduino-wait')
-            stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
-=======
                 stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
 
             end('arduino-wait')
->>>>>>> 324450329a7416b7c8b94eaaccd84516cde55965
         print('ard: ' + stringFromArd)  # print arduino data
 
 
