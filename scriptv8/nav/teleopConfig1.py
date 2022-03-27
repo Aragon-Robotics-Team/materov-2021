@@ -354,10 +354,7 @@ class Config:
             self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
             start('arduino-wait')
             while (self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes)):  # wait for data
-<<<<<<< HEAD
-=======
                 pass
->>>>>>> b1eff33808c84d230e28c073ca89b9fb847c26b3
                 stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
 
             end('arduino-wait')

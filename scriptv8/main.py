@@ -1,5 +1,5 @@
 import multiprocessing
-from nav import controller
+import nav
 import gui
 
 class ThrusterProcess(multiprocessing.Process):
@@ -8,12 +8,11 @@ class ThrusterProcess(multiprocessing.Process):
         self.input_queue = input_queue
         self.output_queue = output_queue
     def run(self):
+        nav.teleop.teleopMain()
         # print("h")
         # pygame.init()
         # print("h")
         # pygame.joystick.init()
-        p = multiprocessing.Process(target = controller.controllerStart)
-        p.start()
         # p = multiprocessing.Process(target = controller.controllerStart(), args = (self.input_queue, self.output_queue, self.fish_queue))
         # p.start()
 
@@ -22,7 +21,7 @@ if __name__ == "__main__":
     thruster_out_queue = multiprocessing.Queue()
 
     thruster_proc = ThrusterProcess(thruster_in_queue, thruster_out_queue)
-    thruster_proc.run()
+    thruster_proc.start()
 
     # while True:
     #     gui.updateGUI()
