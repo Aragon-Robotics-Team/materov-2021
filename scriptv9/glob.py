@@ -25,3 +25,8 @@ photomosaicFile = "/Users/valeriefan/Desktop/MATE-ROV-IP/Photomosaic/photomosaic
 
 #Docking --------------------------------------------------------------------------------------
 dock = "/Users/valeriefan/Desktop/MATE-ROV-IP/docking.png"
+
+#QUEUE --------------------------------------------------------------------------------------
+# statuses = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,]
+#[t0, t1, t2, t3, a, b, x, y, telop, nonlinear]
+#buttons -> 1 = True, 0 = False

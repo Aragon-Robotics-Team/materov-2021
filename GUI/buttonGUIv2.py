@@ -60,24 +60,24 @@ def buttons():
     global downstatus
     #a
     if buttonAstatus == True:
-        buttoncanvas.itemconfig(Acirc, fill='gray')
+        buttoncanvas.itemconfig(Acirc, fill='green')
     if buttonAstatus == False:
-        buttoncanvas.itemconfig(Acirc, fill='white')
+        buttoncanvas.itemconfig(Acirc, fill='dark gray')
     #b
     if buttonBstatus == True:
-        buttoncanvas.itemconfig(Bcirc, fill='gray')
+        buttoncanvas.itemconfig(Bcirc, fill='green')
     if buttonBstatus == False:
-        buttoncanvas.itemconfig(Bcirc, fill='white')
+        buttoncanvas.itemconfig(Bcirc, fill='dark gray')
     #x
     if buttonXstatus == True:
-        buttoncanvas.itemconfig(Xcirc, fill='gray')
+        buttoncanvas.itemconfig(Xcirc, fill='green')
     if buttonXstatus == False:
-        buttoncanvas.itemconfig(Xcirc, fill='white')
+        buttoncanvas.itemconfig(Xcirc, fill='dark gray')
     #y
     if buttonYstatus == True:
-        buttoncanvas.itemconfig(Ycirc, fill='gray')
+        buttoncanvas.itemconfig(Ycirc, fill='green')
     if buttonYstatus == False:
-        buttoncanvas.itemconfig(Ycirc, fill='white')
+        buttoncanvas.itemconfig(Ycirc, fill='dark gray')
     #NO BUTTON EVENTS FOR THESE YET
     #left arrow
     if leftstatus == True:
@@ -102,7 +102,7 @@ def buttons():
     buttoncanvas.after(20, buttons)
 
 
-#checks for joystick input 
+#checks for joystick input
 def joytests():
     global buttonAstatus
     global buttonBstatus
