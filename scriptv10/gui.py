@@ -37,7 +37,6 @@ btn.grid(row = 0, column = 1, sticky = 'e')
 # btn = Button(root, text = "Start Photomosaic", command = startPhotomosaic)
 # btn.grid(row = 1,column = 1, sticky = 'e')
 
-from img_proc.photomosaic import cropping
 from img_proc.photomosaic import resize_image
 from img_proc.photomosaic import stitch
 import time
@@ -62,18 +61,10 @@ def takePhotomosaicPhoto():
         if photomosaicCount < len(glob.snapshots):
             ret, frame = cap.read()
             # frame = PiRGBArray(camera)
-            cv2.imwrite(glob.snapshots[glob.photomosaicCount], frame)
-            cropping(glob.snapshots[glob.photomosaicCount])
-            center_height = cv2.imread(glob.snapshots[0]).shape[0]
-            center_width = cv2.imread(glob.snapshots[0]).shape[1]
-            width_ratio = center_width/cv2.imread(glob.snapshots[glob.photomosaicCount]).shape[1]
-            height_ratio = center_height/cv2.imread(glob.snapshots[glob.photomosaicCount]).shape[0]
-            if photomosaicCount < 3:
-                resized = resize_image(cv2.imread(glob.snapshots[glob.photomosaicCount]), width_ratio, width_ratio)
-            else:
-                resized = resize_image(cv2.imread(glob.snapshots[glob.photomosaicCount]), height_ratio, height_ratio)
-
+            cv2.imwrite(glob.snapshots[photomosaicCount], frame)
+            resized = resize_image(cv2.imread(glob.snapshots[photomosaicCount]), 0.75, 0.75)
             cv2.imwrite(glob.snapshots[photomosaicCount], resized)
+            time.sleep(1)
             print("Snapshot #" + str(photomosaicCount) + " taken")
             #cv2.imshow(glob.snapshots[i], frame)
             time.sleep(1)
