@@ -89,6 +89,8 @@ def teleop_1(in_queue, out_queue):
             self.statuses = [1500, 1500, 1500, 1500, 0, 0, 0, 0, 0, 0]
             self.tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
 
+            self.loop = True
+
 
         def joy_init(self):
             ######################## 1. Initializing Serial
@@ -114,6 +116,7 @@ def teleop_1(in_queue, out_queue):
                 self.joy_tests_rpi()
 
         def joy_tests_mac(self):
+            # while self.joyTestsOn:
             while self.joyTestsOn:
                 sleep(0.1)
                 for event in pygame.event.get():
@@ -131,6 +134,9 @@ def teleop_1(in_queue, out_queue):
                         if event.button == 3:
                             print(event.button, "Start has been pressed. Will exit joytests.")
                             self.statuses[7] = 1
+                            self.statuses[8] = 1
+                            output_queue.put(self.statuses)
+                            print("statuses sent")
                             self.LinearLoop()
                         if event.button == 12:  # event.type == pygame.JOYBUTTONUP:
                             print(event.button, "Triangle Has Been Pressed")
@@ -184,6 +190,7 @@ def teleop_1(in_queue, out_queue):
                             four = self.j.get_axis(4)
                             print('4 has been moved ' + str(four))
                 # print(self.statuses)
+                # self.queuereciever()
                 output_queue.put(self.statuses)
                 #print("put in queue")
 
@@ -245,9 +252,13 @@ def teleop_1(in_queue, out_queue):
                         if event.axis == 4 and abs(self.j.get_axis(4)) > self.deadBand:
                             four = self.j.get_axis(4)
                             print('4 has been moved ' + str(four))
+                # self.queuereciever()
 
         def LinearLoop(self):
             program_starts = time()
+            self.loop = True
+            self.statuses[8] = 1
+            self.statuses[8] = 0
             while True:
                 start("first-half")
                 pygame.event.pump()
@@ -273,27 +284,27 @@ def teleop_1(in_queue, out_queue):
                 start("second-half")
                 start("calcs")
                 if abs(self.upconst) == 1:
-                    tspeeds[2] = self.tspeedUp  # 1700
-                    tspeeds[3] = self.tspeedUp
+                    self.tspeeds[2] = self.tspeedUp  # 1700
+                    self.tspeeds[3] = self.tspeedUp
                 elif abs(self.downconst) == 1:
-                    tspeeds[2] = self.tspeedDown  # 1300
-                    tspeeds[3] = self.tspeedDown
+                    self.tspeeds[2] = self.tspeedDown  # 1300
+                    self.tspeeds[3] = self.tspeedDown
                 elif abs(self.JS_Y_UD) > self.deadBand:
-                    tspeeds[2] = int(self.tspeedMiddle - updown)  # side thrusters
-                    tspeeds[3] = int(self.tspeedMiddle - updown)
+                    self.tspeeds[2] = int(self.tspeedMiddle - updown)  # side thrusters
+                    self.tspeeds[3] = int(self.tspeedMiddle - updown)
 
                 if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:
-                    tspeeds[0] = int(self.tspeedMiddle - forward1 + turn1)  # left thruster
-                    tspeeds[1] = int(self.tspeedMiddle - forward2 - turn2)  # right thruster
+                    self.tspeeds[0] = int(self.tspeedMiddle - forward1 + turn1)  # left thruster
+                    self.tspeeds[1] = int(self.tspeedMiddle - forward2 - turn2)  # right thruster
                 elif abs(self.JS_X) > self.deadBand >= abs(self.JS_Y):  # only turn
-                    tspeeds[0] = int(self.tspeedMiddle + turn1)  # cast to integer
-                    tspeeds[1] = int(self.tspeedMiddle - turn2)
+                    self.tspeeds[0] = int(self.tspeedMiddle + turn1)  # cast to integer
+                    self.tspeeds[1] = int(self.tspeedMiddle - turn2)
                 elif abs(self.JS_X) <= self.deadBand < abs(self.JS_Y):
-                    tspeeds[0] = int(self.tspeedMiddle - forward1)  # cast to integer
-                    tspeeds[1] = int(self.tspeedMiddle - forward2)
+                    self.tspeeds[0] = int(self.tspeedMiddle - forward1)  # cast to integer
+                    self.tspeeds[1] = int(self.tspeedMiddle - forward2)
+                # print(self.statuses)
                 end("calcs")
 
-                self.statusesupdate()
 
                 start("check and limit")
                 self.speed_limit(tspeeds)
@@ -305,10 +316,14 @@ def teleop_1(in_queue, out_queue):
 
                 end("end behavior")
 
+                self.statusesupdate()
                 pygame.event.clear()
                 sleep(self.loopSleep)
+                # self.queuereciever()
 
         def NonLinearLoop(self):
+            self.statuses[8] = 1
+            self.statuses[9] = 1
             while True:
 
                 pygame.event.pump()
@@ -408,9 +423,15 @@ def teleop_1(in_queue, out_queue):
 
                 end('arduino-wait')
             #print('ard: ' + stringFromArd)  # print arduino data
+        #
+        # def queuereciever(self):
+        #     if input_queue.empty() == False:
+        #         self.loop = input_queue.get()
+        #         print('recieved from queue')
 
     robot = Config('Mac', True, False)
     robot.joy_init()
+
 
 
 if __name__ == '__main__':
