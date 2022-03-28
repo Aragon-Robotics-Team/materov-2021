@@ -86,7 +86,7 @@ def teleop_1(in_queue, out_queue):
             self.j = None
 
             #THIS IS FOR THE QUEUE
-            self.statuses = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            self.statuses = [1500, 1500, 1500, 1500, 0, 0, 0, 0, 0, 0]
             self.tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
 
 

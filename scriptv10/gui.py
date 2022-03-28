@@ -307,15 +307,13 @@ def thrustergraphic():
     global t2status
     global t3status
 
+    print(statuses)
     #get raw thruster values in pwm and convert to values for the gui
-    t0status = (statuses[0] - 1500) * 2 * height / 2000
-    t1status = (statuses[1] - 1500) * 2 * height / 2000
-    t2status = (statuses[2] - 1500) * 2 * height / 2000
-    t3status = (statuses[3] - 1500) * 2 * height / 2000
-    print("t0: " + str(t0status))
-    print("t1: " + str(t1status))
-    print("t2: " + str(t2status))
-    print("t3: " + str(t3status))
+    # t0status = (statuses[0] - 1500) * 2 * height / 2000
+    # t1status = (statuses[1] - 1500) * 2 * height / 2000
+    # t2status = (statuses[2] - 1500) * 2 * height / 2000
+    # t3status = (statuses[3] - 1500) * 2 * height / 2000
+    # print(str(t0status) + ", " + str(t1status) + ", " + str(t2status) + ", " + str(t3status))
 
 
     thrustercanvas.coords(t0, centerx - t_width - width/2, centery - t0status, centerx + t_width - width/2, centery + t_height)
