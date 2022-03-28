@@ -145,7 +145,7 @@ btn.grid(row = 8, column = vcol + 1, sticky = 'e')
 #BUTTON GRAPHICS------------------------------------------------------------------------------------------------------
 buttoncanvas = Canvas(root,height=120,width=250,bg="#fff")
 
-buttoncanvas.grid(row = 9, column = vcol + 1, sticky = 'e')
+buttoncanvas.grid(row = 10, column = vcol + 1, sticky = 'e')
 
 buttoncanvas.create_line(10, 10, 240, 10, fill = "black", width = 5)
 
@@ -242,7 +242,7 @@ buttonstatus()
 #THRUSTER GRAPHICS ------------------------------------------------------------------------------------------------------
 thrustercanvas = Canvas(root,height=200,width=250,bg="#fff")
 
-thrustercanvas.grid(row = 10, column = vcol + 1, sticky = 'e')
+thrustercanvas.grid(row = 11, column = vcol + 1, sticky = 'e')
 
 
 topx = 75 #this is also the center of the top left rectangle
@@ -309,10 +309,10 @@ def thrustergraphic():
 
     print(statuses)
     #get raw thruster values in pwm and convert to values for the gui
-    # t0status = (statuses[0] - 1500) * 2 * height / 2000
-    # t1status = (statuses[1] - 1500) * 2 * height / 2000
-    # t2status = (statuses[2] - 1500) * 2 * height / 2000
-    # t3status = (statuses[3] - 1500) * 2 * height / 2000
+    t0status = (statuses[0] - 1500) * height / 2000
+    t1status = (statuses[1] - 1500) * height / 2000
+    t2status = (statuses[2] - 1500) * height / 2000
+    t3status = (statuses[3] - 1500) * height / 2000
     # print(str(t0status) + ", " + str(t1status) + ", " + str(t2status) + ", " + str(t3status))
 
 
@@ -326,108 +326,118 @@ thrustergraphic()
 
 #QUEUE ------------------------------------------------------------------------------------------------------
 
-def queue(out_queue):
+def queue(in_queue, out_queue):
     global output_queue
-    output_queue = out_queue
+    global input_queue
+    input_queue = out_queue
+    output_queue = in_queue
     queuerecieve()
 
 def queuerecieve():
     global statuses
-    if output_queue.empty() == False:
-        statuses = output_queue.get()
+    if input_queue.empty() == False:
+        statuses = input_queue.get()
         #print("recieved from queue")
     root.after(10, queuerecieve)
-
+#
+# def endthrusterprocess():
+#     output_queue.put(False)
+#     print("Sent through process")
+#
+#
+# btn = Button(root, text = "End Thruster Process", command = endthrusterprocess)
+# btn.grid(row = 9, column = vcol + 1, sticky = 'e')
+#
 
 #TIMER ------------------------------------------------------------------------------------------------------
-timercanvas = Canvas(root, height = 130, width = 150, bg = "#fff")
-timercanvas.grid(row = 11, column = vcol + 1, sticky = 'e')
-
-minute=StringVar()
-second=StringVar()
-hours=StringVar()
-
-sec = StringVar()
-mins= StringVar()
-hrs= StringVar()
-
-# #  # #
-
-Entry(timercanvas, textvariable = sec, width = 2, font = 'arial 12').place(x=70, y=30) # Seconds
-Entry(timercanvas, textvariable = mins, width =2, font = 'arial 12').place(x=45, y=30) # Mins
-Entry(timercanvas, textvariable = hrs, width =2, font = 'arial 12').place(x=20, y=30) # Hours
-
-# #  # #
-
-minute.set('00')
-second.set('00')
-hours.set('00')
-
-sec.set('00')
-mins.set('00')
-hrs.set('00')
-times = 0
-
-# #  # #
-
-def countdown():
-    global times
-    print("hello") #testing, working but code not working
-    times = int(hrs.get())*3600+ int(mins.get())*60 + int(sec.get())
-
-
-    if times > 0:
-        minute,second = (times // 60 , times % 60)
-        timercanvas.after(1000, countdown)
-
-        hour = 0
-        if minute > 60:
-            hour , minute = (minute // 60 , minute % 60)
-
-        sec.set(second)
-        mins.set(minute)
-        hrs.set(hour)
-
-        root.update()
-        time.sleep(1)
-        times -= 1
-        if(times == 0):
-            sec.set('00')
-            mins.set('00')
-            hrs.set('00')
-            return
-
-#set the time
-#instead of times > 0, do if time > 0, and have an after function at the end of the if statement
-
-
-#time = 2
-#is time > 0?
-    #change the timer graphic
-    #time--
-    #timercanvas.after(1000, countdown)
-#is time == 0?
-    #reset everything
-
-Button(timercanvas, text='START', bd ='5', command = countdown, bg = 'white', font = 'arial 10 bold').place(x=15, y=70)
-
-
-def stop():
-    global times
-    minute.set('00')
-    second.set('00')
-    hours.set('00')
-    sec.set('00')
-    mins.set('00')
-    hrs.set('00')
-    times = 0
-    #root.destroy()
-    #python = sys.executable
-    #os.execl(python, python, * sys.argv)
-
-
-
-Button(timercanvas, text='STOP', bd ='5', command = stop, bg = 'white', font = 'arial 10 bold').place(x=15, y=100)
+# timercanvas = Canvas(root, height = 130, width = 150, bg = "#fff")
+# timercanvas.grid(row = 11, column = vcol + 1, sticky = 'e')
+#
+# minute=StringVar()
+# second=StringVar()
+# hours=StringVar()
+#
+# sec = StringVar()
+# mins= StringVar()
+# hrs= StringVar()
+#
+# # #  # #
+#
+# Entry(timercanvas, textvariable = sec, width = 2, font = 'arial 12').place(x=70, y=30) # Seconds
+# Entry(timercanvas, textvariable = mins, width =2, font = 'arial 12').place(x=45, y=30) # Mins
+# Entry(timercanvas, textvariable = hrs, width =2, font = 'arial 12').place(x=20, y=30) # Hours
+#
+# # #  # #
+#
+# minute.set('00')
+# second.set('00')
+# hours.set('00')
+#
+# sec.set('00')
+# mins.set('00')
+# hrs.set('00')
+# times = 0
+#
+# # #  # #
+#
+# def countdown():
+#     global times
+#     print("hello") #testing, working but code not working
+#     times = int(hrs.get())*3600+ int(mins.get())*60 + int(sec.get())
+#
+#
+#     if times > 0:
+#         minute,second = (times // 60 , times % 60)
+#         timercanvas.after(1000, countdown)
+#
+#         hour = 0
+#         if minute > 60:
+#             hour , minute = (minute // 60 , minute % 60)
+#
+#         sec.set(second)
+#         mins.set(minute)
+#         hrs.set(hour)
+#
+#         root.update()
+#         time.sleep(1)
+#         times -= 1
+#         if(times == 0):
+#             sec.set('00')
+#             mins.set('00')
+#             hrs.set('00')
+#             return
+#
+# #set the time
+# #instead of times > 0, do if time > 0, and have an after function at the end of the if statement
+#
+#
+# #time = 2
+# #is time > 0?
+#     #change the timer graphic
+#     #time--
+#     #timercanvas.after(1000, countdown)
+# #is time == 0?
+#     #reset everything
+#
+# Button(timercanvas, text='START', bd ='5', command = countdown, bg = 'white', font = 'arial 10 bold').place(x=15, y=70)
+#
+#
+# def stop():
+#     global times
+#     minute.set('00')
+#     second.set('00')
+#     hours.set('00')
+#     sec.set('00')
+#     mins.set('00')
+#     hrs.set('00')
+#     times = 0
+#     #root.destroy()
+#     #python = sys.executable
+#     #os.execl(python, python, * sys.argv)
+#
+#
+#
+# Button(timercanvas, text='STOP', bd ='5', command = stop, bg = 'white', font = 'arial 10 bold').place(x=15, y=100)
 
 #VIDEO FEED ------------------------------------------------------------------------------------------------------
 #pretty much the same lag as when the video feed is in the loop

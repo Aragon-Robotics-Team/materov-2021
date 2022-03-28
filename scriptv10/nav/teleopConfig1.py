@@ -8,7 +8,7 @@ def teleop_1(in_queue, out_queue):
     import pygame
     import serial
     # from serial import Serial
-    from nav.tracer import start, end, agg
+    from scriptv10.nav.tracer import start, end, agg
 
     input_queue = in_queue
     output_queue = out_queue
@@ -88,6 +88,8 @@ def teleop_1(in_queue, out_queue):
             self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
             # this array keeps updating thruster values
 
+            self.loop = True
+
 
         def joy_init(self):
             ######################## 1. Initializing Serial
@@ -113,6 +115,7 @@ def teleop_1(in_queue, out_queue):
                 self.joy_tests_rpi()
 
         def joy_tests_mac(self):
+            # while self.joyTestsOn:
             while self.joyTestsOn:
                 sleep(0.1)
                 for event in pygame.event.get():
@@ -130,6 +133,9 @@ def teleop_1(in_queue, out_queue):
                         if event.button == 3:
                             print(event.button, "Start has been pressed. Will exit joytests.")
                             self.statuses[7] = 1
+                            self.statuses[8] = 1
+                            output_queue.put(self.statuses)
+                            print("statuses sent")
                             self.LinearLoop()
                         if event.button == 12:  # event.type == pygame.JOYBUTTONUP:
                             print(event.button, "Triangle Has Been Pressed")
@@ -182,7 +188,7 @@ def teleop_1(in_queue, out_queue):
                         if event.axis == 4 and abs(self.j.get_axis(4)) > self.deadBand:
                             four = self.j.get_axis(4)
                             print('4 has been moved ' + str(four))
-                print(self.statuses)
+
                 output_queue.put(self.statuses)
                 #print("put in queue")
 
@@ -244,9 +250,13 @@ def teleop_1(in_queue, out_queue):
                         if event.axis == 4 and abs(self.j.get_axis(4)) > self.deadBand:
                             four = self.j.get_axis(4)
                             print('4 has been moved ' + str(four))
+                # self.queuereciever()
 
         def LinearLoop(self):
             program_starts = time()
+            self.loop = True
+            self.statuses[8] = 1
+            self.statuses[8] = 0
             while True:
                 start("first-half")
                 pygame.event.pump()
@@ -308,10 +318,14 @@ def teleop_1(in_queue, out_queue):
 
                 end("end behavior")
 
+                self.statusesupdate()
                 pygame.event.clear()
                 sleep(self.loopSleep)
+                # self.queuereciever()
 
         def NonLinearLoop(self):
+            self.statuses[8] = 1
+            self.statuses[9] = 1
             while True:
 
                 pygame.event.pump()
@@ -409,10 +423,17 @@ def teleop_1(in_queue, out_queue):
                     stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
 
                 end('arduino-wait')
-            print('ard: ' + stringFromArd)  # print arduino data
+
+            # print('ard: ' + stringFromArd)  # print arduino data
+        #
+        # def queuereciever(self):
+        #     if input_queue.empty() == False:
+        #         self.loop = input_queue.get()
+        #         print('recieved from queue')
 
     robot = Config('Mac', True, False)
     robot.joy_init()
+
 
 
 if __name__ == '__main__':
