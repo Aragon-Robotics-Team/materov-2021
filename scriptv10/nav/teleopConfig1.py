@@ -412,7 +412,7 @@ def teleop_1(in_queue, out_queue):
         def serial_send_print(self):  # print to terminal / send regularly updated array to arduino
 
             stringToSend = ','.join(str(x) for x in self.arduinoParams) + '.'
-            #print('py: ' + stringToSend)  # print python
+            print('py: ' + stringToSend)  # print python
             stringFromArd = ''
             if self.serialOn:
                 self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
