@@ -142,10 +142,30 @@ def docking():
 btn = Button(root, text = "Autonomous Docking Calibration", command = docking)
 btn.grid(row = 8, column = vcol + 1, sticky = 'e')
 
+def startDocking():
+    print("haha this has not been done yet")
+
+btn = Button(root, text = "Start Autonomous Docking", command = startDocking)
+btn.grid(row = 9, column = vcol + 1, sticky = 'e')
+
+#LASERS ---------------------------------------------------------------------------------------------------------------
+
+def lasersOn():
+    print("haha this has not been done yet")
+
+btn = Button(root, text = "Turn Lasers On", command = lasersOn)
+btn.grid(row = 10, column = vcol + 1, sticky = 'e')
+
+def lasersOff():
+    print("haha this has not been done yet")
+
+btn = Button(root, text = "Turn Lasers Off", command = lasersOff)
+btn.grid(row = 11, column = vcol + 1, sticky = 'e')
+
 #BUTTON GRAPHICS------------------------------------------------------------------------------------------------------
 buttoncanvas = Canvas(root,height=120,width=250,bg="#fff")
 
-buttoncanvas.grid(row = 10, column = vcol + 1, sticky = 'e')
+buttoncanvas.grid(row = 12, column = vcol + 1, sticky = 'e')
 
 buttoncanvas.create_line(10, 10, 240, 10, fill = "black", width = 5)
 
@@ -240,9 +260,9 @@ def buttonstatus():
 
 buttonstatus()
 #THRUSTER GRAPHICS ------------------------------------------------------------------------------------------------------
-thrustercanvas = Canvas(root,height=200,width=250,bg="#fff")
+thrustercanvas = Canvas(root,height=240,width=250,bg="#fff")
 
-thrustercanvas.grid(row = 11, column = vcol + 1, sticky = 'e')
+thrustercanvas.grid(row = 13, column = vcol + 1, sticky = 'e')
 
 
 topx = 75 #this is also the center of the top left rectangle
@@ -300,6 +320,10 @@ thrustercanvas.create_rectangle(centerx - t_width, centery - t_height + height/2
 t3 = thrustercanvas.create_rectangle(centerx - t_width, centery  + height/2 - t3status, centerx + t_width, centery + t_height + height/2, fill = "green", outline = "green")
 
 thrustercanvas.create_text(centerx, centery + height/2, text = "3", fill="black", font=('Helvetica 15 bold'))
+
+
+thrustercanvas.create_line(10, 220, 240, 220, fill = "black", width = 5)
+
 
 def thrustergraphic():
     global t0status
@@ -488,6 +512,15 @@ def cam2():
     camera = 2
 
 Button(root, text = "CAMERA 2", command = cam2).grid(row = 21, column = 2)
+
+#EMERGENCY HALT ------------------------------------------------------------------------------------------------------------
+
+def emergencyHalt():
+    print("haha this has not been done yet")
+#
+# btn = Button(root, text = "EMERGENCY HALT", command = emergencyHalt, height = 25, width = 200, fg = 'red')
+btn = Button(root, text = "EMERGENCY HALT", command = emergencyHalt, width = 30, fg = 'red')
+btn.grid(row = 14, column = vcol + 1, sticky = 'e')
 
 def updateGUI():
     root.update()
