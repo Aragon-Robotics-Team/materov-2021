@@ -1,4 +1,6 @@
 from tkinter import *
+from tkinter import ttk
+# from tkinter.tkk import Style
 import glob
 from img_proc.measure_fishes import measureFish
 from img_proc.measure_fishes import averageLength
@@ -19,15 +21,22 @@ cap = cv2.VideoCapture(0)
 root = Tk()
 root.geometry("1300x1000")
 
+style =  ttk.Style()
+
+style.theme_create( "button-center", parent="alt", settings={
+        "TButton": {"configure": {"anchor": "center"}}} )
+
+style.configure('TButton', font = ('Helvetica', 13), width = 25)
+
 #TEST ------------------------------------------------------------------------------------------------------
 vcol = 3
-
 
 def asdf():
     print("hello")
 
-btn = Button(root, text = "hello", command = asdf)
-btn.grid(row = 0, column = vcol + 1, sticky = 'e')
+# btn = Button(root, text = "hello", command = asdf)
+btn = ttk.Button(root, text = "Testing", command = asdf, style = "TButton")
+btn.grid(row = 0, column = vcol + 1, sticky = 'e', pady=(10, 0))
 
 #PHOTOMOSAIC ------------------------------------------------------------------------------------------------------
 # def startPhotomosaic():
@@ -48,40 +57,40 @@ import time
 startPhotomosaic = False
 photomosaicCount = 0
 
-def beginPhotomosaic():
-    global startPhotomosaic
-    print("Photomosaic begun")
-    print("Click take photomosaic button to take each snapshot")
-    startPhotomosaic = True
-    photomosaicCount = 0
-
-btn = Button(root, text = "Start Photomosaic", command = beginPhotomosaic)
-btn.grid(row = 1, column = vcol + 1, sticky = 'e')
+# def beginPhotomosaic():
+#     global startPhotomosaic
+#     print("Photomosaic begun")
+#     print("Click take photomosaic button to take each snapshot")
+#     startPhotomosaic = True
+#     photomosaicCount = 0
+#
+# btn = ttk.Button(root, text = "Start Photomosaic", command = beginPhotomosaic)
+# btn.grid(row = 1, column = vcol + 1, sticky = 'e')
 
 def takePhotomosaicPhoto():
     global startPhotomosaic
     global photomosaicCount
-    if startPhotomosaic == True:
-        if photomosaicCount < len(glob.snapshots):
-            ret, frame = cap.read()
-            # frame = PiRGBArray(camera)
-            cv2.imwrite(glob.snapshots[photomosaicCount], frame)
-            resized = resize_image(cv2.imread(glob.snapshots[photomosaicCount]), 0.75, 0.75)
-            cv2.imwrite(glob.snapshots[photomosaicCount], resized)
-            time.sleep(1)
-            print("Snapshot #" + str(photomosaicCount) + " taken")
-            #cv2.imshow(glob.snapshots[i], frame)
-            time.sleep(1)
-            photomosaicCount += 1
-        else:
-            print("All photomosaic snapshots taken")
-            stitch()
-            startPhotomosaic = False
+    # if startPhotomosaic == True:
+    if photomosaicCount < len(glob.snapshots):
+        ret, frame = cap.read()
+        # frame = PiRGBArray(camera)
+        cv2.imwrite(glob.snapshots[photomosaicCount], frame)
+        resized = resize_image(cv2.imread(glob.snapshots[photomosaicCount]), 0.75, 0.75)
+        cv2.imwrite(glob.snapshots[photomosaicCount], resized)
+        time.sleep(1)
+        print("Snapshot #" + str(photomosaicCount) + " taken")
+        #cv2.imshow(glob.snapshots[i], frame)
+        time.sleep(1)
+        photomosaicCount += 1
     else:
-        print("Photomosaic has not been started yet")
+        print("All photomosaic snapshots taken")
+        stitch()
+        # startPhotomosaic = False
+    # else:
+    #     print("Photomosaic has not been started yet")
 
-btn = Button(root, text = "Take Photomosaic Snapshot", command = takePhotomosaicPhoto)
-btn.grid(row = 2, column = vcol + 1, sticky = 'e')
+btn = ttk.Button(root, text = "Take Photomosaic Snapshot", command = takePhotomosaicPhoto)
+btn.grid(row = 2, column = vcol + 1, sticky = 'e', pady = (25, 0))
 
 def resetPhotomosaic():
     global startPhotomosaic
@@ -89,7 +98,7 @@ def resetPhotomosaic():
     startPhotomosaic = False
     photomosaicCount = 0
 
-btn = Button(root, text = "Reset Photomosaic Snapshot", command = resetPhotomosaic)
+btn = ttk.Button(root, text = "Reset Photomosaic Snapshot", command = resetPhotomosaic)
 btn.grid(row = 3, column = vcol + 1, sticky = 'e')
 
 
@@ -106,10 +115,10 @@ def start_measure_fish():
         averageFishLength = averageLength()
         ValuesAndCalc(averageFishLength)
 
-label = Label(root, text = "(Click to 3 times to take photos and calculate)", font = 10)
-label.grid(row = 4, column = vcol + 1, sticky = 'n')
+label = Label(root, text = "(Click to 3 times to take photos and calculate)", font = ('Helvetica', 10))
+label.grid(row = 4, column = vcol + 1, sticky = 'e', pady = (25, 0))
 
-btn = Button(root, text="Measure Fish", command = start_measure_fish)
+btn = ttk.Button(root, text="Measure Fish", command = start_measure_fish)
 btn.grid(row = 5 ,column = vcol + 1, sticky = 'e')
 
 def resetMeasureFish():
@@ -118,15 +127,15 @@ def resetMeasureFish():
     glob.countfishCoords = 0
     glob.fishPictureCount = 0
 
-btn = Button(root, text="Reset Fish Measuring", command = resetMeasureFish)
+btn = ttk.Button(root, text="Reset Fish Measuring", command = resetMeasureFish)
 btn.grid(row = 6, column = vcol + 1, sticky = 'e')
 
-#DRIFT
+#DRIFT -----------------------------------------------------------------------------------------
 from misc.drift import floatLocation
-btn = Button(root, text = "Calculate Float Location", command = floatLocation)
-btn.grid(row = 7, column = vcol + 1, sticky = 'e')
+btn = ttk.Button(root, text = "Calculate Float Location", command = floatLocation)
+btn.grid(row = 7, column = vcol + 1, sticky = 'e', pady = (25, 0))
 
-#DOCKING
+#DOCKING ------------------------------------------------------------------
 dockCount = 0
 def docking():
     global dockCount
@@ -139,13 +148,13 @@ def docking():
         dockCalculate()
 
 
-btn = Button(root, text = "Autonomous Docking Calibration", command = docking)
-btn.grid(row = 8, column = vcol + 1, sticky = 'e')
+btn = ttk.Button(root, text = "Autonomous Docking Calibration", command = docking)
+btn.grid(row = 8, column = vcol + 1, sticky = 'e', pady = (25, 0))
 
 def startDocking():
     print("haha this has not been done yet")
 
-btn = Button(root, text = "Start Autonomous Docking", command = startDocking)
+btn = ttk.Button(root, text = "Start Autonomous Docking", command = startDocking)
 btn.grid(row = 9, column = vcol + 1, sticky = 'e')
 
 #LASERS ---------------------------------------------------------------------------------------------------------------
@@ -153,13 +162,13 @@ btn.grid(row = 9, column = vcol + 1, sticky = 'e')
 def lasersOn():
     print("haha this has not been done yet")
 
-btn = Button(root, text = "Turn Lasers On", command = lasersOn)
-btn.grid(row = 10, column = vcol + 1, sticky = 'e')
+btn = ttk.Button(root, text = "Turn Lasers On", command = lasersOn)
+btn.grid(row = 10, column = vcol + 1, sticky = 'e', pady = (25, 0))
 
 def lasersOff():
     print("haha this has not been done yet")
 
-btn = Button(root, text = "Turn Lasers Off", command = lasersOff)
+btn = ttk.Button(root, text = "Turn Lasers Off", command = lasersOff)
 btn.grid(row = 11, column = vcol + 1, sticky = 'e')
 
 #BUTTON GRAPHICS------------------------------------------------------------------------------------------------------
@@ -331,7 +340,7 @@ def thrustergraphic():
     global t2status
     global t3status
 
-    print(statuses)
+    # print(statuses)
     #get raw thruster values in pwm and convert to values for the gui
     t0status = (statuses[0] - 1500) * height / 2000
     t1status = (statuses[1] - 1500) * height / 2000
@@ -374,7 +383,7 @@ def queuerecieve():
 #
 
 #TIMER ------------------------------------------------------------------------------------------------------
-timercanvas = Canvas(root, height = 140, width = 250, bg = "#fff")
+timercanvas = Canvas(root, height = 140, width = 250, background = "#fff")
 timercanvas.grid(row = 14, column = vcol + 1, sticky = 'e')
 
 minute=StringVar()
@@ -386,10 +395,15 @@ mins= StringVar()
 hrs= StringVar()
 
 # #  # #
+spacing = 25
+totalEntryLength = spacing * 3
+startingx = (250 - totalEntryLength)/2
+print(startingx)
 
-Entry(timercanvas, textvariable = sec, width = 2, font = 'arial 12').place(x=70, y=10) # Seconds
-Entry(timercanvas, textvariable = mins, width =2, font = 'arial 12').place(x=45, y=10) # Mins
-Entry(timercanvas, textvariable = hrs, width =2, font = 'arial 12').place(x=20, y=10) # Hours
+
+Entry(timercanvas, textvariable = sec, width = 2, font = 'arial 12').place(x=startingx, y=10) # Seconds
+Entry(timercanvas, textvariable = mins, width = 2, font = 'arial 12').place(x=startingx + spacing, y=10) # Mins
+Entry(timercanvas, textvariable = hrs, width = 2, font = 'arial 12').place(x=startingx + spacing * 2, y=10) # Hours
 
 # #  # #
 
@@ -443,7 +457,7 @@ def countdown():
 #is time == 0?
     #reset everything
 
-Button(timercanvas, text='START', bd ='5', command = countdown, bg = 'white', font = 'arial 10 bold').place(x=15, y=50)
+Button(timercanvas, text='START', bd ='5', command = countdown, bg = 'white', font = 'arial 10 bold', width = 15).place(x=80, y=50)
 
 
 def stop():
@@ -461,7 +475,7 @@ def stop():
 
 
 
-Button(timercanvas, text='STOP', bd ='5', command = stop, bg = 'white', font = 'arial 10 bold').place(x=15, y=100)
+Button(timercanvas, text='STOP', bd ='5', command = stop, bg = 'white', font = 'arial 10 bold', width = 15).place(x=80.5, y=75)
 
 timercanvas.create_line(10, 130, 240, 130, fill = "black", width = 5)
 
@@ -470,8 +484,8 @@ timercanvas.create_line(10, 130, 240, 130, fill = "black", width = 5)
 from PIL import Image, ImageTk
 
 # Create a Label to capture the Video frames
-label = Label(root, height = 700, width = 1000)
-label.grid(row = 0, column = 0, rowspan = 30, columnspan = vcol)
+label = Label(root, height = 800, width = 1000)
+label.grid(row = 1, column = 0, rowspan = 20, columnspan = vcol, sticky = 'n')
 
 camera = 0 #specifies the camera object to use
 
@@ -501,19 +515,19 @@ def cam0():
     global camera
     camera = 0
 
-Button(root, text = "CAMERA 0", command = cam0).grid(row = 21,column = 0)
+ttk.Button(root, text = "CAMERA 0", command = cam0).grid(row = 0,column = 0)
 
 def cam1():
     global camera
     camera = 1
 
-Button(root, text = "CAMERA 1", command = cam1).grid(row = 21, column = 1)
+ttk.Button(root, text = "CAMERA 1", command = cam1).grid(row = 0, column = 1)
 
 def cam2():
     global camera
     camera = 2
 
-Button(root, text = "CAMERA 2", command = cam2).grid(row = 21, column = 2)
+ttk.Button(root, text = "CAMERA 2", command = cam2).grid(row = 0, column = 2)
 
 #EMERGENCY HALT ------------------------------------------------------------------------------------------------------------
 
@@ -521,8 +535,8 @@ def emergencyHalt():
     print("haha this has not been done yet")
 #
 # btn = Button(root, text = "EMERGENCY HALT", command = emergencyHalt, height = 25, width = 200, fg = 'red')
-btn = Button(root, text = "EMERGENCY HALT", command = emergencyHalt, width = 30, fg = 'red')
-btn.grid(row = 15, column = vcol + 1, sticky = 'e')
+btn = Button(root, text = "EMERGENCY HALT", command = emergencyHalt, width = 100, height = 3, fg = 'red')
+btn.grid(row = 14, column = 0, sticky = 'w', pady = (75, 0), padx = (50, 0), columnspan = 3)
 
 def updateGUI():
     root.update()
