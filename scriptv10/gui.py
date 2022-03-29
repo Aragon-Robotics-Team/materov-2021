@@ -17,7 +17,7 @@ cap = cv2.VideoCapture(0)
 
 #SETUP ------------------------------------------------------------------------------------------------------
 root = Tk()
-root.geometry("1300x750")
+root.geometry("1300x1000")
 
 #TEST ------------------------------------------------------------------------------------------------------
 vcol = 3
@@ -374,94 +374,96 @@ def queuerecieve():
 #
 
 #TIMER ------------------------------------------------------------------------------------------------------
-# timercanvas = Canvas(root, height = 130, width = 150, bg = "#fff")
-# timercanvas.grid(row = 11, column = vcol + 1, sticky = 'e')
-#
-# minute=StringVar()
-# second=StringVar()
-# hours=StringVar()
-#
-# sec = StringVar()
-# mins= StringVar()
-# hrs= StringVar()
-#
-# # #  # #
-#
-# Entry(timercanvas, textvariable = sec, width = 2, font = 'arial 12').place(x=70, y=30) # Seconds
-# Entry(timercanvas, textvariable = mins, width =2, font = 'arial 12').place(x=45, y=30) # Mins
-# Entry(timercanvas, textvariable = hrs, width =2, font = 'arial 12').place(x=20, y=30) # Hours
-#
-# # #  # #
-#
-# minute.set('00')
-# second.set('00')
-# hours.set('00')
-#
-# sec.set('00')
-# mins.set('00')
-# hrs.set('00')
-# times = 0
-#
-# # #  # #
-#
-# def countdown():
-#     global times
-#     print("hello") #testing, working but code not working
-#     times = int(hrs.get())*3600+ int(mins.get())*60 + int(sec.get())
-#
-#
-#     if times > 0:
-#         minute,second = (times // 60 , times % 60)
-#         timercanvas.after(1000, countdown)
-#
-#         hour = 0
-#         if minute > 60:
-#             hour , minute = (minute // 60 , minute % 60)
-#
-#         sec.set(second)
-#         mins.set(minute)
-#         hrs.set(hour)
-#
-#         root.update()
-#         time.sleep(1)
-#         times -= 1
-#         if(times == 0):
-#             sec.set('00')
-#             mins.set('00')
-#             hrs.set('00')
-#             return
-#
-# #set the time
-# #instead of times > 0, do if time > 0, and have an after function at the end of the if statement
-#
-#
-# #time = 2
-# #is time > 0?
-#     #change the timer graphic
-#     #time--
-#     #timercanvas.after(1000, countdown)
-# #is time == 0?
-#     #reset everything
-#
-# Button(timercanvas, text='START', bd ='5', command = countdown, bg = 'white', font = 'arial 10 bold').place(x=15, y=70)
-#
-#
-# def stop():
-#     global times
-#     minute.set('00')
-#     second.set('00')
-#     hours.set('00')
-#     sec.set('00')
-#     mins.set('00')
-#     hrs.set('00')
-#     times = 0
-#     #root.destroy()
-#     #python = sys.executable
-#     #os.execl(python, python, * sys.argv)
-#
-#
-#
-# Button(timercanvas, text='STOP', bd ='5', command = stop, bg = 'white', font = 'arial 10 bold').place(x=15, y=100)
+timercanvas = Canvas(root, height = 140, width = 250, bg = "#fff")
+timercanvas.grid(row = 14, column = vcol + 1, sticky = 'e')
+
+minute=StringVar()
+second=StringVar()
+hours=StringVar()
+
+sec = StringVar()
+mins= StringVar()
+hrs= StringVar()
+
+# #  # #
+
+Entry(timercanvas, textvariable = sec, width = 2, font = 'arial 12').place(x=70, y=10) # Seconds
+Entry(timercanvas, textvariable = mins, width =2, font = 'arial 12').place(x=45, y=10) # Mins
+Entry(timercanvas, textvariable = hrs, width =2, font = 'arial 12').place(x=20, y=10) # Hours
+
+# #  # #
+
+minute.set('00')
+second.set('00')
+hours.set('00')
+
+sec.set('00')
+mins.set('00')
+hrs.set('00')
+times = 0
+
+# #  # #
+
+def countdown():
+    global times
+    print("hello") #testing, working but code not working
+    times = int(hrs.get())*3600+ int(mins.get())*60 + int(sec.get())
+
+
+    if times > 0:
+        minute,second = (times // 60 , times % 60)
+        timercanvas.after(1000, countdown)
+
+        hour = 0
+        if minute > 60:
+            hour , minute = (minute // 60 , minute % 60)
+
+        sec.set(second)
+        mins.set(minute)
+        hrs.set(hour)
+
+        root.update()
+        time.sleep(1)
+        times -= 1
+        if(times == 0):
+            sec.set('00')
+            mins.set('00')
+            hrs.set('00')
+            return
+
+#set the time
+#instead of times > 0, do if time > 0, and have an after function at the end of the if statement
+
+
+#time = 2
+#is time > 0?
+    #change the timer graphic
+    #time--
+    #timercanvas.after(1000, countdown)
+#is time == 0?
+    #reset everything
+
+Button(timercanvas, text='START', bd ='5', command = countdown, bg = 'white', font = 'arial 10 bold').place(x=15, y=50)
+
+
+def stop():
+    global times
+    minute.set('00')
+    second.set('00')
+    hours.set('00')
+    sec.set('00')
+    mins.set('00')
+    hrs.set('00')
+    times = 0
+    #root.destroy()
+    #python = sys.executable
+    #os.execl(python, python, * sys.argv)
+
+
+
+Button(timercanvas, text='STOP', bd ='5', command = stop, bg = 'white', font = 'arial 10 bold').place(x=15, y=100)
+
+timercanvas.create_line(10, 130, 240, 130, fill = "black", width = 5)
 
 #VIDEO FEED ------------------------------------------------------------------------------------------------------
 #pretty much the same lag as when the video feed is in the loop
@@ -520,7 +522,7 @@ def emergencyHalt():
 #
 # btn = Button(root, text = "EMERGENCY HALT", command = emergencyHalt, height = 25, width = 200, fg = 'red')
 btn = Button(root, text = "EMERGENCY HALT", command = emergencyHalt, width = 30, fg = 'red')
-btn.grid(row = 14, column = vcol + 1, sticky = 'e')
+btn.grid(row = 15, column = vcol + 1, sticky = 'e')
 
 def updateGUI():
     root.update()
