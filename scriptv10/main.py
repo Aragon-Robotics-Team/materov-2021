@@ -1,7 +1,6 @@
 import multiprocessing
-import nav
 
-from nav.teleop import teleopMain
+from nav.teleop import teleopMain  # RPI IMPORTS
 import gui
 
 class ThrusterProcess(multiprocessing.Process):

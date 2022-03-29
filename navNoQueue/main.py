@@ -1,4 +1,4 @@
-from teleopConfig1 import Config  # on rpi, DELETE newnavigation part
+from teleopConfig1 import Config  # RPI IMPORTS
 from tracer import agg
 def main():
     robot = Config('Mac', True, False) # comp type, serial on, serial recieve on

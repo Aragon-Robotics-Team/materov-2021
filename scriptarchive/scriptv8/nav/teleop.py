@@ -1,4 +1,4 @@
-from teleopConfig1 import Config  # on rpi, DELETE newnavigation part
+from teleopConfig1 import Config  # on rpi, DELETE navNoQueue part
 from tracer import agg
 def teleopMain():
     robot = Config('Mac', True, False) # comp type, serial on, serial recieve on

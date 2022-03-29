@@ -1,5 +1,5 @@
 import nav.teleopConfig1
-# from nav.teleopConfig1 import Config  # on rpi, DELETE newnavigation part
+# from nav.teleopConfig1 import Config  # on rpi, DELETE navNoQueue part
 from nav.tracer import agg
 
 def teleopMain(in_queue, out_queue):

@@ -1,6 +1,4 @@
-import nav.teleopConfig1
-from nav.teleopConfig1 import Config  # on rpi, DELETE scriptv10 part
-from nav.tracer import agg
+from teleopConfig1 import Config  # RPI IMPORTS
 
 
 def teleopMain(input_queue, output_queue):
