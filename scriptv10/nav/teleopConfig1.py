@@ -88,7 +88,7 @@ class Config:
 
     def joy_init(self):
         ######################## 1. Initializing Serial
-        self.serialOn = False
+        self.serialOn = True
         if self.serialOn:
             self.arduino = serial.Serial(port=self.serialPort, baudrate=115200, timeout=1)
         ######################## 2. Initializing PyGame
