@@ -2,7 +2,7 @@ import numpy as np
 import argparse
 import imutils
 import cv2
-import keyboard
+# import keyboard
 import time
 import glob
 import math
