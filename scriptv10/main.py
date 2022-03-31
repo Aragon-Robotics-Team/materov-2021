@@ -23,12 +23,12 @@ if __name__ == "__main__":
 
     thruster_in_queue = multiprocessing.Queue()
     thruster_out_queue = multiprocessing.Queue()
-    gui.queue(thruster_in_queue, thruster_out_queue)
+    # gui.queue(thruster_in_queue, thruster_out_queue)
 
     #
     thruster_proc = ThrusterProcess(thruster_in_queue, thruster_out_queue)
     thruster_proc.start()
-
-    while True:
-        gui.root.update()
+    thruster_proc.join()
+    # while True:
+    #     gui.root.update()
 # hehehe

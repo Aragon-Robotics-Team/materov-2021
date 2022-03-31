@@ -1,5 +1,5 @@
-from teleopConfig1 import Config  # RPI IMPORTS
-
+from nav.teleopConfig1 import Config  # RPI IMPORTS
+# from scriptv10.nav.teleopConfig1 import Config # mac imports
 
 def teleopMain(input_queue, output_queue):
     # robot = Config('Mac', True, False, input_queue, output_queue) # comp type, serial on, serial recieve on, input, output queue
