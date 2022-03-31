@@ -21,10 +21,10 @@ int var;
 void setup() {
   Serial.begin(115200);
   servo.attach(9); //servo pin
-  thruster1.attach(13); //thruster pins
-  thruster2.attach(10);
-  thruster3.attach(12);
-  thruster4.attach(11);
+  thruster1.attach(4); //thruster pins
+  thruster2.attach(5);
+  thruster3.attach(6);
+  thruster4.attach(7);
   thruster1.writeMicroseconds(1500);
   thruster2.writeMicroseconds(1500);
   thruster3.writeMicroseconds(1500);
@@ -45,17 +45,29 @@ void loop(){
   servoOpen = Serial.readStringUntil('.').toInt();
 
 //thruster output
-if(thruster1signal > 1900 || thruster1signal < 1100){
-thruster1signal = 1500;
+if(thruster1signal > 1740){
+thruster1signal = 1740;
 }
-if(thruster2signal > 1900 || thruster2signal < 1100){
-thruster2signal = 1500;
+if(thruster1signal < 1260){
+thruster1signal = 1260;
 }
-if(thruster3signal > 1900 || thruster3signal < 1100){
-thruster3signal = 1500;
+if(thruster2signal > 1740){
+thruster2signal = 1740;
 }
-if(thruster4signal > 1900 || thruster4signal < 1100){
-thruster4signal = 1500;
+if(thruster2signal < 1260){
+thruster2signal = 1260;
+}
+if(thruster3signal > 1740){
+thruster3signal = 1740;
+}
+if(thruster3signal < 1260){
+thruster3signal = 1260;
+}
+if(thruster4signal > 1740){
+thruster4signal = 1740;
+}
+if(thruster4signal < 1260){
+thruster4signal = 1260;
 }
 
 //servo output
