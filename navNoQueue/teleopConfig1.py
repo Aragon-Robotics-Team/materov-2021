@@ -49,12 +49,12 @@ class Config:
         self.deadBand = 0.1  # axis value must be greater than this number
 
         self.SpeedSize = 4
-        self.MaxSpeed = 1900
-        self.MinSpeed = 1100
+        self.MaxSpeed = 1740
+        self.MinSpeed = 1260
 
         self.minBytes = 10
 
-        self.mapK = 400
+        self.mapK = 240
         self.tspeedMiddle = 1500
         self.tspeedUp = 1700
         self.tspeedDown = 1300
