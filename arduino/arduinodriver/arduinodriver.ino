@@ -45,17 +45,29 @@ void loop(){
   servoOpen = Serial.readStringUntil('.').toInt();
 
 //thruster output
-if(thruster1signal > 1900 || thruster1signal < 1100){
-thruster1signal = 1500;
+if(thruster1signal > 1740){
+thruster1signal = 1740;
 }
-if(thruster2signal > 1900 || thruster2signal < 1100){
-thruster2signal = 1500;
+if(thruster1signal < 1260){
+thruster1signal = 1260;
 }
-if(thruster3signal > 1900 || thruster3signal < 1100){
-thruster3signal = 1500;
+if(thruster2signal > 1740){
+thruster2signal = 1740;
 }
-if(thruster4signal > 1900 || thruster4signal < 1100){
-thruster4signal = 1500;
+if(thruster2signal < 1260){
+thruster2signal = 1260;
+}
+if(thruster3signal > 1740){
+thruster3signal = 1740;
+}
+if(thruster3signal < 1260){
+thruster3signal = 1260;
+}
+if(thruster4signal > 1740){
+thruster4signal = 1740;
+}
+if(thruster4signal < 1260){
+thruster4signal = 1260;
 }
 
 //servo output
