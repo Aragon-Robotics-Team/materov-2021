@@ -5,7 +5,7 @@ from time import sleep, time
 import pygame
 import serial
 # from serial import Serial
-from scriptv10.nav.tracer import start, end, agg
+from nav.tracer import start, end, agg
 # from nav.tracer import start, end, agg  # RPI IMPORTS
 
 

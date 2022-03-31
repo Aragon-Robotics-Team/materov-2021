@@ -157,19 +157,26 @@ def startDocking():
 btn = ttk.Button(root, text = "Start Autonomous Docking", command = startDocking)
 btn.grid(row = 9, column = vcol + 1, sticky = 'e')
 
+#MEASURING THE LENGTH OF THE WRECK ---------------------------------------------------------------------------------------------------------------
+def measureWreck():
+    print("haha this has not been completed yet")
+
+btn = ttk.Button(root, text = "Measure Wreck", command = measureWreck)
+btn.grid(row = 10, column = vcol + 1, sticky = 'e')
+
 #LASERS ---------------------------------------------------------------------------------------------------------------
-
-def lasersOn():
-    print("haha this has not been done yet")
-
-btn = ttk.Button(root, text = "Turn Lasers On", command = lasersOn)
-btn.grid(row = 10, column = vcol + 1, sticky = 'e', pady = (25, 0))
-
-def lasersOff():
-    print("haha this has not been done yet")
-
-btn = ttk.Button(root, text = "Turn Lasers Off", command = lasersOff)
-btn.grid(row = 11, column = vcol + 1, sticky = 'e')
+#
+# def lasersOn():
+#     print("haha this has not been done yet")
+#
+# btn = ttk.Button(root, text = "Turn Lasers On", command = lasersOn)
+# btn.grid(row = 10, column = vcol + 1, sticky = 'e', pady = (25, 0))
+#
+# def lasersOff():
+#     print("haha this has not been done yet")
+#
+# btn = ttk.Button(root, text = "Turn Lasers Off", command = lasersOff)
+# btn.grid(row = 11, column = vcol + 1, sticky = 'e')
 
 #BUTTON GRAPHICS------------------------------------------------------------------------------------------------------
 buttoncanvas = Canvas(root,height=120,width=250,bg="#fff")
@@ -530,13 +537,19 @@ def cam2():
 ttk.Button(root, text = "CAMERA 2", command = cam2).grid(row = 0, column = 2)
 
 #EMERGENCY HALT ------------------------------------------------------------------------------------------------------------
+def enableBot():
+    print ("haha this has not been done yet")
 
-def emergencyHalt():
+btn = Button(root, text = "Enable Bot", command = enableBot, width = 30, height = 3, fg = 'red', bg = 'dark gray')
+btn.grid(row = 14, column = 0, sticky = 'w', pady = (75, 0), padx = (50, 0))
+
+def disableBot():
     print("haha this has not been done yet")
 #
 # btn = Button(root, text = "EMERGENCY HALT", command = emergencyHalt, height = 25, width = 200, fg = 'red')
-btn = Button(root, text = "EMERGENCY HALT", command = emergencyHalt, width = 100, height = 3, fg = 'red')
-btn.grid(row = 14, column = 0, sticky = 'w', pady = (75, 0), padx = (50, 0), columnspan = 3)
+btn = Button(root, text = "Disable Bot (Emergency Halt)", command = disableBot, width = 30, height = 3, fg = 'red')
+btn.grid(row = 14, column = 1, sticky = 'w', pady = (75, 0), padx = (50, 0))
+
 
 def updateGUI():
     root.update()

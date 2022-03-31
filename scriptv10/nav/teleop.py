@@ -1,4 +1,4 @@
-from teleopConfig1 import Config  # RPI IMPORTS
+from nav.teleopConfig1 import Config  # RPI IMPORTS
 
 
 def teleopMain(input_queue, output_queue):
