@@ -10,7 +10,13 @@ from nav.tracer import start, end, agg  # RPI IMPORTS
 
 # gui, killswitch
 # from input_queue
-
+# auto gui array:
+# 0: boolean auto on/off
+# 1: kill switch
+# 2: thruster1 value
+# 3: thruster2 value
+# 4: thruster3 value
+# 5: thruster4 value
 
 class Config:
     def __init__(self, computerType, serialOn, serialRecieveOn, input_queue, output_queue):
@@ -110,7 +116,8 @@ class Config:
             self.joy_tests_mac()
         elif self.computerType == "RPI":
             self.joy_tests_rpi()
-
+    def check_auto(self):
+        pass
     def joy_tests_mac(self):
         # while self.joyTestsOn:
         while self.joyTestsOn:
@@ -287,7 +294,7 @@ class Config:
                 self.arduinoParams[3] = self.tspeedDown
             elif abs(self.JS_Y_UD) > self.deadBand:
                 self.arduinoParams[2] = int(self.tspeedMiddle - updown)  # side thrusters
-                self.arduinoParams[3] = int(self.tspeedMiddle - updown)
+                self.arduinoParams[3] = int(self.tspeedMiddle + updown)
 
             if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:
                 self.arduinoParams[0] = int(self.tspeedMiddle - forward1 + turn1)  # left thruster
@@ -346,7 +353,7 @@ class Config:
                 self.arduinoParams[2] = self.tspeedDown
                 self.arduinoParams[3] = self.tspeedDown
             elif abs(self.JS_Y_UD) > self.deadBand:
-                self.arduinoParams[2] = int(self.tspeedMiddle + NL_Y_UD)  # side thrusters
+                self.arduinoParams[2] = int(self.tspeedMiddle - NL_Y_UD)  # side thrusters
                 self.arduinoParams[3] = int(self.tspeedMiddle + NL_Y_UD)
 
             if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:  # calculate thruster values
