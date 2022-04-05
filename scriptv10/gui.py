@@ -162,7 +162,7 @@ def measureWreck():
     print("haha this has not been completed yet")
 
 btn = ttk.Button(root, text = "Measure Wreck", command = measureWreck)
-btn.grid(row = 10, column = vcol + 1, sticky = 'e')
+btn.grid(row = 10, column = vcol + 1, sticky = 'e', pady = (25, 0))
 
 #LASERS ---------------------------------------------------------------------------------------------------------------
 #
@@ -238,6 +238,7 @@ def buttonstatus():
     buttonYstatus = statuses[7]
     teleopStatus = statuses[8]
     nonlineStatus = statuses[9]
+    print(statuses)
 
     # print(statuses)
 

@@ -5,13 +5,8 @@ from time import sleep, time
 import pygame
 import serial
 # from serial import Serial
-<<<<<<< HEAD
-from nav.tracer import start, end, agg
-# from nav.tracer import start, end, agg  # RPI IMPORTS
-=======
 # from scriptv10.nav.tracer import start, end, agg # mac imports
 from nav.tracer import start, end, agg  # RPI IMPORTS
->>>>>>> bc1b4d4880271f9f59697434ebceb150c0481f51
 
 
 
@@ -93,7 +88,7 @@ class Config:
 
     def joy_init(self):
         ######################## 1. Initializing Serial
-        self.serialOn = True
+        self.serialOn = False
         if self.serialOn:
             self.arduino = serial.Serial(port=self.serialPort, baudrate=115200, timeout=1)
         ######################## 2. Initializing PyGame
