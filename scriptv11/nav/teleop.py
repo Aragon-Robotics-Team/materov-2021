@@ -14,6 +14,5 @@ def teleopMain(input_queue, output_queue):
 
 
 if __name__ == '__main__':
-    teleopMain()
-
+    pass
 #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
