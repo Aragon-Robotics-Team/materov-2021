@@ -11,6 +11,13 @@ from nav.tracer import start, end, agg  # RPI IMPORTS
 # gui, killswitch
 # from input_queue
 
+# auto gui array:
+# 0: auto on/off 0 or 1 - Keep sending 1's when auto is on
+# 1: kill switch 0 or 1 - keep sending 1's when kill switch is on
+# 2: thruster1 value
+# 3: thruster2 value
+# 4: thruster3 value
+# 5: thruster4 value
 
 class Config:
     def __init__(self, computerType, serialOn, serialRecieveOn, input_queue, output_queue):
@@ -84,13 +91,13 @@ class Config:
         # THIS IS FOR THE QUEUE
         self.statuses = [1500, 1500, 1500, 1500, 0, 0, 0, 0, 0, 0]
         self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
+        self.arduinoParamsConst = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
         # this array keeps updating thruster values
-
-        self.loop = True
+        self.queue_data = [0, 0, 0, 0, 0, 0]
 
     def joy_init(self):
         ######################## 1. Initializing Serial
-        self.serialOn = False
+        self.serialOn = True
         if self.serialOn:
             self.arduino = serial.Serial(port=self.serialPort, baudrate=115200, timeout=1)
         ######################## 2. Initializing PyGame
@@ -115,6 +122,9 @@ class Config:
         # while self.joyTestsOn:
         while self.joyTestsOn:
             sleep(0.1)
+            # getting latest queue status
+            if self.auto_on():
+                self.autonomousLoop()  # start autonomous loop!!!!!!!!!!!
             for event in pygame.event.get():
                 # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
                 if event.type == pygame.JOYBUTTONDOWN:
@@ -192,6 +202,10 @@ class Config:
     def joy_tests_rpi(self):
         while self.joyTestsOn:
             sleep(0.1)
+            while self.joyTestsOn:
+                # getting latest queue status
+                if self.auto_on():
+                    self.autonomousLoop()  # start autonomous loop!!!!!!!!!!!
             for event in pygame.event.get():
                 # The 0 button is the 'a' button, 1 is the 'b' button, 2 is the 'x' button, 3 is the 'y' button
                 if event.type == pygame.JOYBUTTONDOWN:
@@ -251,7 +265,6 @@ class Config:
 
     def LinearLoop(self):
         program_starts = time()
-        self.loop = True
         self.statuses[8] = 1
         self.statuses[8] = 0
         while True:
@@ -287,7 +300,7 @@ class Config:
                 self.arduinoParams[3] = self.tspeedDown
             elif abs(self.JS_Y_UD) > self.deadBand:
                 self.arduinoParams[2] = int(self.tspeedMiddle - updown)  # side thrusters
-                self.arduinoParams[3] = int(self.tspeedMiddle - updown)
+                self.arduinoParams[3] = int(self.tspeedMiddle + updown)
 
             if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:
                 self.arduinoParams[0] = int(self.tspeedMiddle - forward1 + turn1)  # left thruster
@@ -312,7 +325,7 @@ class Config:
             end("check and limit")
             start("end behavior")
 
-            self.serial_send_print()
+            self.serial_send_print(self.arduinoParams)
 
             end("end behavior")
 
@@ -320,6 +333,7 @@ class Config:
             pygame.event.clear()
             sleep(self.loopSleep)
             # self.queuereciever()
+
 
     def NonLinearLoop(self):
         self.statuses[8] = 1
@@ -346,7 +360,7 @@ class Config:
                 self.arduinoParams[2] = self.tspeedDown
                 self.arduinoParams[3] = self.tspeedDown
             elif abs(self.JS_Y_UD) > self.deadBand:
-                self.arduinoParams[2] = int(self.tspeedMiddle + NL_Y_UD)  # side thrusters
+                self.arduinoParams[2] = int(self.tspeedMiddle - NL_Y_UD)  # side thrusters
                 self.arduinoParams[3] = int(self.tspeedMiddle + NL_Y_UD)
 
             if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:  # calculate thruster values
@@ -364,10 +378,59 @@ class Config:
             if self.ended():
                 break
             print("tspeeds" + str(self.arduinoParams))
-            self.serial_send_print()
+            self.serial_send_print(self.arduinoParams)
 
             pygame.event.clear()
             sleep(self.loopSleep)
+
+
+
+########################################## AUTO
+    def auto_on(self):
+        while not self.input_queue.empty():
+            self.queue_data = self.input_queue.get()
+        if self.queue_data[0] == 1:
+            return True
+
+    def get_auto_queue_data(self):
+        while not self.input_queue.empty():
+            self.queue_data = self.input_queue.get()  # put latest data in queue_data array
+
+    def check_auto_stop(self):
+        while not self.input_queue.empty():
+            self.queue_data = self.input_queue.get()  # put latest data in queue_data array
+            if self.queue_data[0] == 0:
+                return True
+
+    def check_killswitch(self):
+        while not self.input_queue.empty():
+            self.queue_data = self.input_queue.get()  # put latest data in queue_data array
+            if self.queue_data[1] == 1:
+                return True
+
+    def autonomousLoop(self):
+        while True:
+            self.serial_send_print(self.arduinoParamsConst)
+            self.get_auto_queue_data()
+
+            self.arduinoParams[0] = self.queue_data[2]  # thruster values in queue_data starts here
+            self.arduinoParams[1] = self.queue_data[3]
+            self.arduinoParams[2] = self.queue_data[4]
+            self.arduinoParams[3] = self.queue_data[5]
+            self.arduinoParams[4] = 0
+            self.arduinoParams[5] = 0
+
+            self.serial_send_print(self.arduinoParams)  # send to arduino
+
+            if self.check_auto_stop():
+                break  # break out of auto back into joy_tests()
+            if self.check_killswitch():
+                self.serial_send_print(self.arduinoParamsConst)
+                break
+            sleep(self.loopSleep)
+
+########################################## AUTO END
+
 
     def speed_limit(self):
         for i in range(self.SpeedSize):  # making sure thruster values don't go above 1900 and below 1100
@@ -390,7 +453,7 @@ class Config:
             self.statuses[8] = 1
             self.statusesupdate()  # update gui that it's about to end, before ending
             self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
-            self.serial_send_print()
+            self.serial_send_print(self.arduinoParams)
             print("Stopping teleop, either linear or nonlinear")
             print(agg)
             return True
@@ -408,9 +471,9 @@ class Config:
         self.output_queue.put(self.statuses)
         print("statuses" + str(self.statuses))
 
-    def serial_send_print(self):  # print to terminal / send regularly updated array to arduino
+    def serial_send_print(self, arr):  # print to terminal / send regularly updated array to arduino
 
-        stringToSend = ','.join(str(x) for x in self.arduinoParams) + '.'
+        stringToSend = ','.join(str(x) for x in arr) + '.'
         print('py: ' + stringToSend)  # print python
         # stringFromArd = ''
         if self.serialOn:
