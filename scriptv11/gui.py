@@ -136,40 +136,63 @@ btn = ttk.Button(root, text = "Calculate Float Location", command = floatLocatio
 btn.grid(row = 7, column = vcol + 1, sticky = 'e', pady = (25, 0))
 
 #DOCKING ------------------------------------------------------------------
+#might be faulty
+autoTimer = 0
 dockCount = 0
 def docking():
     global dockCount
+    global autoTimer
     ret, frame = cap.read()
-    if dockCount == 0:
-        dockpic(frame)
-        dockCount = dockCount + 1
-    else:
-        cv2.destroyAllWindows()
-        dockCalculate()
-
+    dockpic(frame)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    autoTimer = 0
+    dockCalculate()
+    # if dockCount == 0:
+    #     dockpic(frame)
+    #     dockCount = dockCount + 1
+    # else:
+    #     cv2.destroyAllWindows()
+    #     autoTimer = 0
+    #     dockCalculate()
 
 btn = ttk.Button(root, text = "Autonomous Docking Calibration", command = docking)
 btn.grid(row = 8, column = vcol + 1, sticky = 'e', pady = (25, 0))
 
-def startDocking():
-    print("haha this has not been done yet")
+autoArray = [0, 0, 1500, 1500, 1500, 1500]
 
-btn = ttk.Button(root, text = "Start Autonomous Docking", command = startDocking)
+def autoDock():
+    global autoTimer
+    global autoArray
+    # t_end = time.time() + 60
+    # while time.time() < t_end:
+    if autoTimer < 60: #if autonomous has been running for less than 60 seconds
+        autoArray = [1, 0, 1600, 1600, 1500, 1500]
+        output_queue.put(autoArray)
+        autoTimer = 0.05 + autoTimer
+        root.after(100, autoDock) #repeat every 500 milliseconds
+    elif autoTimer == 60: #if 60 seconds has been reached
+        autoArray = [0, 0, 1500, 1500, 1500, 1500]
+        output_queue.put(autoArray)
+
+btn = ttk.Button(root, text = "Start Autonomous Docking", command = autoDock)
 btn.grid(row = 9, column = vcol + 1, sticky = 'e')
 
-#LASERS ---------------------------------------------------------------------------------------------------------------
 
-def lasersOn():
-    print("haha this has not been done yet")
-
-btn = ttk.Button(root, text = "Turn Lasers On", command = lasersOn)
-btn.grid(row = 10, column = vcol + 1, sticky = 'e', pady = (25, 0))
-
-def lasersOff():
-    print("haha this has not been done yet")
-
-btn = ttk.Button(root, text = "Turn Lasers Off", command = lasersOff)
-btn.grid(row = 11, column = vcol + 1, sticky = 'e')
+#
+# #LASERS ---------------------------------------------------------------------------------------------------------------
+#
+# def lasersOn():
+#     print("haha this has not been done yet")
+#
+# btn = ttk.Button(root, text = "Turn Lasers On", command = lasersOn)
+# btn.grid(row = 10, column = vcol + 1, sticky = 'e', pady = (25, 0))
+#
+# def lasersOff():
+#     print("haha this has not been done yet")
+#
+# btn = ttk.Button(root, text = "Turn Lasers Off", command = lasersOff)
+# btn.grid(row = 11, column = vcol + 1, sticky = 'e')
 
 #BUTTON GRAPHICS------------------------------------------------------------------------------------------------------
 buttoncanvas = Canvas(root,height=120,width=250,bg="#fff")
@@ -333,7 +356,6 @@ thrustercanvas.create_text(centerx, centery + height/2, text = "3", fill="black"
 
 thrustercanvas.create_line(10, 220, 240, 220, fill = "black", width = 5)
 
-
 def thrustergraphic():
     global t0status
     global t1status
@@ -347,7 +369,6 @@ def thrustergraphic():
     t2status = (statuses[2] - 1500) * height / 2000
     t3status = (statuses[3] - 1500) * height / 2000
     # print(str(t0status) + ", " + str(t1status) + ", " + str(t2status) + ", " + str(t3status))
-
 
     thrustercanvas.coords(t0, centerx - t_width - width/2, centery - t0status, centerx + t_width - width/2, centery + t_height)
     thrustercanvas.coords(t1, centerx - t_width + width/2, centery - t1status, centerx + t_width + width/2, centery + t_height)
@@ -400,7 +421,6 @@ totalEntryLength = spacing * 3
 startingx = (250 - totalEntryLength)/2
 print(startingx)
 
-
 Entry(timercanvas, textvariable = sec, width = 2, font = 'arial 12').place(x=startingx, y=10) # Seconds
 Entry(timercanvas, textvariable = mins, width = 2, font = 'arial 12').place(x=startingx + spacing, y=10) # Mins
 Entry(timercanvas, textvariable = hrs, width = 2, font = 'arial 12').place(x=startingx + spacing * 2, y=10) # Hours
@@ -422,7 +442,6 @@ def countdown():
     global times
     print("hello") #testing, working but code not working
     times = int(hrs.get())*3600+ int(mins.get())*60 + int(sec.get())
-
 
     if times > 0:
         minute,second = (times // 60 , times % 60)
@@ -472,8 +491,6 @@ def stop():
     #root.destroy()
     #python = sys.executable
     #os.execl(python, python, * sys.argv)
-
-
 
 Button(timercanvas, text='STOP', bd ='5', command = stop, bg = 'white', font = 'arial 10 bold', width = 15).place(x=80.5, y=75)
 
@@ -530,13 +547,24 @@ def cam2():
 ttk.Button(root, text = "CAMERA 2", command = cam2).grid(row = 0, column = 2)
 
 #EMERGENCY HALT ------------------------------------------------------------------------------------------------------------
+def enableBot():
+    global autoArray
+    autoArray[1] = 0
+    output_queue.put(autoArray)
+    print ("BOT ENABLED")
 
-def emergencyHalt():
-    print("haha this has not been done yet")
+btn = Button(root, text = "Enable Bot", command = enableBot, width = 30, height = 3, fg = 'red', bg = 'dark gray')
+btn.grid(row = 14, column = 0, sticky = 'w', pady = (75, 0), padx = (50, 0))
+
+def disableBot():
+    global autoArray
+    autoArray[1] = 1
+    output_queue.put(autoArray)
+    print("BOT DISABLED")
 #
 # btn = Button(root, text = "EMERGENCY HALT", command = emergencyHalt, height = 25, width = 200, fg = 'red')
-btn = Button(root, text = "EMERGENCY HALT", command = emergencyHalt, width = 100, height = 3, fg = 'red')
-btn.grid(row = 14, column = 0, sticky = 'w', pady = (75, 0), padx = (50, 0), columnspan = 3)
+btn = Button(root, text = "Disable Bot (Emergency Halt)", command = disableBot, width = 30, height = 3, fg = 'red')
+btn.grid(row = 14, column = 1, sticky = 'w', pady = (75, 0), padx = (50, 0))
 
 def updateGUI():
     root.update()
