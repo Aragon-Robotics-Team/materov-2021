@@ -10,9 +10,8 @@ void setup() {
   pinMode (IN1, OUTPUT);
   pinMode (IN2, OUTPUT);
   pinMode (ENA, OUTPUT);
-}
-
-void loop() {
+  
+  
   delay(2*60*1000); //delay 2 mins to put into water. Can be changed later.
   analogWrite(ENA, 255); //check if this should be positive 255 or -255(we need the water to go INTO the syringes
   //maybe just use the digitalWrite high and low down below?
@@ -41,7 +40,4 @@ void loop() {
   //delay(How much time it takes for syringes to empty);
   analogWrite(ENA, 0);
   //float goes up last time
-  
-  //terminate program somehow
-  
 }
