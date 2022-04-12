@@ -36,3 +36,7 @@ void floatFloat() {
   //syringes release water
   //delay(How much time it takes for syringes to empty);
 }
+
+//Figure out best pins on Arduino for easy installation and update code accordingly
+// Use this link's diagram(for H-bridge pins): 
+// https://www.bluetin.io/guides/l298n-h-bridge-dc-motor-driver-guide/attachment/l298n-dual-h-bridge-pin-connection-guide/
