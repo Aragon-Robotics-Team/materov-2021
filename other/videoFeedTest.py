@@ -1,8 +1,11 @@
 import cv2
+import time
 
-videoCaptureObject = cv2.VideoCapture(-1)
+videoCaptureObject = cv2.VideoCapture(0)
 result = True
 
+time.sleep(1)
+print("start")
 while result:
     ret,frame = videoCaptureObject.read()
     cv2.imshow("Capturing Video",frame)

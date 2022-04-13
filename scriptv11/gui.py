@@ -19,7 +19,7 @@ cap = cv2.VideoCapture(0)
 
 #SETUP ------------------------------------------------------------------------------------------------------
 root = Tk()
-root.geometry("1300x1000")
+root.geometry("1800x1000")
 
 style =  ttk.Style()
 
@@ -182,17 +182,17 @@ btn.grid(row = 9, column = vcol + 1, sticky = 'e')
 #
 # #LASERS ---------------------------------------------------------------------------------------------------------------
 #
-# def lasersOn():
-#     print("haha this has not been done yet")
-#
-# btn = ttk.Button(root, text = "Turn Lasers On", command = lasersOn)
-# btn.grid(row = 10, column = vcol + 1, sticky = 'e', pady = (25, 0))
-#
-# def lasersOff():
-#     print("haha this has not been done yet")
-#
-# btn = ttk.Button(root, text = "Turn Lasers Off", command = lasersOff)
-# btn.grid(row = 11, column = vcol + 1, sticky = 'e')
+def lasersOn():
+    print("haha this has not been done yet")
+
+btn = ttk.Button(root, text = "Turn Lasers On", command = lasersOn)
+btn.grid(row = 10, column = vcol + 1, sticky = 'e', pady = (25, 0))
+
+def lasersOff():
+    print("haha this has not been done yet")
+
+btn = ttk.Button(root, text = "Turn Lasers Off", command = lasersOff)
+btn.grid(row = 11, column = vcol + 1, sticky = 'e')
 
 #BUTTON GRAPHICS------------------------------------------------------------------------------------------------------
 buttoncanvas = Canvas(root,height=120,width=250,bg="#fff")
@@ -501,7 +501,7 @@ timercanvas.create_line(10, 130, 240, 130, fill = "black", width = 5)
 from PIL import Image, ImageTk
 
 # Create a Label to capture the Video frames
-label = Label(root, height = 800, width = 1000)
+label = Label(root, height = 800, width = 800)
 label.grid(row = 1, column = 0, rowspan = 20, columnspan = vcol, sticky = 'n')
 
 camera = 0 #specifies the camera object to use
@@ -568,8 +568,8 @@ btn.grid(row = 14, column = 1, sticky = 'w', pady = (75, 0), padx = (50, 0))
 
 #TASK WINDOW ------------------------------------------------------------------------------------------------------------
 
-taskcanvas = Canvas(root, height = 600, width = 300, bg="#fff")
-taskcanvas.grid(row = 0, column = vcol + 2, sticky = 'e')
+taskcanvas = Canvas(root, height = 800, width = 300, bg="#fff")
+taskcanvas.grid(row = 3, column = vcol + 2, sticky = 'e', rowspan = 30, padx = 50)
 
 task1text = "TASK 1 - 100 points \n \nReplace a damaged section of an inter-array cable: \n \nVisual inspection - 5 points \n \nCut cable on both sides of damaged section - 10 points \n \nRemove damaged section by pulling the metal connectors off - 5 points \n \nInstall new cable section - 10 points \n \nSecure the new section with 2 (each) connectors by pushing it sideways - 10 points \n \nReplacing a damaged buoyancy module on an inter-array cable of a floating offshore wind turbine: \n \n Turn the clamp upright and remove from water - 10 points \n \nPut on new clamp facing down - 10 points \n \nMonitor the environment: \n \nDeploy the hydrophone in the box and wait 5 mins till recovery - 10 points \n \nPull pin and remove net from water - 15 points \n \nDrive the bot into the box - 5 or 15 points"
 
@@ -581,28 +581,28 @@ task4text = "snacks - 1000000 points"
 
 task5text = "martin - 10000000000000000000000 points"
 
-text=tk.Text(taskcanvas, width = 35, height = 500, wrap = WORD, padx = 5, pady = 5)
+text=Text(taskcanvas, width = 35, height = 500, wrap = WORD, padx = 5, pady = 5)
 text.place(x= 5, y= 50)
 
 def task1():
     text.delete("1.0","end")
-    text.insert(tk.END, task1text)
+    text.insert(END, task1text)
 
 def task2():
     text.delete("1.0","end")
-    text.insert(tk.END, task2text)
+    text.insert(END, task2text)
 
 def task3():
     text.delete("1.0","end")
-    text.insert(tk.END, task3text)
+    text.insert(END, task3text)
 
 def task4():
     text.delete("1.0","end")
-    text.insert(tk.END, task4text)
+    text.insert(END, task4text)
 
 def task5():
     text.delete("1.0","end")
-    text.insert(tk.END, task5text)
+    text.insert(END, task5text)
 
 ######################################################
 
