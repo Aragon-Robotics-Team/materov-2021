@@ -2,10 +2,12 @@
 #define IN2 6; 
 #define ENA 9; //H-Bridge
 //defining pins
+//NTS: Make sure code reflects which pins on the arduino use the pins
 
-int t = 1*60*1000;
+int min = 1*60*1000;
 
-//Note to self: calculate amount of time necessary for syringes to empty/fill up and put that into the necessary delays: Found to be 20 seconds
+//NTS: Calculate amount of time necessary for syringes to empty/fill up 
+//Found to be 20 seconds
 
 void setup() {
   pinMode (IN1, OUTPUT);
@@ -19,13 +21,13 @@ void setup() {
   delay(3*60*1000); // delay for float to be put into appropriate spot(setup+carrying to product demo area)
   
   sinkFloat();
-  delay(t);
+  delay(min);
   floatFloat();
-  delay(t);
+  delay(min);
   sinkFloat();
-  delay(t);
+  delay(min);
   floatFloat();
-  delay(t);
+  delay(min);
   analogWrite(ENA, 0);
   //float goes up last time and stops spinning
 }
