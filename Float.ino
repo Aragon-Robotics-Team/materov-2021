@@ -3,42 +3,43 @@
 #define ENA 9; //H-Bridge
 //defining pins
 
-//Note to self: calculate amount of time necessary for syringes to empty/fill up and put that into the necessary delays
+int t = 1*60*1000;
+
+//Note to self: calculate amount of time necessary for syringes to empty/fill up and put that into the necessary delays: Found to be 20 seconds
 
 void setup() {
   pinMode (IN1, OUTPUT);
   pinMode (IN2, OUTPUT);
   pinMode (ENA, OUTPUT);
+  //Arduino controls every pin(no input pins)
   
-  digitalWrite(IN1, HIGH);
-  digitalWrite(IN2, LOW); //can I put these two digitalWrites here?
+  digitalWrite(IN1, HIGH); //5V
+  digitalWrite(IN2, LOW); //Ground
   
-  delay(1*60*1000); // delay for float to be put into appropriate spot
+  delay(3*60*1000); // delay for float to be put into appropriate spot(setup+carrying to product demo area)
+  
   sinkFloat();
+  delay(t);
   floatFloat();
+  delay(t);
   sinkFloat();
+  delay(t);
   floatFloat();
+  delay(t);
   analogWrite(ENA, 0);
   //float goes up last time and stops spinning
 }
 
-void sinkFloat() {
-  delay(1*60*1000); //delay 2 mins to put into water. Can be changed later.
-  //digitalWrite(IN1, HIGH); 
-  //digitalWrite(IN2, LOW);
+void sinkFloat(){
   analogWrite(ENA, 255); //check if this should be positive 255 or -255(we need the water to go INTO the syringes
-  //maybe just use the digitalWrite high and low down below?
-  //delay(how much ever time needed for the syringes to be full)
-  //water uploaded; float will now sink
+  delay(1*20*1000); //delay 20 sec
+    //water uploaded; float will now sink
 }
 
-void floatFloat() {
-  delay(1*60*1000); //now at seafloor
-  //digitalWrite(IN1, LOW); //Do I need to turn on this motor again or will it be fine from before?
-  //digitalWrite(IN2, HIGH); 
+void floatFloat(){
   analogWrite(ENA, -255);
   //syringes release water
-  //delay(How much time it takes for syringes to empty);
+   delay(1*20*1000);
 }
 
 //Figure out best pins on Arduino for easy installation and update code accordingly
