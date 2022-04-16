@@ -47,3 +47,5 @@ void floatFloat(){
 //Figure out best pins on Arduino for easy installation and update code accordingly
 // Use this link's diagram(for H-bridge pins): 
 // https://www.bluetin.io/guides/l298n-h-bridge-dc-motor-driver-guide/attachment/l298n-dual-h-bridge-pin-connection-guide/
+//Use this link for instructionsish:
+//https://create.arduino.cc/projecthub/ryanchan/how-to-use-the-l298n-motor-driver-b124c5
