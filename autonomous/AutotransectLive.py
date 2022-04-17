@@ -87,15 +87,17 @@ def sendToThrusters():
         if transectRow[rowCount] == "right":
             #send thruster values through the queue to move right (thrusters move forward)
             if posV < (center_width + 25) and posV >= (center_width - 25):
-                mode = "ver"
+                if (horizontal[0] < center_width  and horizontal[2] < center_width):
+                    mode = "ver"
         elif transectRow[rowCount] == "left":
             #send thruster values throught the queue to move left (thrusters move backwards)
             if posV < (center_width + 25) and posV >= (center_width - 25):
-                mode = "ver"
+                if (horizontal[0] > center_width and horizontal[2] > center_width):
+                    mode = "ver"
     if mode == "ver":
         #send thruster values to move down
         if posH < (center_height + 25) and posH >= (center_height - 25):
-            if (vertical[1] > center_height+25 or vertical[3] > center_height+25): #Only change if the vertical line is not in the bottom half of the screen
+            if (vertical[1] < center_height and vertical[3] < center_height): #Only change if the vertical line is not in the bottom half of the screen
                 mode = "hor"
                 rowCount = rowCount + 1
 
@@ -177,7 +179,7 @@ def autoTransect(image):
     sendToThrusters()
 
 if __name__ == "__main__":
-    videoCaptureObject = cv2.VideoCapture(0)
+    videoCaptureObject = cv2.VideoCapture(1)
     result = True
 
     sleep(1)
