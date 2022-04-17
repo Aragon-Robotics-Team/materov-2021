@@ -77,13 +77,13 @@ class Config:
         self.initSleep = 5
         self.loopSleep = 0.2
 
-        self.buttonopen = None
-        self.buttonclose = None
-        self.upconst = None
-        self.downconst = None
-        self.JS_X = None
-        self.JS_Y = None
-        self.JS_Y_UD = None
+        self.buttonopen = 0  # used to be None
+        self.buttonclose = 0
+        self.upconst = 0
+        self.downconst = 0
+        self.JS_X = 0
+        self.JS_Y = 0
+        self.JS_Y_UD = 0
 
         self.arduino = None
         self.j = None
@@ -97,7 +97,6 @@ class Config:
 
     def joy_init(self):
         ######################## 1. Initializing Serial
-        self.serialOn = True
         if self.serialOn:
             self.arduino = serial.Serial(port=self.serialPort, baudrate=115200, timeout=1)
         ######################## 2. Initializing PyGame
@@ -334,7 +333,6 @@ class Config:
             sleep(self.loopSleep)
             # self.queuereciever()
 
-
     def NonLinearLoop(self):
         self.statuses[8] = 1
         self.statuses[9] = 1
@@ -387,10 +385,12 @@ class Config:
 
 ########################################## AUTO
     def auto_on(self):
-        while not self.input_queue.empty():
+        while not self.input_queue.empty():  # if empty, skip
             self.queue_data = self.input_queue.get()
         if self.queue_data[0] == 1:
             return True
+        else:
+            return False
 
     def get_auto_queue_data(self):
         while not self.input_queue.empty():
@@ -409,8 +409,10 @@ class Config:
                 return True
 
     def autonomousLoop(self):
+        self.serial_send_print(self.arduinoParamsConst)
+        print('starting auto')
+
         while True:
-            self.serial_send_print(self.arduinoParamsConst)
             self.get_auto_queue_data()
 
             self.arduinoParams[0] = self.queue_data[2]  # thruster values in queue_data starts here
@@ -421,12 +423,15 @@ class Config:
             self.arduinoParams[5] = 0
 
             self.serial_send_print(self.arduinoParams)  # send to arduino
+            self.statusesupdate()
 
             if self.check_auto_stop():
+                self.serial_send_print(self.arduinoParamsConst)
                 break  # break out of auto back into joy_tests()
+
             if self.check_killswitch():
                 self.serial_send_print(self.arduinoParamsConst)
-                break
+                break  # break out of auto back into joy_tests()
             sleep(self.loopSleep)
 
 ########################################## AUTO END
@@ -447,10 +452,19 @@ class Config:
         self.JS_Y_UD = self.j.get_axis(self.RV)
         # statuses array buttons order: square, triangle, circle, x
 
-    def ended(self):
+    def ended(self):  # Linear Loop and Non Linear Loop
         self.statuses[8] = 0
         if self.j.get_button(self.shareButton) == 1:  # if end button is pressed
             self.statuses[8] = 1
+
+            self.buttonopen = 0  # reset things
+            self.buttonclose = 0
+            self.upconst = 0
+            self.downconst = 0
+            self.JS_X = 0
+            self.JS_Y = 0
+            self.JS_Y_UD = 0
+
             self.statusesupdate()  # update gui that it's about to end, before ending
             self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
             self.serial_send_print(self.arduinoParams)
