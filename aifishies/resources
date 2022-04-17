@@ -1,0 +1,7 @@
+https://catalog.ngc.nvidia.com/containers
+
+1) make training data set
+2) make validation data set
+3) create model + add layers
+4) compile the model
+5) model.fit s

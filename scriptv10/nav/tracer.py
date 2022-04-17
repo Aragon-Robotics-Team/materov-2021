@@ -11,4 +11,3 @@ def start(key):
 def end(key):
     timing[key]['end'] = time.time()
     agg[key] += timing[key]['end'] - timing[key]['start']
-

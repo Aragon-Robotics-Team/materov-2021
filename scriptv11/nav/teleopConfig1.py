@@ -422,6 +422,8 @@ class Config:
             self.arduinoParams[4] = 0
             self.arduinoParams[5] = 0
 
+            self.statusesupdate() #is this ok?
+
             self.serial_send_print(self.arduinoParams)  # send to arduino
             self.statusesupdate()
 

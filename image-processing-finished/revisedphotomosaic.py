@@ -61,7 +61,7 @@ def photomosaic():
     cv2.imwrite("C:\\Users\\alexa\\Desktop\\photomosaic\\bottomLeft.png", bottomLeft)
 
     bottomTile = cv2.hconcat([bottomLeft, bottomRight])
-    cv2.imwrite("C:\\Users\\alexa\\Desktop\\photomosaic\\bottomTile.png", bottomTile)w
+    cv2.imwrite("C:\\Users\\alexa\\Desktop\\photomosaic\\bottomTile.png", bottomTile)
 
     #---------stitch together all the tiles-----------
     photomosaic = cv2.vconcat([topTile, bottomTile])

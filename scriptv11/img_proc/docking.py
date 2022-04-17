@@ -49,11 +49,11 @@ def dockCalculate():
     #return laserPixels
     print("Number of pixels: " + str(laserPixels))
     print("Ideal number of pixels: " + str(idealPixel)) #In the future, insert a range that we can be in
-    if laserPixels > idealPixel:
+    if laserPixels < idealPixel:
         #replace 39 with more accurate number from real cam later
         print("Move forward!")
         #DO NOT ENTER AUTONOMOUS IF THIS IS SHOWN
-    if laserPixels < idealPixel:
+    if laserPixels > idealPixel:
         print("Move backward!")
     # cv2.destroyAllWindows()
 
