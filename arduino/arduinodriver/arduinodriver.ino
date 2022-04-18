@@ -43,6 +43,7 @@ void loop(){
   thruster4signal = Serial.readStringUntil(',').toInt();
   servoClose = Serial.readStringUntil(',').toInt();
   servoOpen = Serial.readStringUntil('.').toInt();
+  
 
 //thruster output
 if(thruster1signal > 1740){
@@ -86,14 +87,14 @@ thruster4.writeMicroseconds(thruster4signal);
 
 //Serial.println("recieved");
 
-  
-//  Serial.println(
-//    String(thruster1signal) + ","
-//  + String(thruster2signal) + ","
-//  + String(thruster3signal) + ","
-//  + String(thruster4signal) + ","
-//  + String(servoClose) + ","
-//  + String(servoOpen));
+    Serial.println(
+    String(thruster1signal) + ","
+  + String(thruster2signal) + ","
+  + String(thruster3signal) + ","
+  + String(thruster4signal) + ","
+  + String(servoClose) + ","
+  + String(servoOpen));
+
 
 
 delay(100);

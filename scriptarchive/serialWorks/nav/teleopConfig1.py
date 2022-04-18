@@ -28,7 +28,7 @@ class Config:
 
         elif computerType == "Mac":
             self.computerType = computerType
-            self.serialPort = '/dev/cu.usbmodem14301'
+            self.serialPort = '/dev/cu.usbmodem142101'
             self.LH = 0  # Left horizontal axis
             self.LV = 1  # Left vertical axis6
             self.RH = 2  # Right horizontal axis
@@ -52,14 +52,14 @@ class Config:
         self.MaxSpeed = 1900
         self.MinSpeed = 1100
 
-        self.minBytes = 10
+        self.minBytes = 5
 
         self.mapK = 400
         self.tspeedMiddle = 1500
         self.tspeedUp = 1700
         self.tspeedDown = 1300
 
-        self.initSleep = 5
+        self.initSleep = 2
         self.loopSleep = 0.2
 
         self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
@@ -274,7 +274,7 @@ class Config:
             end("end behavior")
 
             pygame.event.clear()
-            sleep(self.loopSleep)
+            # sleep(self.loopSleep)
 
     def NonLinearLoop(self):
         while True:
@@ -349,16 +349,18 @@ class Config:
 
         stringToSend = ','.join(str(x) for x in self.arduinoParams) + '.'
         print('py: ' + stringToSend)  # print python
-        stringFromArd = ''
         if self.serialOn:
             self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
             start('arduino-wait')
-            while (self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes)):  # wait for data
-                pass
-                stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
+            # while self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes):  # wait for data
+            #     pass
+            sleep(self.loopSleep)
+            bytes = self.arduino.in_waiting
+            stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
 
             end('arduino-wait')
-        print('ard: ' + stringFromArd)  # print arduino data
+
+            print('ard: ' + stringFromArd + ', ' + str(bytes))  # print arduino data
 
 
 if __name__ == '__main__':

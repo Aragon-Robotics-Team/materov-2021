@@ -1,7 +1,7 @@
 from teleopConfig1 import Config  # on rpi, DELETE navNoQueue part
 from tracer import agg
 def teleopMain():
-    robot = Config('Mac', True, False) # comp type, serial on, serial recieve on
+    robot = Config('Mac', True, True) # comp type, serial on, serial recieve on
     robot.joy_init()
     
 if __name__ == '__main__':

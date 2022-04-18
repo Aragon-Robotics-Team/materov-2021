@@ -8,6 +8,7 @@ import serial
 # from scriptv10.nav.tracer import start, end, agg # mac imports
 from nav.tracer import start, end, agg  # RPI IMPORTS
 
+
 # gui, killswitch
 # from input_queue
 
@@ -18,6 +19,7 @@ from nav.tracer import start, end, agg  # RPI IMPORTS
 # 3: thruster2 value
 # 4: thruster3 value
 # 5: thruster4 value
+# 6: lasers on/off (1/0)
 
 class Config:
     def __init__(self, computerType, serialOn, serialRecieveOn, input_queue, output_queue):
@@ -59,7 +61,7 @@ class Config:
         self.output_queue = output_queue
 
         self.serialOn = serialOn
-        self.serialRecieveOn = serialRecieveOn
+        self.serialRecieveOn = serialRecieveOn  # usually, this is off as it slows down the rate of joystick input
         self.joyTestsOn = True
         self.deadBand = 0.1  # axis value must be greater than this number
 
@@ -88,12 +90,14 @@ class Config:
         self.arduino = None
         self.j = None
 
-        # THIS IS FOR THE QUEUE
-        self.statuses = [1500, 1500, 1500, 1500, 0, 0, 0, 0, 0, 0]
-        self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
-        self.arduinoParamsConst = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
-        # this array keeps updating thruster values
-        self.queue_data = [0, 0, 0, 0, 0, 0]
+        # hella updating one
+        self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]
+        # constant one
+        self.arduinoParamsConst = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]
+
+        # queue arrays:
+        self.queue_data_out = [1500, 1500, 1500, 1500, 0, 0, 0, 0, 0, 0]  # L = 10
+        self.queue_data_in = [0, 0, 0, 0, 0, 0, 0]  # L = 7
 
     def joy_init(self):
         ######################## 1. Initializing Serial
@@ -117,6 +121,254 @@ class Config:
         elif self.computerType == "RPI":
             self.joy_tests_rpi()
 
+    def LinearLoop(self):
+        program_starts = time()
+        self.queue_data_out[8] = 1
+        self.queue_data_out[8] = 0
+        while True:
+            start("first-half")
+            pygame.event.pump()
+
+            """
+            get buttons and thrusters
+            calculations and edit tspeeds
+            check if over or under boundary speeds
+            set incoming arduino data array to tspeeds
+            repeatedly check if teleop is being ended
+            """
+            self.get_buttons()
+            self.check_lasers()
+
+            # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
+            turn1, turn2, = self.JS_X * self.mapK, self.JS_X * self.mapK
+            forward1, forward2 = self.JS_Y * self.mapK, self.JS_Y * self.mapK
+            updown = self.JS_Y_UD * self.mapK
+
+            # calculating thruster speeds
+            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle,
+                                  self.buttonopen,
+                                  self.buttonclose]
+            end("first-half")
+            start("second-half")
+            start("calcs")
+            if abs(self.upconst) == 1:
+                self.arduinoParams[2] = self.tspeedUp  # 1700
+                self.arduinoParams[3] = self.tspeedUp
+            elif abs(self.downconst) == 1:
+                self.arduinoParams[2] = self.tspeedDown  # 1300
+                self.arduinoParams[3] = self.tspeedDown
+            elif abs(self.JS_Y_UD) > self.deadBand:
+                self.arduinoParams[2] = int(self.tspeedMiddle - updown)  # side thrusters
+                self.arduinoParams[3] = int(self.tspeedMiddle + updown)
+
+            if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:
+                self.arduinoParams[0] = int(self.tspeedMiddle - forward1 + turn1)  # left thruster
+                self.arduinoParams[1] = int(self.tspeedMiddle - forward2 - turn2)  # right thruster
+            elif abs(self.JS_X) > self.deadBand >= abs(self.JS_Y):  # only turn
+                self.arduinoParams[0] = int(self.tspeedMiddle + turn1)  # cast to integer
+                self.arduinoParams[1] = int(self.tspeedMiddle - turn2)
+            elif abs(self.JS_X) <= self.deadBand < abs(self.JS_Y):
+                self.arduinoParams[0] = int(self.tspeedMiddle - forward1)  # cast to integer
+                self.arduinoParams[1] = int(self.tspeedMiddle - forward2)
+            end("calcs")
+
+            print("tspeeds" + str(self.arduinoParams))
+
+            start("check and limit")
+            self.speed_limit()
+
+            self.statusesupdate()
+
+            if self.ended():
+                break
+            end("check and limit")
+            start("end behavior")
+
+            self.serial_send_print(self.arduinoParams)
+
+            end("end behavior")
+
+            self.statusesupdate()
+            pygame.event.clear()
+            sleep(self.loopSleep)
+            # self.queuereciever()
+
+    def NonLinearLoop(self):
+        self.queue_data_out[8] = 1
+        self.queue_data_out[9] = 1
+        while True:
+
+            pygame.event.pump()
+
+            self.get_buttons()
+            self.check_lasers()
+
+            NL_X = self.mapK * (self.JS_X ** 3)
+            NL_Y = self.mapK * ((-self.JS_Y) ** 3)
+            NL_Y_UD = self.mapK * ((-self.JS_Y_UD) ** 3)
+
+            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle,
+                                  self.buttonopen,
+                                  self.buttonclose]
+
+            # button z thrusters
+            if abs(self.upconst) == 1:
+                self.arduinoParams[2] = self.tspeedUp
+                self.arduinoParams[3] = self.tspeedUp
+            elif abs(self.downconst) == 1:
+                self.arduinoParams[2] = self.tspeedDown
+                self.arduinoParams[3] = self.tspeedDown
+            elif abs(self.JS_Y_UD) > self.deadBand:
+                self.arduinoParams[2] = int(self.tspeedMiddle - NL_Y_UD)  # side thrusters
+                self.arduinoParams[3] = int(self.tspeedMiddle + NL_Y_UD)
+
+            if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:  # calculate thruster values
+                self.arduinoParams[0] = int(self.tspeedMiddle + NL_X + NL_Y)
+                self.arduinoParams[1] = int(self.tspeedMiddle + (NL_X - NL_Y))
+            elif abs(self.JS_X) > self.deadBand >= abs(self.JS_Y):  # only turn
+                self.arduinoParams[0] = int(self.tspeedMiddle + NL_X)  # cast to integer
+                self.arduinoParams[1] = int(self.tspeedMiddle - NL_X)
+            elif abs(self.JS_X) <= self.deadBand < abs(self.JS_Y):  # only forward/back
+                self.arduinoParams[0] = int(self.tspeedMiddle + NL_Y)  # cast to integer
+                self.arduinoParams[1] = int(self.tspeedMiddle + NL_Y)
+
+            self.statusesupdate()
+            self.speed_limit()
+            if self.ended():
+                break
+            print("tspeeds" + str(self.arduinoParams))
+            self.serial_send_print(self.arduinoParams)
+
+            pygame.event.clear()
+            sleep(self.loopSleep)
+
+    def check_lasers(self):
+        self.get_queue_data_in()
+        if self.queue_data_in[6] == 1:
+            self.arduinoParams[6] = 1
+        else:
+            self.arduinoParams[6] = 0
+
+    ########################################## AUTO
+
+    def auto_on(self):  # return bool
+        self.get_queue_data_in()
+        if self.queue_data_in[0] == 1:
+            return True
+        else:
+            return False
+
+    def get_queue_data_in(self):  # get the queue_in data
+        while not self.input_queue.empty():
+            self.queue_data_in = self.input_queue.get()  # put latest data in queue_data array
+
+    def check_auto_stop(self):  # return bool
+        self.get_queue_data_in()
+        if self.queue_data_in[0] == 0:
+                return True
+
+    def check_killswitch(self):  # return bool
+        self.get_queue_data_in()
+        if self.queue_data_in[1] == 1:
+            return True
+
+    def autonomousLoop(self):
+        self.serial_send_print(self.arduinoParamsConst)
+        print('starting auto')
+
+        while True:
+            self.get_queue_data_in()
+
+            self.arduinoParams[0] = self.queue_data_in[2]  # thruster values in queue_data starts here
+            self.arduinoParams[1] = self.queue_data_in[3]
+            self.arduinoParams[2] = self.queue_data_in[4]
+            self.arduinoParams[3] = self.queue_data_in[5]
+            self.arduinoParams[4] = 0
+            self.arduinoParams[5] = 0
+
+            self.statusesupdate()  # is this ok?
+
+            self.serial_send_print(self.arduinoParams)  # send to arduino
+            self.statusesupdate()
+
+            if self.check_auto_stop():
+                self.serial_send_print(self.arduinoParamsConst)
+                break  # break out of auto back into joy_tests()
+
+            if self.check_killswitch():
+                self.serial_send_print(self.arduinoParamsConst)
+                break  # break out of auto back into joy_tests()
+            sleep(self.loopSleep)
+
+    ########################################## AUTO END
+
+    def speed_limit(self):
+        for i in range(self.SpeedSize):  # making sure thruster values don't go above 1900 and below 1100
+            self.arduinoParams[i] = min(self.MaxSpeed, self.arduinoParams[i])
+            self.arduinoParams[i] = max(self.MinSpeed, self.arduinoParams[i])
+
+    def get_buttons(self):
+        self.buttonopen = self.j.get_button(self.squareButton)
+        self.buttonclose = self.j.get_button(self.triangleButton)
+        self.upconst = self.j.get_button(self.circleButton)
+        self.downconst = self.j.get_button(self.xButton)
+        self.JS_X = self.j.get_axis(self.LH)
+        self.JS_Y = self.j.get_axis(self.LV)  # y-direction joystick values are flipped
+        self.JS_Y_UD = self.j.get_axis(self.RV)
+        # statuses array buttons order: square, triangle, circle, x
+
+    def ended(self):  # Linear Loop and Non Linear Loop
+        self.queue_data_out[8] = 0
+        if self.j.get_button(self.shareButton) == 1:  # if end button is pressed
+            self.queue_data_out[8] = 1
+
+            self.buttonopen = 0  # reset things
+            self.buttonclose = 0
+            self.upconst = 0
+            self.downconst = 0
+            self.JS_X = 0
+            self.JS_Y = 0
+            self.JS_Y_UD = 0
+
+            self.statusesupdate()  # update gui that it's about to end, before ending
+            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
+            self.serial_send_print(self.arduinoParams)
+            print("Stopping teleop, either linear or nonlinear")
+            print(agg)
+            return True
+
+    def statusesupdate(self):
+        self.queue_data_out[0] = self.arduinoParams[0]
+        self.queue_data_out[1] = self.arduinoParams[1]
+        self.queue_data_out[2] = self.arduinoParams[2]
+        self.queue_data_out[3] = self.arduinoParams[3]
+        self.queue_data_out[4] = self.buttonopen
+        self.queue_data_out[5] = self.buttonclose
+        self.queue_data_out[6] = self.upconst
+        self.queue_data_out[7] = self.downconst
+
+        self.output_queue.put(self.queue_data_out)
+        print("statuses" + str(self.queue_data_out))
+
+    def serial_send_print(self, arr):  # print to terminal / send regularly updated array to arduino
+
+        stringToSend = ','.join(str(x) for x in arr) + '.'
+        print('py: ' + stringToSend)  # print python
+        stringFromArd = ''
+        if self.serialOn:
+            self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
+            start('arduino-wait')
+            while self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes):  # wait for data
+                stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
+                print('ard: ' + stringFromArd)  # print arduino data
+            end('arduino-wait')
+
+    #
+    # def queuereciever(self):
+    #     if self.input_queue.empty() == False:
+    #         self.loop = self.input_queue.get()
+    #         print('recieved from queue')
+
     def joy_tests_mac(self):
         # while self.joyTestsOn:
         while self.joyTestsOn:
@@ -129,18 +381,18 @@ class Config:
                 if event.type == pygame.JOYBUTTONDOWN:
                     if event.button == 0:  # event.type == pygame.JOYBUTTONUP:
                         print(event.button, "Select Has Been Pressed")
-                        self.statuses[4] = 1
+                        self.queue_data_out[4] = 1
                     if event.button == 1:
                         print(event.button, "Left Joystick button has been pressed")
-                        self.statuses[5] = 1
+                        self.queue_data_out[5] = 1
                     if event.button == 2:
                         print(event.button, "Right Joystick button has been pressed")
-                        self.statuses[6] = 1
+                        self.queue_data_out[6] = 1
                     if event.button == 3:
                         print(event.button, "Start has been pressed. Will exit joytests.")
-                        self.statuses[7] = 1
-                        self.statuses[8] = 1
-                        self.output_queue.put(self.statuses)
+                        self.queue_data_out[7] = 1
+                        self.queue_data_out[8] = 1
+                        self.output_queue.put(self.queue_data_out)
                         print("statuses sent")
                         self.LinearLoop()
                     if event.button == 12:  # event.type == pygame.JOYBUTTONUP:
@@ -157,16 +409,16 @@ class Config:
                 elif event.type == pygame.JOYBUTTONUP:
                     if event.button == 0:  # event.type == pygame.JOYBUTTONUP:
                         print(event.button, "Select Has Been Released")
-                        self.statuses[4] = 0
+                        self.queue_data_out[4] = 0
                     if event.button == 1:
                         print(event.button, "Left Joystick button has been released")
-                        self.statuses[5] = 0
+                        self.queue_data_out[5] = 0
                     if event.button == 2:
                         print(event.button, "Right Joystick button has been released")
-                        self.statuses[6] = 0
+                        self.queue_data_out[6] = 0
                     if event.button == 3:
                         print(event.button, "Start has been released.")
-                        self.statuses[7] = 0
+                        self.queue_data_out[7] = 0
                     if event.button == 12:  # event.type == pygame.JOYBUTTONUP:
                         print(event.button, "Triangle Has Been released")
                     if event.button == 13:
@@ -195,7 +447,7 @@ class Config:
                         four = self.j.get_axis(4)
                         print('4 has been moved ' + str(four))
 
-            self.output_queue.put(self.statuses)
+            self.output_queue.put(self.queue_data_out)
             # print("put in queue")
 
     def joy_tests_rpi(self):
@@ -261,252 +513,6 @@ class Config:
                         four = self.j.get_axis(4)
                         print('4 has been moved ' + str(four))
             # self.queuereciever()
-
-    def LinearLoop(self):
-        program_starts = time()
-        self.statuses[8] = 1
-        self.statuses[8] = 0
-        while True:
-            start("first-half")
-            pygame.event.pump()
-
-            """
-            get buttons and thrusters
-            calculations and edit tspeeds
-            check if over or under boundary speeds
-            set incoming arduino data array to tspeeds
-            repeatedly check if teleop is being ended
-            """
-            self.get_buttons()
-
-            # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
-            turn1, turn2, = self.JS_X * self.mapK, self.JS_X * self.mapK
-            forward1, forward2 = self.JS_Y * self.mapK, self.JS_Y * self.mapK
-            updown = self.JS_Y_UD * self.mapK
-
-            # calculating thruster speeds
-            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle,
-                                  self.buttonopen,
-                                  self.buttonclose]
-            end("first-half")
-            start("second-half")
-            start("calcs")
-            if abs(self.upconst) == 1:
-                self.arduinoParams[2] = self.tspeedUp  # 1700
-                self.arduinoParams[3] = self.tspeedUp
-            elif abs(self.downconst) == 1:
-                self.arduinoParams[2] = self.tspeedDown  # 1300
-                self.arduinoParams[3] = self.tspeedDown
-            elif abs(self.JS_Y_UD) > self.deadBand:
-                self.arduinoParams[2] = int(self.tspeedMiddle - updown)  # side thrusters
-                self.arduinoParams[3] = int(self.tspeedMiddle + updown)
-
-            if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:
-                self.arduinoParams[0] = int(self.tspeedMiddle - forward1 + turn1)  # left thruster
-                self.arduinoParams[1] = int(self.tspeedMiddle - forward2 - turn2)  # right thruster
-            elif abs(self.JS_X) > self.deadBand >= abs(self.JS_Y):  # only turn
-                self.arduinoParams[0] = int(self.tspeedMiddle + turn1)  # cast to integer
-                self.arduinoParams[1] = int(self.tspeedMiddle - turn2)
-            elif abs(self.JS_X) <= self.deadBand < abs(self.JS_Y):
-                self.arduinoParams[0] = int(self.tspeedMiddle - forward1)  # cast to integer
-                self.arduinoParams[1] = int(self.tspeedMiddle - forward2)
-            end("calcs")
-
-            print("tspeeds" + str(self.arduinoParams))
-
-            start("check and limit")
-            self.speed_limit()
-
-            self.statusesupdate()
-
-            if self.ended():
-                break
-            end("check and limit")
-            start("end behavior")
-
-            self.serial_send_print(self.arduinoParams)
-
-            end("end behavior")
-
-            self.statusesupdate()
-            pygame.event.clear()
-            sleep(self.loopSleep)
-            # self.queuereciever()
-
-    def NonLinearLoop(self):
-        self.statuses[8] = 1
-        self.statuses[9] = 1
-        while True:
-
-            pygame.event.pump()
-
-            self.get_buttons()
-
-            NL_X = self.mapK * (self.JS_X ** 3)
-            NL_Y = self.mapK * ((-self.JS_Y) ** 3)
-            NL_Y_UD = self.mapK * ((-self.JS_Y_UD) ** 3)
-
-            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle,
-                                  self.buttonopen,
-                                  self.buttonclose]
-
-            # button z thrusters
-            if abs(self.upconst) == 1:
-                self.arduinoParams[2] = self.tspeedUp
-                self.arduinoParams[3] = self.tspeedUp
-            elif abs(self.downconst) == 1:
-                self.arduinoParams[2] = self.tspeedDown
-                self.arduinoParams[3] = self.tspeedDown
-            elif abs(self.JS_Y_UD) > self.deadBand:
-                self.arduinoParams[2] = int(self.tspeedMiddle - NL_Y_UD)  # side thrusters
-                self.arduinoParams[3] = int(self.tspeedMiddle + NL_Y_UD)
-
-            if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:  # calculate thruster values
-                self.arduinoParams[0] = int(self.tspeedMiddle + NL_X + NL_Y)
-                self.arduinoParams[1] = int(self.tspeedMiddle + (NL_X - NL_Y))
-            elif abs(self.JS_X) > self.deadBand >= abs(self.JS_Y):  # only turn
-                self.arduinoParams[0] = int(self.tspeedMiddle + NL_X)  # cast to integer
-                self.arduinoParams[1] = int(self.tspeedMiddle - NL_X)
-            elif abs(self.JS_X) <= self.deadBand < abs(self.JS_Y):  # only forward/back
-                self.arduinoParams[0] = int(self.tspeedMiddle + NL_Y)  # cast to integer
-                self.arduinoParams[1] = int(self.tspeedMiddle + NL_Y)
-
-            self.statusesupdate()
-            self.speed_limit()
-            if self.ended():
-                break
-            print("tspeeds" + str(self.arduinoParams))
-            self.serial_send_print(self.arduinoParams)
-
-            pygame.event.clear()
-            sleep(self.loopSleep)
-
-
-
-########################################## AUTO
-    def auto_on(self):
-        while not self.input_queue.empty():  # if empty, skip
-            self.queue_data = self.input_queue.get()
-        if self.queue_data[0] == 1:
-            return True
-        else:
-            return False
-
-    def get_auto_queue_data(self):
-        while not self.input_queue.empty():
-            self.queue_data = self.input_queue.get()  # put latest data in queue_data array
-
-    def check_auto_stop(self):
-        while not self.input_queue.empty():
-            self.queue_data = self.input_queue.get()  # put latest data in queue_data array
-            if self.queue_data[0] == 0:
-                return True
-
-    def check_killswitch(self):
-        while not self.input_queue.empty():
-            self.queue_data = self.input_queue.get()  # put latest data in queue_data array
-            if self.queue_data[1] == 1:
-                return True
-
-    def autonomousLoop(self):
-        self.serial_send_print(self.arduinoParamsConst)
-        print('starting auto')
-
-        while True:
-            self.get_auto_queue_data()
-
-            self.arduinoParams[0] = self.queue_data[2]  # thruster values in queue_data starts here
-            self.arduinoParams[1] = self.queue_data[3]
-            self.arduinoParams[2] = self.queue_data[4]
-            self.arduinoParams[3] = self.queue_data[5]
-            self.arduinoParams[4] = 0
-            self.arduinoParams[5] = 0
-
-            self.statusesupdate() #is this ok?
-
-            self.serial_send_print(self.arduinoParams)  # send to arduino
-            self.statusesupdate()
-
-            if self.check_auto_stop():
-                self.serial_send_print(self.arduinoParamsConst)
-                break  # break out of auto back into joy_tests()
-
-            if self.check_killswitch():
-                self.serial_send_print(self.arduinoParamsConst)
-                break  # break out of auto back into joy_tests()
-            sleep(self.loopSleep)
-
-########################################## AUTO END
-
-
-    def speed_limit(self):
-        for i in range(self.SpeedSize):  # making sure thruster values don't go above 1900 and below 1100
-            self.arduinoParams[i] = min(self.MaxSpeed, self.arduinoParams[i])
-            self.arduinoParams[i] = max(self.MinSpeed, self.arduinoParams[i])
-
-    def get_buttons(self):
-        self.buttonopen = self.j.get_button(self.squareButton)
-        self.buttonclose = self.j.get_button(self.triangleButton)
-        self.upconst = self.j.get_button(self.circleButton)
-        self.downconst = self.j.get_button(self.xButton)
-        self.JS_X = self.j.get_axis(self.LH)
-        self.JS_Y = self.j.get_axis(self.LV)  # y-direction joystick values are flipped
-        self.JS_Y_UD = self.j.get_axis(self.RV)
-        # statuses array buttons order: square, triangle, circle, x
-
-    def ended(self):  # Linear Loop and Non Linear Loop
-        self.statuses[8] = 0
-        if self.j.get_button(self.shareButton) == 1:  # if end button is pressed
-            self.statuses[8] = 1
-
-            self.buttonopen = 0  # reset things
-            self.buttonclose = 0
-            self.upconst = 0
-            self.downconst = 0
-            self.JS_X = 0
-            self.JS_Y = 0
-            self.JS_Y_UD = 0
-
-            self.statusesupdate()  # update gui that it's about to end, before ending
-            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
-            self.serial_send_print(self.arduinoParams)
-            print("Stopping teleop, either linear or nonlinear")
-            print(agg)
-            return True
-
-    def statusesupdate(self):
-        self.statuses[0] = self.arduinoParams[0]
-        self.statuses[1] = self.arduinoParams[1]
-        self.statuses[2] = self.arduinoParams[2]
-        self.statuses[3] = self.arduinoParams[3]
-        self.statuses[4] = self.buttonopen
-        self.statuses[5] = self.buttonclose
-        self.statuses[6] = self.upconst
-        self.statuses[7] = self.downconst
-
-        self.output_queue.put(self.statuses)
-        print("statuses" + str(self.statuses))
-
-    def serial_send_print(self, arr):  # print to terminal / send regularly updated array to arduino
-
-        stringToSend = ','.join(str(x) for x in arr) + '.'
-        print('py: ' + stringToSend)  # print python
-        # stringFromArd = ''
-        if self.serialOn:
-            self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
-            start('arduino-wait')
-            while self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes):  # wait for data
-                pass
-                stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
-
-            end('arduino-wait')
-
-        # print('ard: ' + stringFromArd)  # print arduino data
-    #
-    # def queuereciever(self):
-    #     if self.input_queue.empty() == False:
-    #         self.loop = self.input_queue.get()
-    #         print('recieved from queue')
 
 
 if __name__ == '__main__':
