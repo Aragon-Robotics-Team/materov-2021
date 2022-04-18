@@ -1,6 +1,6 @@
-int IN1= 8;
-int IN2= 9;
-int ENA= 10;
+const int IN1= 8;
+const int IN2=7;
+const int ENA= 9;
 //H-Bridge
 //defining pins
 //NTS: Make sure code reflects which pins on the arduino use the pins
@@ -32,9 +32,6 @@ void floatFloat(){
    analogWrite(ENA, 0);
 }
 
-
-int threemin = 3*60*100;
-
 //NTS: Calculate amount of time necessary for syringes to empty/fill up
 //Found to be 20 seconds
 
@@ -44,8 +41,8 @@ void setup() {
   pinMode (ENA, OUTPUT);
   //Arduino controls every pin(no input pins)
 
-  digitalWrite(IN1, HIGH); //5V
-  digitalWrite(IN2, LOW); //Ground
+  digitalWrite(IN1, LOW); //Ground
+  digitalWrite(IN2, HIGH); //5V
 
   //delayThreeMin(); // delay for float to be put into appropriate spot(setup+carrying to product demo area)
 
