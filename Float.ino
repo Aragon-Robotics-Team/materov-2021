@@ -1,3 +1,71 @@
+const int IN1 = 7;
+const int IN2 = 6;
+const int ENA= 9; //idk if this ENA pin is right
+
+//NTS: Make sure code reflects which pins on the arduino use the pins
+
+
+void delayMin(int m){
+  for(int i =0; i<10*m; i++){
+    delay(1000);
+  }
+} //delaying by the minute
+
+void delaySec(int s){
+  for(int i=0; i<10*s; i++){
+    delay(1000);
+  }
+} //delaying by the second
+
+
+
+void sinkFloat(){
+  analogWrite(ENA, 220); //check if this should be positive 255 or -255(we need the water to go INTO the syringes
+  delay(1*20*1000); //delay 20 sec
+    //water uploaded; float will now sink
+   analogWrite(ENA, 0);
+}
+
+void floatFloat(){
+  analogWrite(ENA, -220);
+  //syringes release water
+   delay(1*20*1000);
+   analogWrite(ENA, 0);
+}
+
+//NTS: Calculate amount of time necessary for syringes to empty/fill up
+//Found to be 20 seconds
+
+void setup() {
+  pinMode (IN1, OUTPUT);
+  pinMode (IN2, OUTPUT);
+  pinMode (ENA, OUTPUT);
+  //Arduino controls every pin(no input pins)
+
+  digitalWrite(IN1, HIGH); //5V
+  digitalWrite(IN2, LOW); //Ground
+
+  //delayMin(5); // delay for float to be put into appropriate spot(setup+carrying to product demo area)
+
+  sinkFloat();
+  delayMin(1);
+  floatFloat();
+  delayOneMin();
+  sinkFloat();
+  delayMin(1);
+  floatFloat();
+  delayMin(1);
+  analogWrite(ENA, 0);
+  //float goes up last time and stops spinning
+}
+
+void loop() {
+
+}
+
+
+
+/*
 const int IN1= 8;
 const int IN2=7;
 const int ENA= 9;
@@ -61,7 +129,7 @@ void setup() {
 void loop() {
 
 }
-
+*/
 
 
 //Figure out best pins on Arduino for easy installation and update code accordingly
