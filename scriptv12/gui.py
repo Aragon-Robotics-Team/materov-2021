@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import ttk
+import tkinter.font as tkFont
+# import tkFont
 # from tkinter.tkk import Style
 import glob
 from img_proc.measure_fishes import measureFish
@@ -14,19 +16,23 @@ from img_proc.docking import dockpic
 from img_proc.docking import dockCalculate
 
 cap = cv2.VideoCapture(0)
-# cap1 = cv2.VideoCapture(1) #<-- Second Camera
+cap1 = cv2.VideoCapture(1) #<-- Second Camera
 #cap2 = cv2.VideoCapture(2)
 
 #SETUP ------------------------------------------------------------------------------------------------------
 root = Tk()
-root.geometry("1800x1000")
+root.geometry("1350x750")
 
 style =  ttk.Style()
 
 style.theme_create( "button-center", parent="alt", settings={
         "TButton": {"configure": {"anchor": "center"}}} )
 
-style.configure('TButton', font = ('Helvetica', 13), width = 25)
+style.configure('TButton', font = ('Helvetica', 13), width = 20)
+
+root.rowconfigure((0,1), weight=1)  # make buttons stretch when
+root.columnconfigure((0,2), weight=1)  # when window is resized
+
 
 #TEST ------------------------------------------------------------------------------------------------------
 vcol = 3
@@ -159,7 +165,16 @@ def docking():
 btn = ttk.Button(root, text = "Autonomous Docking Calibration", command = docking)
 btn.grid(row = 8, column = vcol + 1, sticky = 'e', pady = (25, 0))
 
-autoArray = [0, 0, 1500, 1500, 1500, 1500]
+autoArray = [0, 0, 1500, 1500, 1500, 1500, 0]
+
+# auto gui array:
+# 0: auto on/off 0 or 1 - Keep sending 1's when auto is on
+# 1: kill switch 0 or 1 - keep sending 1's when kill switch is on
+# 2: thruster1 value
+# 3: thruster2 value
+# 4: thruster3 value
+# 5: thruster4 value
+# 6: Lasers on/off
 
 def autoDock():
     global autoTimer
@@ -167,51 +182,111 @@ def autoDock():
     # t_end = time.time() + 60
     # while time.time() < t_end:
     if autoTimer < 60: #if autonomous has been running for less than 60 seconds
-        autoArray = [1, 0, 1600, 1600, 1500, 1500]
+        autoArray[0] = 1
+        autoArray[2] = 1600
+        autoArray[3] = 1600
+        autoArray[4] = 1500
+        autoArray[5] = 1500
         output_queue.put(autoArray)
         autoTimer = 0.005 + autoTimer
         root.after(10, autoDock) #repeat every 500 milliseconds
     elif autoTimer == 60: #if 60 seconds has been reached
-        autoArray = [0, 0, 1500, 1500, 1500, 1500]
+        autoArray[0] = 0
+        autoArray[2] = 1500
+        autoArray[3] = 1500
+        autoArray[4] = 1500
+        autoArray[5] = 1500
+        # autoArray = [0, 0, 1500, 1500, 1500, 1500]
         output_queue.put(autoArray)
 
 btn = ttk.Button(root, text = "Start Autonomous Docking", command = autoDock)
 btn.grid(row = 9, column = vcol + 1, sticky = 'e')
 
 #AUTONOMOUS TRANSECT LINE ---------------------------------------------------------------------------------------------------------
-#
-# from img_proc import transect_line
-#
-# def transectLine():
-#     global camera
-#     camera = 0 #CHANGE TO THE SIDE CAMERA
-#     ret, cv2image = cap.read()
-#     cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGB)
-#     # while
-#
-# btn = ttk.Button(root, text = "Start Autonomous Transect Line", command = transectLine)
 
+from autonomous import transect_line
 
+def transectLine():
+    global camera
+    camera = 0 #CHANGE TO THE SIDE CAMERA
+    ret, cv2image = cap.read()
+    cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGB)
+    dir = transect_line(cv2image)
+    if dir == "stop":
+        print("stop")
+        autoArray[0] = 0
+        autoArray[2] = 1500
+        autoArray[3] = 1500
+        autoArray[4] = 1500
+        autoArray[5] = 1500
+        output_queue.put(autoArray)
+        #stop repeating
+    elif dir == "none":
+        print("none")
+        autoArray[0] = 1
+        autoArray[2] = 1500
+        autoArray[3] = 1500
+        autoArray[4] = 1500
+        autoArray[5] = 1500
+        output_queue.put(autoArray)
+        #send thruster values for none
+        root.after(10, transectLine)
+    elif dir == "right":
+        print("right")
+        autoArray[0] = 1
+        autoArray[2] = 1600
+        autoArray[3] = 1600
+        autoArray[4] = 1500
+        autoArray[5] = 1500
+        output_queue.put(autoArray)
+        #send thruster values for right
+        root.after(10, transectLine)
+    elif dir == "left":
+        print("left")
+        autoArray[0] = 1
+        autoArray[2] = 1400
+        autoArray[3] = 1400
+        autoArray[4] = 1500
+        autoArray[5] = 1500
+        output_queue.put(autoArray)
+        #send thruster values for left
+        root.after(10, transectLine)
+    elif dir == "down":
+        print("down")
+        autoArray[0] = 1
+        autoArray[2] = 1500
+        autoArray[3] = 1500
+        autoArray[4] = 1400 #THESE VALUES ARE PROBABLY WRONG
+        autoArray[5] = 1400
+        output_queue.put(autoArray)
+        #send thruster values for down
+        root.after(10, transectLine)
 
-#
+btn = ttk.Button(root, text = "Start ATL", command = transectLine)
+btn.grid(row = 10, column = vcol + 1, sticky = 'e', pady = (25,0))
+
 # #LASERS ---------------------------------------------------------------------------------------------------------------
 #
 def lasersOn():
-    print("haha this has not been done yet")
+    autoArray[6] = 1
+    output_queue.put(autoArray)
+    print("lasers on")
 
 btn = ttk.Button(root, text = "Turn Lasers On", command = lasersOn)
-btn.grid(row = 10, column = vcol + 1, sticky = 'e', pady = (25, 0))
+btn.grid(row = 11, column = vcol + 1, sticky = 'e', pady = (25, 0))
 
 def lasersOff():
-    print("haha this has not been done yet")
+    autoArray[6] = 0
+    output_queue.put(autoArray)
+    print("lasers off")
 
 btn = ttk.Button(root, text = "Turn Lasers Off", command = lasersOff)
-btn.grid(row = 11, column = vcol + 1, sticky = 'e')
+btn.grid(row = 12, column = vcol + 1, sticky = 'e')
 
 #BUTTON GRAPHICS------------------------------------------------------------------------------------------------------
 buttoncanvas = Canvas(root,height=120,width=250,bg="#fff")
 
-buttoncanvas.grid(row = 12, column = vcol + 1, sticky = 'e')
+buttoncanvas.grid(row = 13, column = vcol + 1, sticky = 'e')
 
 buttoncanvas.create_line(10, 10, 240, 10, fill = "black", width = 5)
 
@@ -308,7 +383,7 @@ buttonstatus()
 #THRUSTER GRAPHICS ------------------------------------------------------------------------------------------------------
 thrustercanvas = Canvas(root,height=240,width=250,bg="#fff")
 
-thrustercanvas.grid(row = 13, column = vcol + 1, sticky = 'e')
+thrustercanvas.grid(row = 14, column = vcol + 1, sticky = 'e')
 
 
 topx = 75 #this is also the center of the top left rectangle
@@ -438,8 +513,8 @@ def queuerecieve():
 # Entry(timercanvas, textvariable = sec, width = 2, font = 'arial 12').place(x=startingx, y=10) # Seconds
 # Entry(timercanvas, textvariable = mins, width = 2, font = 'arial 12').place(x=startingx + spacing, y=10) # Mins
 # Entry(timercanvas, textvariable = hrs, width = 2, font = 'arial 12').place(x=startingx + spacing * 2, y=10) # Hours
-# #
-# # # #  # #
+#
+# # #  # #
 #
 # minute.set('00')
 # second.set('00')
@@ -449,65 +524,65 @@ def queuerecieve():
 # mins.set('00')
 # hrs.set('00')
 # times = 0
-
-# #  # #
-
-def countdown():
-    global times
-    print("hello") #testing, working but code not working
-    times = int(hrs.get())*3600+ int(mins.get())*60 + int(sec.get())
-
-    if times > 0:
-        print("timer")
-        minute,second = (times // 60 , times % 60)
-        # timercanvas.after(1000, countdown)
-
-        hour = 0
-        if minute > 60:
-            hour , minute = (minute // 60 , minute % 60)
-
-        sec.set(second)
-        mins.set(minute)
-        hrs.set(hour)
-
-        root.update()
-        time.sleep(1)
-        times -= 1
-        if(times == 0):
-            sec.set('00')
-            mins.set('00')
-            hrs.set('00')
-        else:
-            timercanvas.after(1000, countdown)
-
-
-#set the time
-#instead of times > 0, do if time > 0, and have an after function at the end of the if statement
-
-
-#time = 2
-#is time > 0?
-    #change the timer graphic
-    #time--
-    #timercanvas.after(1000, countdown)
-#is time == 0?
-    #reset everything
 #
-# Button(timercanvas, text='START', bd ='5', command = countdown, bg = 'white', font = 'arial 10 bold', width = 15).place(x=80, y=50)
-
-
-def stop():
-    global times
-    minute.set('00')
-    second.set('00')
-    hours.set('00')
-    sec.set('00')
-    mins.set('00')
-    hrs.set('00')
-    times = 0
-    #root.destroy()
-    #python = sys.executable
-    #os.execl(python, python, * sys.argv)
+# # #  # #
+#
+# def countdown():
+#     global times
+#     print("hello") #testing, working but code not working
+#     times = int(hrs.get())*3600+ int(mins.get())*60 + int(sec.get())
+#
+#     if times > 0:
+#         print("timer")
+#         minute,second = (times // 60 , times % 60)
+#         # timercanvas.after(1000, countdown)
+#
+#         hour = 0
+#         if minute > 60:
+#             hour , minute = (minute // 60 , minute % 60)
+#
+#         sec.set(second)
+#         mins.set(minute)
+#         hrs.set(hour)
+#
+#         root.update()
+#         time.sleep(1)
+#         times -= 1
+#         if(times == 0):
+#             sec.set('00')
+#             mins.set('00')
+#             hrs.set('00')
+#         else:
+#             timercanvas.after(1000, countdown)
+#
+#
+# #set the time
+# #instead of times > 0, do if time > 0, and have an after function at the end of the if statement
+#
+#
+# #time = 2
+# #is time > 0?
+#     #change the timer graphic
+#     #time--
+#     #timercanvas.after(1000, countdown)
+# #is time == 0?
+#     #reset everything
+#
+# Button(timercanvas, text='START', bd ='5', command = countdown2, bg = 'white', font = 'arial 10 bold', width = 15).place(x=80, y=50)
+#
+#
+# def stop():
+#     global times
+#     minute.set('00')
+#     second.set('00')
+#     hours.set('00')
+#     sec.set('00')
+#     mins.set('00')
+#     hrs.set('00')
+#     times = 0
+#     #root.destroy()
+#     #python = sys.executable
+#     #os.execl(python, python, * sys.argv)
 #
 # Button(timercanvas, text='STOP', bd ='5', command = stop, bg = 'white', font = 'arial 10 bold', width = 15).place(x=80.5, y=75)
 #
@@ -518,7 +593,7 @@ def stop():
 from PIL import Image, ImageTk
 
 # Create a Label to capture the Video frames
-label = Label(root, height = 800, width = 800)
+label = Label(root, height = 650, width = 650)
 label.grid(row = 1, column = 0, rowspan = 20, columnspan = vcol, sticky = 'n')
 
 camera = 0 #specifies the camera object to use
@@ -530,10 +605,10 @@ def show_frames():
         # cv2image = cv2.cvtColor(cap.read()[0],cv2.COLOR_BGR2RGB)
         ret, cv2image = cap.read()
         cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGB)
-    #
-    # elif camera == 1:
-    #     ret, cv2image = cap1.read()
-    #     cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGB)
+
+    elif camera == 1:
+        ret, cv2image = cap1.read()
+        cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGB)
 
         # cv2image = cv2.cvtColor(cap1.read()[1],cv2.COLOR_BGR2RGB)
     # elif camera = 2:
@@ -555,19 +630,19 @@ def cam0():
     global camera
     camera = 0
 
-ttk.Button(root, text = "CAMERA 0", command = cam0).grid(row = 0,column = 0)
+ttk.Button(root, text = "CAMERA 0", command = cam0).grid(row = 1,column = 0)
 
 def cam1():
     global camera
     camera = 1
 
-ttk.Button(root, text = "CAMERA 1", command = cam1).grid(row = 0, column = 1)
+ttk.Button(root, text = "CAMERA 1", command = cam1).grid(row = 1, column = 1)
 
 def cam2():
     global camera
     camera = 2
 
-ttk.Button(root, text = "CAMERA 2", command = cam2).grid(row = 0, column = 2)
+ttk.Button(root, text = "CAMERA 2", command = cam2).grid(row = 1, column = 2)
 
 #EMERGENCY HALT ------------------------------------------------------------------------------------------------------------
 def enableBot():
@@ -577,7 +652,7 @@ def enableBot():
     print ("BOT ENABLED")
 
 btn = Button(root, text = "Enable Bot", command = enableBot, width = 30, height = 3, fg = 'red', bg = 'dark gray')
-btn.grid(row = 14, column = 0, sticky = 'w', pady = (75, 0), padx = (50, 0))
+btn.grid(row = 13, column = 0, sticky = 'w', pady = (0, 0), padx = (50, 0))
 
 def disableBot():
     global autoArray
@@ -587,7 +662,7 @@ def disableBot():
 #
 # btn = Button(root, text = "EMERGENCY HALT", command = emergencyHalt, height = 25, width = 200, fg = 'red')
 btn = Button(root, text = "Disable Bot (Emergency Halt)", command = disableBot, width = 30, height = 3, fg = 'red')
-btn.grid(row = 14, column = 1, sticky = 'w', pady = (75, 0), padx = (50, 0))
+btn.grid(row = 13, column = 1, sticky = 'w', pady = (0, 0), padx = (50, 0))
 
 #TASK WINDOW ------------------------------------------------------------------------------------------------------------
 
