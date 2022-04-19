@@ -1,6 +1,7 @@
 import multiprocessing
-import nav
 import gui
+from scriptv10.nav.teleop import teleopMain
+
 
 class ThrusterProcess(multiprocessing.Process):
     def __init__(self, input_queue, output_queue):
@@ -8,7 +9,7 @@ class ThrusterProcess(multiprocessing.Process):
         self.input_queue = input_queue
         self.output_queue = output_queue
     def run(self):
-        nav.teleop.teleopMain()
+        teleopMain()
         # print("h")
         # pygame.init()
         # print("h")
@@ -22,6 +23,6 @@ if __name__ == "__main__":
 
     thruster_proc = ThrusterProcess(thruster_in_queue, thruster_out_queue)
     thruster_proc.start()
-
+    thruster_proc.join()
     # while True:
     #     gui.updateGUI()
