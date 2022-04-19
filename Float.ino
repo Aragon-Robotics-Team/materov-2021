@@ -50,7 +50,7 @@ void setup() {
   sinkFloat();
   delayMin(1);
   floatFloat();
-  delayOneMin();
+  delayMin();
   sinkFloat();
   delayMin(1);
   floatFloat();
