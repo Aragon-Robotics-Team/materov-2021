@@ -6,6 +6,8 @@ Servo thruster2;
 Servo thruster3;
 Servo thruster4;
 
+int laserPin = 8;
+
 int thruster1signal;
 int thruster2signal;
 int thruster3signal;
@@ -21,6 +23,7 @@ int var;
 void setup() {
   Serial.begin(115200);
   servo.attach(9); //servo pin
+  pinMode(laserPin, OUTPUT);
   thruster1.attach(10); //thruster pins
   thruster2.attach(11);
   thruster3.attach(12);
@@ -84,6 +87,8 @@ thruster1.writeMicroseconds(thruster1signal);
 thruster2.writeMicroseconds(thruster2signal);
 thruster3.writeMicroseconds(thruster3signal);
 thruster4.writeMicroseconds(thruster4signal);
+
+digitalWrite(laserPin, HIGH);
 
 //Serial.println("recieved");
 
