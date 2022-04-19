@@ -65,11 +65,6 @@ void loop() {
 //Put ENA Pin to PWM Pin on arduino
 
 
-void loop() {
-
-}
-
-
 
 /*
 const int IN1= 8;
