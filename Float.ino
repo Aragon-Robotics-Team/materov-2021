@@ -4,7 +4,6 @@ const int ENA= 9; //idk if this ENA pin is right
 
 //NTS: Make sure code reflects which pins on the arduino use the pins
 
-
 void delayMin(int m){
   for(int i =0; i<10*m; i++){
     delay(1000);
@@ -21,7 +20,7 @@ void delaySec(int s){
 
 void sinkFloat(){
   analogWrite(ENA, 220); //check if this should be positive 255 or -255(we need the water to go INTO the syringes
-  delay(1*20*1000); //delay 20 sec
+  delaySec(20);; //delay 20 sec
     //water uploaded; float will now sink
    analogWrite(ENA, 0);
 }
@@ -29,7 +28,7 @@ void sinkFloat(){
 void floatFloat(){
   analogWrite(ENA, -220);
   //syringes release water
-   delay(1*20*1000);
+   delaySec(20);
    analogWrite(ENA, 0);
 }
 
@@ -50,7 +49,7 @@ void setup() {
   sinkFloat();
   delayMin(1);
   floatFloat();
-  delayMin();
+  delayMin(1);
   sinkFloat();
   delayMin(1);
   floatFloat();
@@ -58,6 +57,13 @@ void setup() {
   analogWrite(ENA, 0);
   //float goes up last time and stops spinning
 }
+
+void loop() {
+
+}
+//https://www.youtube.com/watch?v=Da4HY7HZ6h0
+//Put ENA Pin to PWM Pin on arduino
+
 
 void loop() {
 
