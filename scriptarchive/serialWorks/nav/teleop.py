@@ -1,5 +1,5 @@
-from teleopConfig1 import Config  # on rpi, DELETE navNoQueue part
-from tracer import agg
+from scriptarchive.serialWorks.nav.teleopConfig1 import Config  # on rpi, DELETE navNoQueue part
+# from tracer import agg
 def teleopMain():
     robot = Config('Mac', True, True) # comp type, serial on, serial recieve on
     robot.joy_init()

@@ -21,10 +21,10 @@ int var;
 void setup() {
   Serial.begin(115200);
   servo.attach(9); //servo pin
-  thruster1.attach(4); //thruster pins
-  thruster2.attach(5);
-  thruster3.attach(6);
-  thruster4.attach(7);
+  thruster1.attach(10); //thruster pins
+  thruster2.attach(11);
+  thruster3.attach(12);
+  thruster4.attach(13);
   thruster1.writeMicroseconds(1500);
   thruster2.writeMicroseconds(1500);
   thruster3.writeMicroseconds(1500);
