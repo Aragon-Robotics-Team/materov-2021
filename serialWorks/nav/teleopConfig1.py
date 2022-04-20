@@ -4,7 +4,8 @@ Configuration for everything
 from time import sleep, time
 import pygame
 from serial import Serial
-from scriptarchive.serialWorks.nav.tracer import start, end, agg
+# from serialWorks.nav.tracer import start, end, agg
+from tracer import start, end, agg  # rpi
 
 
 class Config:
