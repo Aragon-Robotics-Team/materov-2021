@@ -4,9 +4,8 @@ Configuration for everything
 from time import sleep, time
 import pygame
 from serial import Serial
-# from serialWorks.nav.tracer import start, end, agg
+from serialWorks.nav.tracer import start, end, agg
 from tracer import start, end, agg  # rpi
-
 
 class Config:
     def __init__(self, computerType, serialOn, serialRecieveOn):
@@ -357,7 +356,7 @@ class Config:
             #     pass
             sleep(self.loopSleep)
             bytes = self.arduino.in_waiting
-            stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
+            stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data with timeout = 1
 
             end('arduino-wait')
 
