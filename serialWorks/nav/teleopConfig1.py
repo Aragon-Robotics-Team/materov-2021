@@ -5,7 +5,7 @@ from time import sleep, time
 import pygame
 from serial import Serial
 # from serialWorks.nav.tracer import start, end, agg
-from tracer import start, end, agg  # rpi
+from nav.tracer import start, end, agg  # rpi
 
 class Config:
     def __init__(self, computerType, serialOn, serialRecieveOn):

@@ -2,12 +2,11 @@ import numpy as np
 import argparse
 import imutils
 import cv2
-import keyboard
 import time
 import glob
 import math
 
-videoCaptureObject = cv2.VideoCapture(0)#, cv2.CAP_DSHOW)
+# videoCaptureObject = cv2.VideoCapture(0)#, cv2.CAP_DSHOW)
 
 dockImg = ""
 
