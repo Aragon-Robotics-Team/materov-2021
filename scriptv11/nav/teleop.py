@@ -8,7 +8,7 @@ def teleopMain(input_queue, output_queue):
     # output_queue.put(statuses)
     # print("put in queue")
 
-    robot = Config('Mac', True, False, input_queue, output_queue)
+    robot = Config('RPI', True, False, input_queue, output_queue)
     robot.joy_init()
 
 

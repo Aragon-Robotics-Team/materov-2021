@@ -348,7 +348,7 @@ class Config:
         self.queue_data_out[7] = self.downconst
 
         self.output_queue.put(self.queue_data_out)
-        print("statuses" + str(self.queue_data_out))
+        # print("statuses" + str(self.queue_data_out))
 
     def serial_send_print(self, arr):  # print to terminal / send regularly updated array to arduino
 
