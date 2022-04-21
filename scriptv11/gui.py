@@ -638,7 +638,7 @@ Bu = Button(taskcanvas, text = "Task 3", command = task3).place(x= 165,y= 10)
 Bu = Button(taskcanvas, text = "Task 4", command = task4).place(x= 230,y= 10)
 
 # pack the text-Aera in the window
-root.mainloop()
+# root.mainloop()
 
 
 
