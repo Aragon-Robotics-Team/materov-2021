@@ -204,7 +204,7 @@ def show_frames():
     # Repeat after an interval to capture continiously
     label.after(20, show_frames)
 
-show_frames()
+# show_frames()
 
 def updateGUI():
     while True:
