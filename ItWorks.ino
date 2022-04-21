@@ -16,16 +16,16 @@ void delaySec(int s){
 
 
 void sinkFloat(){
-  digitalWrite(IN1, HIGH); //5V
-  digitalWrite(IN2, LOW); //Ground
+  digitalWrite(IN3, HIGH); //5V
+  digitalWrite(IN4, LOW); //Ground
   delaySec(20); //delay 20 sec
     //water uploaded; float will now sink
   
 }
 
 void floatFloat(){
-  digitalWrite(IN1, LOW); //5V
-  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, LOW); //5V
+  digitalWrite(IN4, HIGH);
   delaySec(20);
 }
 
@@ -33,8 +33,8 @@ void floatFloat(){
 //Found to be 20 seconds
 
 void setup() {
-  pinMode (IN1, OUTPUT);
-  pinMode (IN2, OUTPUT);
+  pinMode (IN3, OUTPUT);
+  pinMode (IN3, OUTPUT);
   //Arduino controls every pin(no input pins)
 }
 
@@ -53,6 +53,8 @@ void loop() {
   
   //delayMin(10);  <-- So float can be retrieved with no buoyancy gimmicks
 }
+
+//At testing check: If buoyancy time is enough(for it to sink and then float back up)
 
 //At testing check: If buoyancy time is enough(for it to sink and then float back up)
 
