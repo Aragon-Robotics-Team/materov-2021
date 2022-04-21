@@ -28,7 +28,7 @@ class Config:
 
         elif computerType == "Mac":
             self.computerType = computerType
-            self.serialPort = '/dev/cu.usbmodem14101'
+            self.serialPort = '/dev/cu.usbmodem142101'
             self.LH = 0  # Left horizontal axis
             self.LV = 1  # Left vertical axis6
             self.RH = 2  # Right horizontal axis
