@@ -3,13 +3,13 @@ const int IN4 = 6;
 
 
 void delayMin(int m){
-  for(int i =0; i<10*m; i++){
+  for(int i =0; i<60*m; i++){
     delay(1000);
   }
 } //delaying by the minute
 
 void delaySec(int s){
-  for(int i=0; i<10*s; i++){
+  for(int i=0; i<s; i++){
     delay(1000);
   }
 } //delaying by the second
@@ -18,15 +18,19 @@ void delaySec(int s){
 void sinkFloat(){
   digitalWrite(IN3, HIGH); //5V
   digitalWrite(IN4, LOW); //Ground
-  delaySec(20); //delay 20 sec
+  delaySec(5); //delay 20 sec
     //water uploaded; float will now sink
+   digitalWrite(IN3, LOW); //5V
+  digitalWrite(IN4, LOW);
   
 }
 
 void floatFloat(){
   digitalWrite(IN3, LOW); //5V
   digitalWrite(IN4, HIGH);
-  delaySec(20);
+  delaySec(5);
+  digitalWrite(IN3, LOW); //5V
+  digitalWrite(IN4, LOW);
 }
 
 //NTS: Calculate amount of time necessary for syringes to empty/fill up
@@ -56,12 +60,12 @@ void loop() {
 
 //At testing check: If buoyancy time is enough(for it to sink and then float back up)
 
-//At testing check: If buoyancy time is enough(for it to sink and then float back up)
 
-
-//Testing Code: 
+//Test Code:
 
 /* 
+const int IN1 = 7;
+const int IN2 = 6;
 
 
 //NTS: Make sure code reflects which pins on the arduino use the pins
@@ -96,3 +100,4 @@ void loop() {
   delay(5*1000);
 }
 */
+ 
