@@ -145,9 +145,7 @@ class Config:
             updown = self.JS_Y_UD * self.mapK
 
             # calculating thruster speeds
-            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle,
-                                  self.buttonopen,
-                                  self.buttonclose]
+            self.arduinoParams = self.arduinoParamsConst
             end("first-half")
             start("second-half")
             start("calcs")
@@ -207,9 +205,7 @@ class Config:
             NL_Y = self.mapK * ((-self.JS_Y) ** 3)
             NL_Y_UD = self.mapK * ((-self.JS_Y_UD) ** 3)
 
-            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle,
-                                  self.buttonopen,
-                                  self.buttonclose]
+            self.arduinoParams = self.arduinoParamsConst
 
             # button z thrusters
             if abs(self.upconst) == 1:

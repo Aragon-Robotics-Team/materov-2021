@@ -269,7 +269,8 @@ def buttonstatus():
     global buttonBstatus
     global teleopStatus
     global nonlinStatus
-    buttonAstatus = statuses[4]
+    # buttonAstatus = statuses[4]
+    buttonAstatus = 1
     buttonBstatus = statuses[5]
     buttonXstatus = statuses[6]
     buttonYstatus = statuses[7]
@@ -526,7 +527,7 @@ from PIL import Image, ImageTk
 
 # Create a Label to capture the Video frames
 label = Label(root, height = 800, width = 800)
-label.grid(row = 1, column = 0, rowspan = 20, columnspan = vcol, sticky = 'n')
+# label.grid(row = 1, column = 0, rowspan = 20, columnspan = vcol, sticky = 'n')
 
 camera = 0 #specifies the camera object to use
 

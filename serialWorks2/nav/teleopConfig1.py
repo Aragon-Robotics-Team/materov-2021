@@ -20,6 +20,15 @@ from serialWorks2.nav.tracer import start, end, agg
 # 5: thruster4 value
 # 6: lasers on/off (1/0)
 
+# teleop gui array:
+# buttonAstatus = statuses[4]
+# buttonBstatus = statuses[5]
+# buttonXstatus = statuses[6]
+# buttonYstatus = statuses[7]
+# teleopStatus = statuses[8]
+# nonlinStatus = statuses[9]
+
+
 class Config:
     def __init__(self, computerType, serialOn, serialRecieveOn, input_queue, output_queue):
         if computerType == "RPI":
@@ -90,7 +99,7 @@ class Config:
         self.j = None
 
         # hella updating one
-        self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0, 0]
+        self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]
         # constant one
         self.arduinoParamsConst = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]
 
@@ -204,9 +213,7 @@ class Config:
             NL_Y = self.mapK * ((-self.JS_Y) ** 3)
             NL_Y_UD = self.mapK * ((-self.JS_Y_UD) ** 3)
 
-            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle,
-                                  self.buttonopen,
-                                  self.buttonclose]
+            self.arduinoParams = self.arduinoParamsConst
 
             # button z thrusters
             if abs(self.upconst) == 1:
@@ -339,9 +346,9 @@ class Config:
         self.queue_data_out[1] = self.arduinoParams[1]
         self.queue_data_out[2] = self.arduinoParams[2]
         self.queue_data_out[3] = self.arduinoParams[3]
-        self.queue_data_out[4] = self.buttonopen
-        self.queue_data_out[5] = self.buttonclose
-        self.queue_data_out[6] = self.upconst
+        self.queue_data_out[4] = self.buttonclose
+        self.queue_data_out[5] = self.upconst
+        self.queue_data_out[6] = self.buttonopen
         self.queue_data_out[7] = self.downconst
 
         self.output_queue.put(self.queue_data_out)
