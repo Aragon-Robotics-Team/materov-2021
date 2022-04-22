@@ -1,6 +1,6 @@
 import multiprocessing
 import gui
-from serialWorks.nav.teleop import teleopMain
+from serialWorks2.nav.teleop import teleopMain
 # from nav.teleop import teleopMain  # rpi might not be right
 
 class ThrusterProcess(multiprocessing.Process):
@@ -9,7 +9,8 @@ class ThrusterProcess(multiprocessing.Process):
         self.input_queue = input_queue
         self.output_queue = output_queue
     def run(self):
-        teleopMain()
+        #nav.teleop.teleopMain()
+        teleopMain(self.input_queue, self.output_queue)
         # print("h")
         # pygame.init()
         # print("h")

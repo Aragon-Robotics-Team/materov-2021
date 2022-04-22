@@ -1,12 +1,11 @@
-# """
-# Configuration for everything
-# """
+"""
+Configuration for everything
+"""
 from time import sleep, time
 import pygame
-import serial
-# from serial import Serial
-# from scriptv10.nav.tracer import start, end, agg # mac imports
-from nav.tracer import start, end, agg  # RPI IMPORTS
+from serial import Serial
+from serialWorks2.nav.tracer import start, end, agg
+# from nav.tracer import start, end, agg  # rpi
 
 
 # gui, killswitch
@@ -76,7 +75,7 @@ class Config:
         self.tspeedUp = 1700
         self.tspeedDown = 1300
 
-        self.initSleep = 5
+        self.initSleep = 2
         self.loopSleep = 0.2
 
         self.buttonopen = 0  # used to be None
@@ -91,7 +90,7 @@ class Config:
         self.j = None
 
         # hella updating one
-        self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]
+        self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0, 0]
         # constant one
         self.arduinoParamsConst = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]
 
@@ -102,7 +101,7 @@ class Config:
     def joy_init(self):
         ######################## 1. Initializing Serial
         if self.serialOn:
-            self.arduino = serial.Serial(port=self.serialPort, baudrate=115200, timeout=1)
+            self.arduino = Serial(port=self.serialPort, baudrate=115200, timeout=1)
         ######################## 2. Initializing PyGame
         pygame.init()  # Initiate the pygame functions
         pygame.joystick.init()
@@ -145,9 +144,7 @@ class Config:
             updown = self.JS_Y_UD * self.mapK
 
             # calculating thruster speeds
-            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle,
-                                  self.buttonopen,
-                                  self.buttonclose]
+            self.arduinoParams = self.arduinoParamsConst
             end("first-half")
             start("second-half")
             start("calcs")
@@ -265,7 +262,7 @@ class Config:
     def check_auto_stop(self):  # return bool
         self.get_queue_data_in()
         if self.queue_data_in[0] == 0:
-                return True
+            return True
 
     def check_killswitch(self):  # return bool
         self.get_queue_data_in()
@@ -505,14 +502,18 @@ class Config:
 
         stringToSend = ','.join(str(x) for x in arr) + '.'
         print('py: ' + stringToSend)  # print python
-        stringFromArd = ''
         if self.serialOn:
             self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
             start('arduino-wait')
-            while self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes):  # wait for data
-                stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
-                print('ard: ' + stringFromArd)  # print arduino data
+            # while self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes):  # wait for data
+            #     pass
+            sleep(self.loopSleep)
+            bytes = self.arduino.in_waiting
+            stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data with timeout = 1
+
             end('arduino-wait')
+
+            print('ard: ' + stringFromArd + ', ' + str(bytes))  # print arduino data
 
 
 if __name__ == '__main__':

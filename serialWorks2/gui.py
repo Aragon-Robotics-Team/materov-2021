@@ -1,5 +1,4 @@
 from tkinter import *
-import tkinter as tk
 from tkinter import ttk
 # from tkinter.tkk import Style
 import glob
@@ -14,13 +13,20 @@ import multiprocessing
 from img_proc.docking import dockpic
 from img_proc.docking import dockCalculate
 
-#cap = cv2.VideoCapture(0)
-#cap1 = cv2.VideoCapture(1) <-- Second Camera
+from time import sleep
+
+cap = cv2.VideoCapture(0)
+sleep(2)
+# print("showing image")
+# ret, frame = cap.read()
+# cv2.imshow("hello", frame)
+# cv2.waitKey()
+# cap1 = cv2.VideoCapture(1) #<-- Second Camera
 #cap2 = cv2.VideoCapture(2)
 
 #SETUP ------------------------------------------------------------------------------------------------------
 root = Tk()
-root.geometry("1300x1000")
+root.geometry("1800x1000")
 
 style =  ttk.Style()
 
@@ -117,7 +123,7 @@ def start_measure_fish():
         ValuesAndCalc(averageFishLength)
 
 label = Label(root, text = "(Click to 3 times to take photos and calculate)", font = ('Helvetica', 10))
-label.grid(row = 4, column = vcol + 1, sticky = 'e', pady = (25, 0))
+# label.grid(row = 4, column = vcol + 1, sticky = 'e', pady = (25, 0))
 
 btn = ttk.Button(root, text="Measure Fish", command = start_measure_fish)
 btn.grid(row = 5 ,column = vcol + 1, sticky = 'e')
@@ -170,8 +176,8 @@ def autoDock():
     if autoTimer < 60: #if autonomous has been running for less than 60 seconds
         autoArray = [1, 0, 1600, 1600, 1500, 1500]
         output_queue.put(autoArray)
-        autoTimer = 0.05 + autoTimer
-        root.after(100, autoDock) #repeat every 500 milliseconds
+        autoTimer = 0.005 + autoTimer
+        root.after(10, autoDock) #repeat every 500 milliseconds
     elif autoTimer == 60: #if 60 seconds has been reached
         autoArray = [0, 0, 1500, 1500, 1500, 1500]
         output_queue.put(autoArray)
@@ -179,21 +185,35 @@ def autoDock():
 btn = ttk.Button(root, text = "Start Autonomous Docking", command = autoDock)
 btn.grid(row = 9, column = vcol + 1, sticky = 'e')
 
+#AUTONOMOUS TRANSECT LINE ---------------------------------------------------------------------------------------------------------
+#
+# from img_proc import transect_line
+#
+# def transectLine():
+#     global camera
+#     camera = 0 #CHANGE TO THE SIDE CAMERA
+#     ret, cv2image = cap.read()
+#     cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGB)
+#     # while
+#
+# btn = ttk.Button(root, text = "Start Autonomous Transect Line", command = transectLine)
+
+
 
 #
 # #LASERS ---------------------------------------------------------------------------------------------------------------
 #
-# def lasersOn():
-#     print("haha this has not been done yet")
-#
-# btn = ttk.Button(root, text = "Turn Lasers On", command = lasersOn)
-# btn.grid(row = 10, column = vcol + 1, sticky = 'e', pady = (25, 0))
-#
-# def lasersOff():
-#     print("haha this has not been done yet")
-#
-# btn = ttk.Button(root, text = "Turn Lasers Off", command = lasersOff)
-# btn.grid(row = 11, column = vcol + 1, sticky = 'e')
+def lasersOn():
+    print("haha this has not been done yet")
+
+btn = ttk.Button(root, text = "Turn Lasers On", command = lasersOn)
+btn.grid(row = 10, column = vcol + 1, sticky = 'e', pady = (25, 0))
+
+def lasersOff():
+    print("haha this has not been done yet")
+
+btn = ttk.Button(root, text = "Turn Lasers Off", command = lasersOff)
+btn.grid(row = 11, column = vcol + 1, sticky = 'e')
 
 #BUTTON GRAPHICS------------------------------------------------------------------------------------------------------
 buttoncanvas = Canvas(root,height=120,width=250,bg="#fff")
@@ -405,37 +425,37 @@ def queuerecieve():
 #
 
 #TIMER ------------------------------------------------------------------------------------------------------
-timercanvas = Canvas(root, height = 140, width = 250, background = "#fff")
-timercanvas.grid(row = 14, column = vcol + 1, sticky = 'e')
-
-minute=StringVar()
-second=StringVar()
-hours=StringVar()
-
-sec = StringVar()
-mins= StringVar()
-hrs= StringVar()
-
-# #  # #
-spacing = 25
-totalEntryLength = spacing * 3
-startingx = (250 - totalEntryLength)/2
-print(startingx)
-
-Entry(timercanvas, textvariable = sec, width = 2, font = 'arial 12').place(x=startingx, y=10) # Seconds
-Entry(timercanvas, textvariable = mins, width = 2, font = 'arial 12').place(x=startingx + spacing, y=10) # Mins
-Entry(timercanvas, textvariable = hrs, width = 2, font = 'arial 12').place(x=startingx + spacing * 2, y=10) # Hours
-
-# #  # #
-
-minute.set('00')
-second.set('00')
-hours.set('00')
-
-sec.set('00')
-mins.set('00')
-hrs.set('00')
-times = 0
+# timercanvas = Canvas(root, height = 140, width = 250, background = "#fff")
+# timercanvas.grid(row = 14, column = vcol + 1, sticky = 'e')
+#
+# minute=StringVar()
+# second=StringVar()
+# hours=StringVar()
+#
+# sec = StringVar()
+# mins= StringVar()
+# hrs= StringVar()
+#
+# # #  # #
+# spacing = 25
+# totalEntryLength = spacing * 3
+# startingx = (250 - totalEntryLength)/2
+# print(startingx)
+#
+# Entry(timercanvas, textvariable = sec, width = 2, font = 'arial 12').place(x=startingx, y=10) # Seconds
+# Entry(timercanvas, textvariable = mins, width = 2, font = 'arial 12').place(x=startingx + spacing, y=10) # Mins
+# Entry(timercanvas, textvariable = hrs, width = 2, font = 'arial 12').place(x=startingx + spacing * 2, y=10) # Hours
+# #
+# # # #  # #
+#
+# minute.set('00')
+# second.set('00')
+# hours.set('00')
+#
+# sec.set('00')
+# mins.set('00')
+# hrs.set('00')
+# times = 0
 
 # #  # #
 
@@ -445,8 +465,9 @@ def countdown():
     times = int(hrs.get())*3600+ int(mins.get())*60 + int(sec.get())
 
     if times > 0:
+        print("timer")
         minute,second = (times // 60 , times % 60)
-        timercanvas.after(1000, countdown)
+        # timercanvas.after(1000, countdown)
 
         hour = 0
         if minute > 60:
@@ -463,7 +484,9 @@ def countdown():
             sec.set('00')
             mins.set('00')
             hrs.set('00')
-            return
+        else:
+            timercanvas.after(1000, countdown)
+
 
 #set the time
 #instead of times > 0, do if time > 0, and have an after function at the end of the if statement
@@ -476,8 +499,8 @@ def countdown():
     #timercanvas.after(1000, countdown)
 #is time == 0?
     #reset everything
-
-Button(timercanvas, text='START', bd ='5', command = countdown, bg = 'white', font = 'arial 10 bold', width = 15).place(x=80, y=50)
+#
+# Button(timercanvas, text='START', bd ='5', command = countdown, bg = 'white', font = 'arial 10 bold', width = 15).place(x=80, y=50)
 
 
 def stop():
@@ -492,39 +515,48 @@ def stop():
     #root.destroy()
     #python = sys.executable
     #os.execl(python, python, * sys.argv)
-
-Button(timercanvas, text='STOP', bd ='5', command = stop, bg = 'white', font = 'arial 10 bold', width = 15).place(x=80.5, y=75)
-
-timercanvas.create_line(10, 130, 240, 130, fill = "black", width = 5)
+#
+# Button(timercanvas, text='STOP', bd ='5', command = stop, bg = 'white', font = 'arial 10 bold', width = 15).place(x=80.5, y=75)
+#
+# timercanvas.create_line(10, 130, 240, 130, fill = "black", width = 5)
 
 #VIDEO FEED ------------------------------------------------------------------------------------------------------
 #pretty much the same lag as when the video feed is in the loop
 from PIL import Image, ImageTk
 
 # Create a Label to capture the Video frames
-label = Label(root, height = 800, width = 1000)
+label = Label(root, height = 800, width = 800)
 label.grid(row = 1, column = 0, rowspan = 20, columnspan = vcol, sticky = 'n')
 
 camera = 0 #specifies the camera object to use
 
 # Define function to show frame
-
-cap = cv2.VideoCapture(0)
-ret, frame = cap.read()
-cv2.imshow("hello", frame)
-# Define function to show frame
 def show_frames():
-   # Get the latest frame and convert into Image
-   cv2image= cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
-   img = Image.fromarray(cv2image)
-   # Convert image to PhotoImage
-   imgtk = ImageTk.PhotoImage(image = img)
-   label.imgtk = imgtk
-   label.configure(image=imgtk)
-   # Repeat after an interval to capture continiously
-   label.after(20, show_frames)
+    #To Change the cameras
+    if camera == 0:
+        # cv2image = cv2.cvtColor(cap.read()[0],cv2.COLOR_BGR2RGB)
+        ret, cv2image = cap.read()
+        cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGB)
+    #
+    # elif camera == 1:
+    #     ret, cv2image = cap1.read()
+    #     cv2image = cv2.cvtColor(cv2image, cv2.COLOR_BGR2RGB)
 
-show_frames()
+        # cv2image = cv2.cvtColor(cap1.read()[1],cv2.COLOR_BGR2RGB)
+    # elif camera = 2:
+    #     cv2image = cv2.cvtColor(cap2.read()[1],cv2.COLOR_BGR2RGB)
+
+    # Get the latest frame and convert into Image
+    # cv2image= cv2.cvtColor(cap.read()[1],cv2.COLOR_BGR2RGB)
+    img = Image.fromarray(cv2image)
+    # Convert image to PhotoImage
+    imgtk = ImageTk.PhotoImage(image = img)
+    label.imgtk = imgtk
+    label.configure(image=imgtk)
+    # Repeat after an interval to capture continiously
+    label.after(20, show_frames)
+
+# show_frames()
 
 def cam0():
     global camera
@@ -566,8 +598,8 @@ btn.grid(row = 14, column = 1, sticky = 'w', pady = (75, 0), padx = (50, 0))
 
 #TASK WINDOW ------------------------------------------------------------------------------------------------------------
 
-taskcanvas = Canvas(root, height = 600, width = 300, bg="#fff")
-taskcanvas.grid(row = 0, column = vcol + 2, sticky = 'e')
+taskcanvas = Canvas(root, height = 800, width = 300, bg="#fff")
+taskcanvas.grid(row = 3, column = vcol + 2, sticky = 'e', rowspan = 30, padx = 50)
 
 task1text = "TASK 1 - 100 points \n \nReplace a damaged section of an inter-array cable: \n \nVisual inspection - 5 points \n \nCut cable on both sides of damaged section - 10 points \n \nRemove damaged section by pulling the metal connectors off - 5 points \n \nInstall new cable section - 10 points \n \nSecure the new section with 2 (each) connectors by pushing it sideways - 10 points \n \nReplacing a damaged buoyancy module on an inter-array cable of a floating offshore wind turbine: \n \n Turn the clamp upright and remove from water - 10 points \n \nPut on new clamp facing down - 10 points \n \nMonitor the environment: \n \nDeploy the hydrophone in the box and wait 5 mins till recovery - 10 points \n \nPull pin and remove net from water - 15 points \n \nDrive the bot into the box - 5 or 15 points"
 
@@ -579,28 +611,28 @@ task4text = "snacks - 1000000 points"
 
 task5text = "martin - 10000000000000000000000 points"
 
-text=tk.Text(taskcanvas, width = 35, height = 500, wrap = WORD, padx = 5, pady = 5)
+text=Text(taskcanvas, width = 35, height = 500, wrap = WORD, padx = 5, pady = 5)
 text.place(x= 5, y= 50)
 
 def task1():
     text.delete("1.0","end")
-    text.insert(tk.END, task1text)
+    text.insert(END, task1text)
 
 def task2():
     text.delete("1.0","end")
-    text.insert(tk.END, task2text)
+    text.insert(END, task2text)
 
 def task3():
     text.delete("1.0","end")
-    text.insert(tk.END, task3text)
+    text.insert(END, task3text)
 
 def task4():
     text.delete("1.0","end")
-    text.insert(tk.END, task4text)
+    text.insert(END, task4text)
 
 def task5():
     text.delete("1.0","end")
-    text.insert(tk.END, task5text)
+    text.insert(END, task5text)
 
 ######################################################
 
@@ -613,7 +645,7 @@ Bu = Button(taskcanvas, text = "Task 3", command = task3).place(x= 165,y= 10)
 Bu = Button(taskcanvas, text = "Task 4", command = task4).place(x= 230,y= 10)
 
 # pack the text-Aera in the window
-#root.mainloop()
+# root.mainloop()
 
 
 
@@ -621,4 +653,7 @@ def updateGUI():
     root.update()
 
 if __name__ == "__main__":
-    root.mainloop()
+#     root.mainloop()
+    while True:
+        root.update()
+        print("running")
