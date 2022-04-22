@@ -7,6 +7,7 @@ Servo thruster3;
 Servo thruster4;
 
 int laserPin = 8;
+int laserStatus = 0;
 
 int thruster1signal;
 int thruster2signal;
@@ -24,6 +25,7 @@ void setup() {
   Serial.begin(115200);
   servo.attach(9); //servo pin
   pinMode(laserPin, OUTPUT);
+  digitalWrite(laserPin, LOW);
   thruster1.attach(10); //thruster pins
   thruster2.attach(11);
   thruster3.attach(12);
@@ -45,7 +47,8 @@ void loop(){
   thruster3signal = Serial.readStringUntil(',').toInt();
   thruster4signal = Serial.readStringUntil(',').toInt();
   servoClose = Serial.readStringUntil(',').toInt();
-  servoOpen = Serial.readStringUntil('.').toInt();
+  servoOpen = Serial.readStringUntil(',').toInt();
+  laserStatus = Serial.readStringUntil('.').toInt();
   
 
 //thruster output
@@ -88,7 +91,7 @@ thruster2.writeMicroseconds(thruster2signal);
 thruster3.writeMicroseconds(thruster3signal);
 thruster4.writeMicroseconds(thruster4signal);
 
-digitalWrite(laserPin, HIGH);
+digitalWrite(laserPin, laserStatus);
 
 //Serial.println("recieved");
 
@@ -98,7 +101,8 @@ digitalWrite(laserPin, HIGH);
   + String(thruster3signal) + ","
   + String(thruster4signal) + ","
   + String(servoClose) + ","
-  + String(servoOpen));
+  + String(servoOpen) + ","
+  + String(servoClose) + ",");
 
 
 

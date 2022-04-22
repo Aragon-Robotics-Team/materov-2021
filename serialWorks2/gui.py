@@ -274,7 +274,7 @@ def buttonstatus():
     buttonXstatus = statuses[6]
     buttonYstatus = statuses[7]
     teleopStatus = statuses[8]
-    nonlineStatus = statuses[9]
+    nonlinStatus = statuses[9]
 
     # print(statuses)
 
