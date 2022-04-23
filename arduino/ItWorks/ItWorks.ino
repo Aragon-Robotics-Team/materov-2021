@@ -18,9 +18,9 @@ void delaySec(int s){
 void sinkFloat(){
   digitalWrite(IN3, HIGH); //5V
   digitalWrite(IN4, LOW); //Ground
-  delaySec(5); //delay 20 sec
+  delaySec(10); //delay 20 sec
     //water uploaded; float will now sink
-   digitalWrite(IN3, LOW); //5V
+  digitalWrite(IN3, LOW); //5V
   digitalWrite(IN4, LOW);
   
 }
@@ -28,7 +28,7 @@ void sinkFloat(){
 void floatFloat(){
   digitalWrite(IN3, LOW); //5V
   digitalWrite(IN4, HIGH);
-  delaySec(5);
+  delaySec(10);
   digitalWrite(IN3, LOW); //5V
   digitalWrite(IN4, LOW);
 }
@@ -45,7 +45,7 @@ void setup() {
 void loop() {
   // MOTOR GOES LEFT FIRST AND THEN RIGHT. Change as needed.
   
-  //delayMin(5);  <-- So float can be deployed before starting buoyancy gimmicks
+  delayMin(3);  //<-- So float can be deployed before starting buoyancy gimmicks
   sinkFloat();
   delayMin(1);
   floatFloat();
@@ -54,8 +54,7 @@ void loop() {
   delayMin(1);
   floatFloat();
   delayMin(1);
-  
-  //delayMin(10);  <-- So float can be retrieved with no buoyancy gimmicks
+  delayMin(2);  //<-- So float can be retrieved with no buoyancy gimmicks
 }
 
 //At testing check: If buoyancy time is enough(for it to sink and then float back up)
