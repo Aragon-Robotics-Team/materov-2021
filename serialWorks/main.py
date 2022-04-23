@@ -1,7 +1,7 @@
 import multiprocessing
 import gui
-from serialWorks.nav.teleop import teleopMain
-# from nav.teleop import teleopMain  # rpi might not be right
+# from serialWorks.nav.teleop import teleopMain
+from nav.teleop import teleopMain  # rpi might not be right
 
 class ThrusterProcess(multiprocessing.Process):
     def __init__(self, input_queue, output_queue):
@@ -18,13 +18,13 @@ class ThrusterProcess(multiprocessing.Process):
         # p.start()
 
 if __name__ == "__main__":
-    multiprocessing.set_start_method('spawn')
+    # multiprocessing.set_start_method('spawn')
 
     thruster_in_queue = multiprocessing.Queue()
     thruster_out_queue = multiprocessing.Queue()
 
     thruster_proc = ThrusterProcess(thruster_in_queue, thruster_out_queue)
     thruster_proc.start()
-    # thruster_proc.join()
-    while True:
-        gui.updateGUI()
+    thruster_proc.join()
+    # while True:
+    #     gui.updateGUI()
