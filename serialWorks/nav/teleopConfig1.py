@@ -274,7 +274,8 @@ class Config:
             end("end behavior")
 
             pygame.event.clear()
-            # sleep(self.loopSleep)
+
+            sleep(self.loopSleep)
 
     def NonLinearLoop(self):
         while True:
@@ -354,7 +355,7 @@ class Config:
             start('arduino-wait')
             # while self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes):  # wait for data
             #     pass
-            sleep(self.loopSleep)
+            # sleep(self.loopSleep)
             bytes = self.arduino.in_waiting
             stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data with timeout = 1
 

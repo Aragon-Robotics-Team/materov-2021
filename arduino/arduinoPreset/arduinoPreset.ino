@@ -40,5 +40,5 @@ void loop(){
   thruster2.writeMicroseconds(1500);
   thruster3.writeMicroseconds(1500);
   thruster4.writeMicroseconds(1500);
-  delay(200)
+  delay(200);
 }
