@@ -28,7 +28,7 @@ class Config:
 
         elif computerType == "Mac":
             self.computerType = computerType
-            self.serialPort = '/dev/cu.usbmodem142101'
+            self.serialPort = '/dev/cu.usbmodem14201'
             self.LH = 0  # Left horizontal axis
             self.LV = 1  # Left vertical axis6
             self.RH = 2  # Right horizontal axis
@@ -240,7 +240,7 @@ class Config:
 
             # calculating thruster speeds
             tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.buttonopen,
-                       self.buttonclose]
+                       self.buttonclose, 0]
             end("first-half")
             start("second-half")
             start("calcs")
@@ -277,7 +277,7 @@ class Config:
 
             pygame.event.clear()
 
-            sleep(self.loopSleep)
+            # sleep(self.loopSleep)
 
     def NonLinearLoop(self):
         while True:
@@ -320,7 +320,7 @@ class Config:
             self.serial_send_print()
 
             pygame.event.clear()
-            sleep(self.loopSleep)
+            # sleep(self.loopSleep)
 
     def speed_limit(self, tspeeds):
         # assign statuses
@@ -357,7 +357,7 @@ class Config:
             start('arduino-wait')
             # while self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes):  # wait for data
             #     pass
-            # sleep(self.loopSleep)
+            sleep(self.loopSleep)
             bytes = self.arduino.in_waiting
             stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data with timeout = 1
 
