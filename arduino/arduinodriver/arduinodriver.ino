@@ -6,7 +6,7 @@ Servo thruster2;
 Servo thruster3;
 Servo thruster4;
 
-int laserPin = 7;
+int laserPin = 8;
 int laserStatus = 0;
 
 int thruster1signal;
@@ -102,7 +102,7 @@ digitalWrite(laserPin, laserStatus);
   + String(thruster4signal) + ","
   + String(servoClose) + ","
   + String(servoOpen) + ","
-  + String(servoClose) + ",");
+  + String(laserPin) + ",");
 
 
 
