@@ -6,7 +6,7 @@ Servo thruster2;
 Servo thruster3;
 Servo thruster4;
 
-int laserPin = 8;
+int laserPin = 7;
 int laserStatus = 0;
 
 int thruster1signal;
