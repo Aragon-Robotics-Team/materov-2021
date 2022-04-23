@@ -23,7 +23,7 @@ int var;
 
 void setup() {
   Serial.begin(115200);
-  servo.attach(9); //servo pin
+  servo.attach(6); //servo pin
   pinMode(laserPin, OUTPUT);
   digitalWrite(laserPin, LOW);
   thruster1.attach(10); //thruster pins

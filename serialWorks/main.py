@@ -18,7 +18,7 @@ class ThrusterProcess(multiprocessing.Process):
         # p.start()
 
 if __name__ == "__main__":
-    # multiprocessing.set_start_method('spawn')
+    multiprocessing.set_start_method('spawn')
 
     thruster_in_queue = multiprocessing.Queue()
     thruster_out_queue = multiprocessing.Queue()

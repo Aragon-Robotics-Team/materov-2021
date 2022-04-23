@@ -1,7 +1,7 @@
 from nav.teleopConfig1 import Config  # rpi imports
 # from serialWorks.nav.teleopConfig1 import Config
 def teleopMain():
-    robot = Config('RPI', True, True) # comp type, serial on, serial recieve on
+    robot = Config('Mac', True, True) # comp type, serial on, serial recieve on
     robot.joy_init()
     
 if __name__ == '__main__':
