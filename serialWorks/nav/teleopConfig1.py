@@ -62,7 +62,7 @@ class Config:
         self.initSleep = 2
         self.loopSleep = 0.2
 
-        self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
+        self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]
         # this array keeps updating thruster values
         self.buttonopen = None
         self.buttonclose = None
@@ -230,6 +230,8 @@ class Config:
             repeatedly check if teleop is being ended
             """
             self.get_buttons()
+            self.check_lasers()
+
 
             # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
             turn1, turn2, = self.JS_X * self.mapK, self.JS_X * self.mapK
@@ -339,7 +341,7 @@ class Config:
 
     def check_button(self):
         if self.j.get_button(self.shareButton) == 1:
-            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0]
+            self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]
             self.serial_send_print()
             print("Stopping teleop, either linear or nonlinear")
             print(agg)
@@ -363,6 +365,12 @@ class Config:
 
             print('ard: ' + stringFromArd + ', ' + str(bytes))  # print arduino data
 
+    def check_lasers(self):
+        # self.get_queue_data_in()
+        # if self.queue_data_in[6] == 1:
+        #     self.arduinoParams[6] = 1
+        # else:
+        self.arduinoParams[6] = 0
 
 if __name__ == '__main__':
     pass
