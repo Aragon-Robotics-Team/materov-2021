@@ -148,8 +148,8 @@ class Config:
             self.check_lasers()
 
             # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
-            turn1, turn2, = self.JS_X * self.mapK, self.JS_X * self.mapK
-            forward1, forward2 = self.JS_Y * self.mapK, self.JS_Y * self.mapK
+            turn = self.JS_X * self.mapK
+            forward = self.JS_Y * self.mapK
             updown = self.JS_Y_UD * self.mapK
 
             # calculating thruster speeds
@@ -168,14 +168,14 @@ class Config:
                 self.arduinoParams[3] = int(self.tspeedMiddle + updown)
 
             if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:
-                self.arduinoParams[0] = int(self.tspeedMiddle - forward1 + turn1)  # left thruster
-                self.arduinoParams[1] = int(self.tspeedMiddle - forward2 - turn2)  # right thruster
+                self.arduinoParams[0] = int(self.tspeedMiddle - forward + turn)  # left thruster
+                self.arduinoParams[1] = int(self.tspeedMiddle - forward - turn)  # right thruster
             elif abs(self.JS_X) > self.deadBand >= abs(self.JS_Y):  # only turn
-                self.arduinoParams[0] = int(self.tspeedMiddle + turn1)  # cast to integer
-                self.arduinoParams[1] = int(self.tspeedMiddle - turn2)
+                self.arduinoParams[0] = int(self.tspeedMiddle + turn)  # cast to integer
+                self.arduinoParams[1] = int(self.tspeedMiddle - turn)
             elif abs(self.JS_X) <= self.deadBand < abs(self.JS_Y):
-                self.arduinoParams[0] = int(self.tspeedMiddle - forward1)  # cast to integer
-                self.arduinoParams[1] = int(self.tspeedMiddle - forward2)
+                self.arduinoParams[0] = int(self.tspeedMiddle - forward)  # cast to integer
+                self.arduinoParams[1] = int(self.tspeedMiddle - forward)
             end("calcs")
 
             print("tspeeds" + str(self.arduinoParams))
