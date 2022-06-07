@@ -11,7 +11,6 @@ It pulls a few methods from originalNav and simplifies them.
 
 Go to originalNav to find code that contains everything
 
-SEE withDeadband FOR MORE DETAILED COMMENTS!
 """
 
 #### VARIABLES
@@ -43,10 +42,11 @@ JS_Y_UD = 0
 arduino = None
 j = None
 
+# constantly updating array
 arduinoParams = [tspeedMiddle, tspeedMiddle, tspeedMiddle, tspeedMiddle, 0, 0, 0]
 
 
-#### INITIALIZATION
+#### INITIALIZATION - of arduino and joystick
 def init():
     ######################## 1. Initializing Serial
     global arduino  # we have to do "global" because we want to alter the value of the outer scope variables
@@ -92,16 +92,30 @@ def loop():
         sleep(loopSleep)
 
 
+#### COMMUNICATION PIPELINE W/ THE ARDUINO
 def serial_send_print(arr):  # print to terminal / send regularly updated array to arduino
 
+    # separates the arr elements with a comma and adds a period at the end
     stringToSend = ','.join(str(x) for x in arr) + '.'
-    print('py: ' + stringToSend)  # print python
-    arduino.write(stringToSend.encode("ascii"))  # send to arduino
-    while (arduino.in_waiting <= minBytes):  # wait for data
+
+    # print python
+    print('py: ' + stringToSend)
+
+    # send to arduino with ascii encoding (encoding is basically making it complicated for machine to read it)
+    arduino.write(stringToSend.encode("ascii"))
+
+    # this while loop waits for data to appear before moving on to reading it
+    while (arduino.in_waiting <= minBytes):
         pass
-    bytes = arduino.in_waiting
-    stringFromArd = arduino.readline().decode("ascii")  # read arduino data with timeout = 1
-    print('ard: ' + stringFromArd + ', ' + str(bytes))  # print arduino data
+
+    # number of bytes in buffer
+    intbytes = arduino.in_waiting
+
+    # read complicated arduino data and decode it into readable string format
+    stringFromArd = arduino.readline().decode("ascii")
+
+    # print decoded arduino data + number of bytes in buffer
+    print('ard: ' + stringFromArd + ', ' + str(intbytes))
 
 
 #### GETS THE CURRENT POSITIONS OF JOYSTICKS FOR CALCULATIONS
