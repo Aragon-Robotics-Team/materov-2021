@@ -5,29 +5,6 @@ from time import sleep, time
 import pygame
 from serial import Serial
 from serialWorks2.nav.tracer import start, end, agg
-# from nav.tracer import start, end, agg  # rpi
-
-
-# gui, killswitch
-# from input_queue
-
-# auto gui array:
-# 0: auto on/off 0 or 1 - Keep sending 1's when auto is on
-# 1: kill switch 0 or 1 - keep sending 1's when kill switch is on
-# 2: thruster1 value
-# 3: thruster2 value
-# 4: thruster3 value
-# 5: thruster4 value
-# 6: lasers on/off (1/0)
-
-# teleop gui array:
-# buttonAstatus = statuses[4]
-# buttonBstatus = statuses[5]
-# buttonXstatus = statuses[6]
-# buttonYstatus = statuses[7]
-# teleopStatus = statuses[8]
-# nonlinStatus = statuses[9]
-
 
 class Config:
     def __init__(self, computerType, serialOn, serialRecieveOn, input_queue, output_queue):
@@ -50,7 +27,7 @@ class Config:
 
         elif computerType == "Mac":
             self.computerType = computerType
-            self.serialPort = '/dev/cu.usbmodem14401'
+            self.serialPort = '/dev/cu.usbmodem143101'
             self.LH = 0  # Left horizontal axis
             self.LV = 1  # Left vertical axis6
             self.RH = 2  # Right horizontal axis
@@ -98,7 +75,7 @@ class Config:
         self.arduino = None
         self.j = None
 
-        # constantly updating one
+        # hella updating one
         self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]
         # constant one
         self.arduinoParamsConst = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]
@@ -144,7 +121,7 @@ class Config:
             set incoming arduino data array to tspeeds
             repeatedly check if teleop is being ended
             """
-            self.get_buttons_and_axises_and_axises()
+            self.get_buttons()
             self.check_lasers()
 
             # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
@@ -206,7 +183,7 @@ class Config:
 
             pygame.event.pump()
 
-            self.get_buttons_and_axises_and_axises()
+            self.get_buttons()
             self.check_lasers()
 
             NL_X = self.mapK * (self.JS_X ** 3)
@@ -311,7 +288,7 @@ class Config:
             self.arduinoParams[i] = min(self.MaxSpeed, self.arduinoParams[i])
             self.arduinoParams[i] = max(self.MinSpeed, self.arduinoParams[i])
 
-    def get_buttons_and_axises(self):
+    def get_buttons(self):
         self.buttonopen = self.j.get_button(self.squareButton)
         self.buttonclose = self.j.get_button(self.triangleButton)
         self.upconst = self.j.get_button(self.circleButton)

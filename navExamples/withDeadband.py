@@ -12,73 +12,122 @@ It pulls a few methods from originalNav and simplifies them.
 Go to originalNav to find code that contains everything
 """
 
+#### VARIABLES
 
-def Loop(self):
+serialPort = '/dev/cu.usbmodem14401'
+LH = 0  # Left horizontal axis
+LV = 1  # Left vertical axis
+RH = 2  # Right horizontal axis
+RV = 3  # Right vertical axis
+
+
+deadBand = 0.1  # axis value must be greater than this number to have effect
+
+minBytes = 10  # python waits until there are minBytes amount of bytes in serial buffer, then reads. 
+# honestly prob kind of useless since there's either like 26 or 0 bytes in the serial buffer at all times
+
+mapK = 400
+tspeedMiddle = 1500
+tspeedUp = 1700
+tspeedDown = 1300
+
+initSleep = 2
+loopSleep = 0.2
+
+JS_X = 0
+JS_Y = 0
+JS_Y_UD = 0
+
+arduino = None
+j = None
+
+arduinoParamsConst = [tspeedMiddle, tspeedMiddle, tspeedMiddle, tspeedMiddle, 0, 0, 0]
+
+
+#### INITIALIZATION
+def init():
+    ######################## 1. Initializing Serial
+    global arduino  # we have to do "global" because we want to alter the value of the outer scope variables
+    arduino = Serial(port=serialPort, baudrate=115200, timeout=1)
+
+    ######################## 2. Initializing PyGame
+    pygame.init()  # Initiate the pygame functions
+    pygame.joystick.init()
+    pygame.display.init()
+    global j
+    j = pygame.joystick.Joystick(0)  # Define a joystick object to read from
+    j.init()  # Initiate the joystick or controller
+
+    sleep(initSleep)
+
+
+#### CONTINUOUS LOOP
+def loop():
 
     while True:
         pygame.event.pump()
 
-        self.get_buttons()
+        get_axises()  # gets the current statuses of the axises, see method below
 
-        # print('x-axis: ' + str(HAxis)) print('y-axis: ' + str(VAxis))
-        turn = self.JS_X * self.mapK  # mapK = 400
-        forward = self.JS_Y * self.mapK
-        updown = self.JS_Y_UD * self.mapK
+        turn = JS_X * mapK  # mapK = 400
+        forward = JS_Y * mapK
+        updown = JS_Y_UD * mapK
 
+        arduinoParams = arduinoParamsConst  # resetting arduinoParams, our constantly updating array
 
         ##### UP DOWN THRUSTERS (VERTICAL MOVEMENT)
-        ## control method: designated buttons for constant speed
-        self.arduinoParams = self.arduinoParamsConst
-        if abs(self.upconst) == 1:
-            self.arduinoParams[2] = self.tspeedUp  # 1700
-            self.arduinoParams[3] = self.tspeedUp
-        elif abs(self.downconst) == 1:
-            self.arduinoParams[2] = self.tspeedDown  # 1300
-            self.arduinoParams[3] = self.tspeedDown
-        ## control method: y-axis on left joystick
-        elif abs(self.JS_Y_UD) > self.deadBand:
-            self.arduinoParams[2] = int(self.tspeedMiddle - updown)  # side thrusters
-            self.arduinoParams[3] = int(self.tspeedMiddle + updown)
+        if abs(JS_Y_UD) > deadBand:
+            arduinoParams[2] = int(tspeedMiddle - updown)  # side thrusters
+            arduinoParams[3] = int(tspeedMiddle + updown)
 
         ##### DIRECTIONAL THRUSTERS ("X-Y PLANE" MOVEMENT)
-        if abs(self.JS_X) > self.deadBand and abs(self.JS_Y) > self.deadBand:
-            self.arduinoParams[0] = int(self.tspeedMiddle - forward + turn)  # left thruster
-            self.arduinoParams[1] = int(self.tspeedMiddle - forward - turn)  # right thruster
-        elif abs(self.JS_X) > self.deadBand >= abs(self.JS_Y):  # only turn
-            self.arduinoParams[0] = int(self.tspeedMiddle + turn)  # cast to integer
-            self.arduinoParams[1] = int(self.tspeedMiddle - turn)
-        elif abs(self.JS_X) <= self.deadBand < abs(self.JS_Y):
-            self.arduinoParams[0] = int(self.tspeedMiddle - forward)  # cast to integer
-            self.arduinoParams[1] = int(self.tspeedMiddle - forward)
+        if abs(JS_X) > deadBand and abs(JS_Y) > deadBand:
+            arduinoParams[0] = int(tspeedMiddle - forward + turn)  # left thruster
+            arduinoParams[1] = int(tspeedMiddle - forward - turn)  # right thruster
+        elif abs(JS_X) > deadBand >= abs(JS_Y):  # only turn
+            arduinoParams[0] = int(tspeedMiddle + turn)  # cast to integer
+            arduinoParams[1] = int(tspeedMiddle - turn)
+        elif abs(JS_X) <= deadBand < abs(JS_Y):
+            arduinoParams[0] = int(tspeedMiddle - forward)  # cast to integer
+            arduinoParams[1] = int(tspeedMiddle - forward)
 
-        print("tspeeds" + str(self.arduinoParams))
+        print("tspeeds" + str(arduinoParams))
 
-        self.serial_send_print(self.arduinoParams)
+        serial_send_print(arduinoParams)
 
         pygame.event.clear()
 
-        sleep(self.loopSleep)
+        sleep(loopSleep)
 
 
-def serial_send_print(self, arr):  # print to terminal / send regularly updated array to arduino
+#### COMMUNICATION PIPELINE W/ THE ARDUINO
+def serial_send_print(arr):  # print to terminal / send regularly updated array to arduino
 
-    stringToSend = ','.join(str(x) for x in arr) + '.'
+    stringToSend = ','.join(str(x) for x in arr) + '.'  # separates the arr elements with a comma and adds a period at the end
     print('py: ' + stringToSend)  # print python
-    if self.serialOn:
-        self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
-        while self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes):  # wait for data
-            pass
-        bytes = self.arduino.in_waiting
-        stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data with timeout = 1
+    
+    arduino.write(stringToSend.encode("ascii"))  # send to arduino with ascii encoding (just a type of encoding, you can use any type)
+    while (arduino.in_waiting <= minBytes):  # this while loop waits for data to appear before moving on to reading it
+        pass
+    intbytes = arduino.in_waiting  # number of bytes
+    stringFromArd = arduino.readline().decode("ascii")  # read arduino data
 
-        print('ard: ' + stringFromArd + ', ' + str(bytes))  # print arduino data
+    print('ard: ' + stringFromArd + ', ' + str(intbytes))  # print arduino data
 
 
-def get_buttons(self):
-    self.buttonopen = self.j.get_button(self.squareButton)
-    self.buttonclose = self.j.get_button(self.triangleButton)
-    self.upconst = self.j.get_button(self.circleButton)
-    self.downconst = self.j.get_button(self.xButton)
-    self.JS_X = self.j.get_axis(self.LH)
-    self.JS_Y = self.j.get_axis(self.LV)  # y-direction joystick values are flipped
-    self.JS_Y_UD = self.j.get_axis(self.RV)
+#### GETS THE CURRENT POSITIONS OF JOYSTICKS FOR CALCULATIONS
+def get_axises():
+    global JS_X
+    global JS_Y
+    global JS_Y_UD
+
+    JS_X = j.get_axis(LH)  # x-axis position on the left joystick for left/right
+    JS_Y = j.get_axis(LV)  # y-direction joystick values are flipped
+    # y-axis position on the left joystick for forward/backward
+    
+    JS_Y_UD = j.get_axis(RV)  # y-axis position on the right joystick for depth control (vertical movement)
+
+
+if __name__ == '__main__':
+    init()  # initialization, such as making arduino and serial objects
+    loop()

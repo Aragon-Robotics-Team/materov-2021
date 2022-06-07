@@ -1,7 +1,7 @@
 //https://create.arduino.cc/projecthub/ansh2919/serial-communication-between-python-and-arduino-e7cce0
 #include <Servo.h> 
 Servo servo;
-Servo thruster1;
+Servo thruster1;  //thrusters are initialized with a the servo library
 Servo thruster2;
 Servo thruster3;
 Servo thruster4;
@@ -40,7 +40,7 @@ void setup() {
 }
 
 void loop(){
-  while (!Serial.available());
+  while (!Serial.available());  // if there's nothing in the serial buffer, do nothing (wait for something to appear in the serial buffer)
 
   thruster1signal = Serial.readStringUntil(',').toInt();
   thruster2signal = Serial.readStringUntil(',').toInt();
@@ -48,10 +48,10 @@ void loop(){
   thruster4signal = Serial.readStringUntil(',').toInt();
   servoClose = Serial.readStringUntil(',').toInt();
   servoOpen = Serial.readStringUntil(',').toInt();
-  laserStatus = Serial.readStringUntil('.').toInt();
+  laserStatus = Serial.readStringUntil('.').toInt();  //period (.) is the terminating character
   
 
-//thruster output
+//thruster speed limits
 if(thruster1signal > 1740){
 thruster1signal = 1740;
 }
@@ -95,6 +95,7 @@ digitalWrite(laserPin, laserStatus);
 
 //Serial.println("recieved");
 
+//printing to the serial buffer to python
     Serial.println(
     String(thruster1signal) + ","
   + String(thruster2signal) + ","
@@ -102,7 +103,7 @@ digitalWrite(laserPin, laserStatus);
   + String(thruster4signal) + ","
   + String(servoClose) + ","
   + String(servoOpen) + ","
-  + String(laserStatus) + ",");
+  + String(laserPin) + ",");
 
 
 

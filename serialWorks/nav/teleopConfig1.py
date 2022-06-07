@@ -4,9 +4,10 @@ Configuration for everything
 from time import sleep, time
 import pygame
 from serial import Serial
-# from serialWorks.nav.tracer import start, end, agg
-from nav.tracer import start, end, agg  # rpi
+from serialWorks.nav.tracer import start, end, agg
+# from nav.tracer import start, end, agg  # rpi
 
+#  code uses s3 black sony controller and no mp
 class Config:
     def __init__(self, computerType, serialOn, serialRecieveOn):
         if computerType == "RPI":
@@ -28,7 +29,7 @@ class Config:
 
         elif computerType == "Mac":
             self.computerType = computerType
-            self.serialPort = '/dev/cu.usbmodem143101'
+            self.serialPort = '/dev/cu.usbmodem14401'
             self.LH = 0  # Left horizontal axis
             self.LV = 1  # Left vertical axis6
             self.RH = 2  # Right horizontal axis
@@ -60,7 +61,7 @@ class Config:
         self.tspeedDown = 1300
 
         self.initSleep = 2
-        self.loopSleep = 0.2
+        self.loopSleep = 0.4
 
         self.arduinoParams = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, 0, 0, 0]
         # this array keeps updating thruster values
@@ -291,7 +292,7 @@ class Config:
             NL_Y_UD = self.mapK * ((-self.JS_Y_UD) ** 3)
 
             tspeeds = [self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.tspeedMiddle, self.buttonopen,
-                       self.buttonclose]
+                       self.buttonclose, 0]
 
             # button z thrusters
             if abs(self.upconst) == 1:
@@ -354,16 +355,16 @@ class Config:
         print('py: ' + stringToSend)  # print python
         if self.serialOn:
             self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
-            # start('arduino-wait')
+            start('arduino-wait')
             # while self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes):  # wait for data
             #     pass
-            # sleep(self.loopSleep)
-            # bytes = self.arduino.in_waiting
-            # stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data with timeout = 1
+            sleep(self.loopSleep)
+            bytes = self.arduino.in_waiting
+            stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data with timeout = 1
 
-            # end('arduino-wait')
+            end('arduino-wait')
 
-            # print('ard: ' + stringFromArd + ', ' + str(bytes))  # print arduino data
+            print('ard: ' + stringFromArd + ', ' + str(bytes))  # print arduino data
 
     def check_lasers(self):
         # self.get_queue_data_in()
