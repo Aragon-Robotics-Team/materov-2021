@@ -29,12 +29,11 @@ minBytes = 10  # python waits until there are minBytes amount of bytes in serial
 
 mapK = 400
 tspeedMiddle = 1500
-tspeedUp = 1700
-tspeedDown = 1300
 
 initSleep = 2
 loopSleep = 0.4
 
+# axis values (constantly updating)
 JS_X = 0
 JS_Y = 0
 JS_Y_UD = 0
