@@ -1,5 +1,5 @@
 //https://create.arduino.cc/projecthub/ansh2919/serial-communication-between-python-and-arduino-e7cce0
-#include <Servo.h> 
+#include <Servo.h>
 Servo servo;
 Servo thruster1;
 Servo thruster2;
@@ -39,7 +39,7 @@ void setup() {
   delay(2000);
 }
 
-void loop(){
+void loop() {
   while (!Serial.available());
 
   thruster1signal = Serial.readStringUntil(',').toInt();
@@ -49,64 +49,64 @@ void loop(){
   servoClose = Serial.readStringUntil(',').toInt();
   servoOpen = Serial.readStringUntil(',').toInt();
   laserStatus = Serial.readStringUntil('.').toInt();
-  
 
-//thruster output
-if(thruster1signal > 1740){
-thruster1signal = 1740;
-}
-if(thruster1signal < 1260){
-thruster1signal = 1260;
-}
-if(thruster2signal > 1740){
-thruster2signal = 1740;
-}
-if(thruster2signal < 1260){
-thruster2signal = 1260;
-}
-if(thruster3signal > 1740){
-thruster3signal = 1740;
-}
-if(thruster3signal < 1260){
-thruster3signal = 1260;
-}
-if(thruster4signal > 1740){
-thruster4signal = 1740;
-}
-if(thruster4signal < 1260){
-thruster4signal = 1260;
-}
 
-//servo output
-if(servo.read() > 5 && servoClose == 1){
-  angle = angle - 5;
+  //thruster output
+  if (thruster1signal > 1740) {
+    thruster1signal = 1740;
   }
-else if(servo.read() <  175 && servoOpen == 1){
-  angle = angle + 5;
+  if (thruster1signal < 1260) {
+    thruster1signal = 1260;
+  }
+  if (thruster2signal > 1740) {
+    thruster2signal = 1740;
+  }
+  if (thruster2signal < 1260) {
+    thruster2signal = 1260;
+  }
+  if (thruster3signal > 1740) {
+    thruster3signal = 1740;
+  }
+  if (thruster3signal < 1260) {
+    thruster3signal = 1260;
+  }
+  if (thruster4signal > 1740) {
+    thruster4signal = 1740;
+  }
+  if (thruster4signal < 1260) {
+    thruster4signal = 1260;
   }
 
-servo.write(angle);
-thruster1.writeMicroseconds(thruster1signal);
-thruster2.writeMicroseconds(thruster2signal);
-thruster3.writeMicroseconds(thruster3signal);
-thruster4.writeMicroseconds(thruster4signal);
+  //servo output
+  if (servo.read() > 5 && servoClose == 1) {
+    angle = angle - 5;
+  }
+  else if (servo.read() <  175 && servoOpen == 1) {
+    angle = angle + 5;
+  }
 
-digitalWrite(laserPin, laserStatus);
+  servo.write(angle);
+  thruster1.writeMicroseconds(thruster1signal);
+  thruster2.writeMicroseconds(thruster2signal);
+  thruster3.writeMicroseconds(thruster3signal);
+  thruster4.writeMicroseconds(thruster4signal);
 
-//Serial.println("recieved");
+  digitalWrite(laserPin, laserStatus);
 
-    Serial.println(
+  //Serial.println("recieved");
+
+  Serial.println(
     String(thruster1signal) + ","
-  + String(thruster2signal) + ","
-  + String(thruster3signal) + ","
-  + String(thruster4signal) + ","
-  + String(servoClose) + ","
-  + String(servoOpen) + ","
-  + String(laserStatus) + ",");
+    + String(thruster2signal) + ","
+    + String(thruster3signal) + ","
+    + String(thruster4signal) + ","
+    + String(servoClose) + ","
+    + String(servoOpen) + ","
+    + String(laserStatus) + ",");
 
 
 
-delay(100);
+  delay(100);
 
 
 }

@@ -32,7 +32,7 @@ tspeedUp = 1700
 tspeedDown = 1300
 
 initSleep = 2
-loopSleep = 0.2
+loopSleep = 0.4
 
 JS_X = 0
 JS_Y = 0
@@ -41,10 +41,11 @@ JS_Y_UD = 0
 arduino = None
 j = None
 
-arduinoParamsConst = [tspeedMiddle, tspeedMiddle, tspeedMiddle, tspeedMiddle, 0, 0, 0]
+# constantly updating array
+arduinoParams = [tspeedMiddle, tspeedMiddle, tspeedMiddle, tspeedMiddle, 0, 0, 0]
 
 
-#### INITIALIZATION
+#### INITIALIZATION - of arduino and joystick
 def init():
     ######################## 1. Initializing Serial
     global arduino  # we have to do "global" because we want to alter the value of the outer scope variables
@@ -61,7 +62,7 @@ def init():
     sleep(initSleep)
 
 
-#### CONTINUOUS LOOP
+#### MAIN LOOP - gets joystick positions, does calculations and calls serial comm. method to communicate with arduino
 def loop():
 
     while True:
@@ -73,7 +74,7 @@ def loop():
         forward = JS_Y * mapK
         updown = JS_Y_UD * mapK
 
-        arduinoParams = arduinoParamsConst  # resetting arduinoParams, our constantly updating array
+        global arduinoParams
 
         ##### UP DOWN THRUSTERS (VERTICAL MOVEMENT)
         if abs(JS_Y_UD) > deadBand:
@@ -81,17 +82,21 @@ def loop():
             arduinoParams[3] = int(tspeedMiddle + updown)
 
         ##### DIRECTIONAL THRUSTERS ("X-Y PLANE" MOVEMENT)
+
+        # if joystick is not in the cross-shaped dead band zone, then the deadband does not affect it
         if abs(JS_X) > deadBand and abs(JS_Y) > deadBand:
             arduinoParams[0] = int(tspeedMiddle - forward + turn)  # left thruster
             arduinoParams[1] = int(tspeedMiddle - forward - turn)  # right thruster
-        elif abs(JS_X) > deadBand >= abs(JS_Y):  # only turn
-            arduinoParams[0] = int(tspeedMiddle + turn)  # cast to integer
-            arduinoParams[1] = int(tspeedMiddle - turn)
-        elif abs(JS_X) <= deadBand < abs(JS_Y):
-            arduinoParams[0] = int(tspeedMiddle - forward)  # cast to integer
-            arduinoParams[1] = int(tspeedMiddle - forward)
 
-        print("tspeeds" + str(arduinoParams))
+        # joystick is traversing the x-axis within a width of 0.1 away from the x-axis: only turn
+        elif abs(JS_X) > deadBand >= abs(JS_Y):
+            arduinoParams[0] = int(tspeedMiddle + turn)  # only affected by turn
+            arduinoParams[1] = int(tspeedMiddle - turn)
+
+        # joystick is traversing the y-axis within a width of 0.1 away from the y-axis: only forward/backward
+        elif abs(JS_X) <= deadBand < abs(JS_Y):
+            arduinoParams[0] = int(tspeedMiddle - forward)  # only affected by forward
+            arduinoParams[1] = int(tspeedMiddle - forward)
 
         serial_send_print(arduinoParams)
 
@@ -103,21 +108,32 @@ def loop():
 #### COMMUNICATION PIPELINE W/ THE ARDUINO
 def serial_send_print(arr):  # print to terminal / send regularly updated array to arduino
 
-    stringToSend = ','.join(str(x) for x in arr) + '.'  # separates the arr elements with a comma and adds a period at the end
-    print('py: ' + stringToSend)  # print python
-    
-    arduino.write(stringToSend.encode("ascii"))  # send to arduino with ascii encoding (just a type of encoding, you can use any type)
-    while (arduino.in_waiting <= minBytes):  # this while loop waits for data to appear before moving on to reading it
-        pass
-    intbytes = arduino.in_waiting  # number of bytes
-    stringFromArd = arduino.readline().decode("ascii")  # read arduino data
+    # separates the arr elements with a comma and adds a period at the end
+    stringToSend = ','.join(str(x) for x in arr) + '.'
 
-    print('ard: ' + stringFromArd + ', ' + str(intbytes))  # print arduino data
+    # print python
+    print('py: ' + stringToSend)
+
+    # send to arduino with ascii encoding (encoding is basically making it complicated for machine to read it)
+    arduino.write(stringToSend.encode("ascii"))
+
+    # this while loop waits for data to appear before moving on to reading it
+    while (arduino.in_waiting <= minBytes):
+        pass
+
+    # number of bytes in buffer
+    intbytes = arduino.in_waiting
+
+    # read complicated arduino data and decode it into readable string format
+    stringFromArd = arduino.readline().decode("ascii")
+
+    # print decoded arduino data + number of bytes in buffer
+    print('ard: ' + stringFromArd + ', ' + str(intbytes))
 
 
 #### GETS THE CURRENT POSITIONS OF JOYSTICKS FOR CALCULATIONS
 def get_axises():
-    global JS_X
+    global JS_X  # again, global bc we have to alter outer-scope variable
     global JS_Y
     global JS_Y_UD
 
@@ -130,4 +146,4 @@ def get_axises():
 
 if __name__ == '__main__':
     init()  # initialization, such as making arduino and serial objects
-    loop()
+    loop()  # main loop
