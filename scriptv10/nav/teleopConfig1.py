@@ -5,8 +5,8 @@ from time import sleep, time
 import pygame
 import serial
 # from serial import Serial
-# from scriptv10.nav.tracer import start, end, agg # mac imports
-from nav.tracer import start, end, agg  # RPI IMPORTS
+from scriptv10.nav.tracer import start, end, agg # mac imports
+# from nav.tracer import start, end, agg  # RPI IMPORTS
 
 # gui, killswitch
 # from input_queue
@@ -33,7 +33,7 @@ class Config:
 
         elif computerType == "Mac":
             self.computerType = computerType
-            self.serialPort = '/dev/cu.usbmodem14301'
+            self.serialPort = '/dev/cu.usbmodem14101'
             self.LH = 0  # Left horizontal axis
             self.LV = 1  # Left vertical axis6
             self.RH = 2  # Right horizontal axis
@@ -52,7 +52,7 @@ class Config:
         self.output_queue = output_queue
 
         self.serialOn = serialOn
-        self.serialRecieveOn = serialRecieveOn
+        self.serialRecieveOn = True
         self.joyTestsOn = True
         self.deadBand = 0.1  # axis value must be greater than this number
 
@@ -67,7 +67,7 @@ class Config:
         self.tspeedUp = 1700
         self.tspeedDown = 1300
 
-        self.initSleep = 5
+        self.initSleep = 2
         self.loopSleep = 0.2
 
         self.buttonopen = None
@@ -305,7 +305,7 @@ class Config:
             start("check and limit")
             self.speed_limit()
 
-            self.statusesupdate()
+            # self.statusesupdate()
 
             if self.ended():
                 break
@@ -316,7 +316,7 @@ class Config:
 
             end("end behavior")
 
-            self.statusesupdate()
+            # self.statusesupdate()
             pygame.event.clear()
             sleep(self.loopSleep)
             # self.queuereciever()
@@ -409,21 +409,38 @@ class Config:
         print("statuses" + str(self.statuses))
 
     def serial_send_print(self):  # print to terminal / send regularly updated array to arduino
-
         stringToSend = ','.join(str(x) for x in self.arduinoParams) + '.'
         print('py: ' + stringToSend)  # print python
-        # stringFromArd = ''
         if self.serialOn:
             self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
             start('arduino-wait')
-            while self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes):  # wait for data
-                pass
-                stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
+            # while self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes):  # wait for data
+            #     pass
+            sleep(self.loopSleep)
+            bytes = self.arduino.in_waiting
+            stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
 
             end('arduino-wait')
 
-        # print('ard: ' + stringFromArd)  # print arduino data
-    #
+            print('ard: ' + stringFromArd + ', ' + str(bytes))  # print arduino data
+
+
+        # wrong
+        # stringToSend = ','.join(str(x) for x in self.arduinoParams) + '.'
+        # print('py: ' + stringToSend)  # print python
+        # stringFromArd = ''
+        # if self.serialOn:
+        #     self.arduino.write(stringToSend.encode("ascii"))  # send to arduino
+        #     start('arduino-wait')
+        #     while self.serialRecieveOn and (self.arduino.in_waiting <= self.minBytes):  # wait for data
+        #         pass
+        #     stringFromArd = self.arduino.readline().decode("ascii")  # read arduino data
+        #
+        #     end('arduino-wait')
+        #
+        #     print('ard: ' + stringFromArd)  # print arduino data
+        # end wrong
+
     # def queuereciever(self):
     #     if self.input_queue.empty() == False:
     #         self.loop = self.input_queue.get()
